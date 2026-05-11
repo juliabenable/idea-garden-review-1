@@ -594,6 +594,12 @@ whenReady(() => {
       });
     });
 
+    // Follow-up tasks container (only shows when picked)
+    const followups = document.createElement('div');
+    followups.className = 'followups';
+    followups.dataset.followups = decisionId;
+    followups.style.display = 'none';
+
     // Note field + actions row
     const actions = document.createElement('div');
     actions.className = 'decision-actions';
@@ -612,6 +618,7 @@ whenReady(() => {
     note.dataset.note = decisionId;
 
     block.appendChild(note);
+    block.appendChild(followups);
     block.appendChild(actions);
 
     // Note autosave (debounced)
@@ -660,6 +667,7 @@ whenReady(() => {
       const statusEl = block.querySelector('[data-status]');
       const statusLabel = statusEl.querySelector('.label');
       const continueBtn = block.querySelector('[data-continue]');
+      const followupsEl = block.querySelector(`[data-followups="${decisionId}"]`);
 
       if (decision && decision.option) {
         const picked = block.querySelector(`.option[data-option="${decision.option}"]`);
@@ -667,10 +675,14 @@ whenReady(() => {
         statusEl.classList.add('saved');
         statusLabel.textContent = `Locked in · Option ${decision.option}`;
         if (continueBtn) continueBtn.style.display = '';
+
+        // Render follow-up tasks
+        renderFollowups(decisionId, decision.option, followupsEl, state);
       } else {
         statusEl.classList.remove('saved');
         statusLabel.textContent = 'Not picked yet';
         if (continueBtn) continueBtn.style.display = 'none';
+        if (followupsEl) followupsEl.style.display = 'none';
       }
 
       const noteEl = block.querySelector('textarea[data-note]');
@@ -682,6 +694,95 @@ whenReady(() => {
     });
 
     updateProgress();
+  }
+
+  function renderFollowups(decisionId, optionLetter, container, state) {
+    if (!container) return;
+    if (!window.IGR.DECISIONS) {
+      container.style.display = 'none';
+      return;
+    }
+    const decisionData = window.IGR.DECISIONS[decisionId];
+    if (!decisionData) {
+      container.style.display = 'none';
+      return;
+    }
+    const option = decisionData.options[optionLetter];
+    if (!option || !option.followups || option.followups.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+
+    const tasks = option.followups;
+    const taskState = (state.followups && state.followups[decisionId]) || {};
+    const doneCount = tasks.reduce((n, _, i) => n + (taskState[i] && taskState[i].done ? 1 : 0), 0);
+
+    container.innerHTML = `
+      <div class="followups-header">
+        <span>Follow-up tasks</span>
+        <span class="progress">${doneCount} of ${tasks.length} done</span>
+      </div>
+      ${tasks.map((task, i) => {
+        const t = taskState[i] || {};
+        const isDone = !!t.done;
+        const note = t.note || '';
+        return `
+          <div class="followup-task ${isDone ? 'done' : ''}" data-task-index="${i}">
+            <div class="task-check" role="button" tabindex="0" title="Toggle done"></div>
+            <div class="task-body">
+              <div class="task-text">${task}</div>
+              <div class="task-actions">
+                <button data-toggle-note>${note ? 'Edit note' : '+ Add note'}</button>
+              </div>
+              <textarea class="task-note" placeholder="add note..." style="display: ${note ? 'block' : 'none'};">${note}</textarea>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+
+    // Wire up handlers per task
+    container.querySelectorAll('.followup-task').forEach(taskEl => {
+      const idx = parseInt(taskEl.dataset.taskIndex, 10);
+      const check = taskEl.querySelector('.task-check');
+      const toggleNoteBtn = taskEl.querySelector('[data-toggle-note]');
+      const noteEl = taskEl.querySelector('.task-note');
+
+      check.addEventListener('click', () => {
+        const current = IGR.getFollowupTask(decisionId, idx) || {};
+        IGR.setFollowupTask(decisionId, idx, { done: !current.done });
+      });
+      check.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          check.click();
+        }
+      });
+
+      toggleNoteBtn.addEventListener('click', () => {
+        if (noteEl.style.display === 'none') {
+          noteEl.style.display = 'block';
+          noteEl.focus();
+          toggleNoteBtn.textContent = 'Hide note';
+        } else if (!noteEl.value) {
+          noteEl.style.display = 'none';
+          toggleNoteBtn.textContent = '+ Add note';
+        } else {
+          noteEl.style.display = 'none';
+          toggleNoteBtn.textContent = 'Edit note';
+        }
+      });
+
+      let noteTimer = null;
+      noteEl.addEventListener('input', () => {
+        clearTimeout(noteTimer);
+        noteTimer = setTimeout(() => {
+          IGR.setFollowupTask(decisionId, idx, { note: noteEl.value });
+        }, 400);
+      });
+    });
   }
 
   render();

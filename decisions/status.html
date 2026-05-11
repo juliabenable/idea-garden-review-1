@@ -62,6 +62,10 @@
           <span class="label">⬆ Import JSON</span>
           <span class="hint">Paste a previous state to restore</span>
         </button>
+        <button class="export-btn" id="btn-share-url" style="grid-column: span 2;">
+          <span class="label">🔗 Copy shareable URL</span>
+          <span class="hint">Permalink with state encoded · open on another device, send to Claude, or bookmark</span>
+        </button>
       </div>
     </div>
   </section>
@@ -333,6 +337,12 @@ whenReady(() => {
   render();
   document.addEventListener('igr:state-changed', render);
 
+  // Notify if state was just imported from URL hash
+  const autoload = IGR.getAutoLoadResult();
+  if (autoload.found && autoload.ok) {
+    setTimeout(() => showToast('✓ State imported from shared URL'), 200);
+  }
+
   // Free notes
   let notesTimer = null;
   freeNotes.addEventListener('input', () => {
@@ -363,6 +373,12 @@ whenReady(() => {
   document.getElementById('btn-download-json').addEventListener('click', () => {
     IGR.downloadJSON();
     showToast('✓ Downloaded');
+  });
+
+  document.getElementById('btn-share-url').addEventListener('click', async () => {
+    const url = IGR.getShareableUrl();
+    const ok = await IGR.copyToClipboard(url);
+    showToast(ok ? '✓ Shareable URL copied' : 'Copy failed');
   });
 
   // Import modal

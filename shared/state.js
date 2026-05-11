@@ -21,7 +21,13 @@
   //   mondayBlocks: {
   //     "1": true, "2": false, ...
   //   },
-  //   freeNotes: string  // general notes
+  //   ideaStages: {
+  //     "94": "has-legs" | "spark" | "exploring" | "ready-to-scope" | "in-progress" | "queued" | "park"
+  //   },
+  //   followups: {
+  //     "D-01": { "0": { done: true, note?: string }, "1": { done: false } }
+  //   },
+  //   freeNotes: string
   // }
 
   function getState() {
@@ -42,6 +48,8 @@
       decisions: {},
       clusterLanes: {},
       ideaFlags: {},
+      ideaStages: {},
+      followups: {},
       mondayBlocks: {},
       freeNotes: ''
     };
@@ -104,6 +112,36 @@
     }
     saveState(state);
     return state;
+  }
+
+  function setIdeaStage(id, stage) {
+    const state = getState();
+    if (!stage) {
+      delete state.ideaStages[id];
+    } else {
+      state.ideaStages[id] = stage;
+    }
+    saveState(state);
+    return state;
+  }
+
+  function getIdeaStage(id) {
+    const state = getState();
+    return state.ideaStages[id] || null;
+  }
+
+  function setFollowupTask(decisionId, taskIndex, patch) {
+    const state = getState();
+    if (!state.followups[decisionId]) state.followups[decisionId] = {};
+    const existing = state.followups[decisionId][taskIndex] || {};
+    state.followups[decisionId][taskIndex] = { ...existing, ...patch };
+    saveState(state);
+    return state;
+  }
+
+  function getFollowupTask(decisionId, taskIndex) {
+    const state = getState();
+    return (state.followups[decisionId] || {})[taskIndex] || null;
   }
 
   function setMondayBlock(id, done) {
@@ -266,6 +304,63 @@
     URL.revokeObjectURL(url);
   }
 
+  // ---- Shareable URL encoding ----
+  // Encode the full state into a base64 string in the URL hash so users can
+  // share a single link and restore state on another device or browser.
+  function getShareableUrl() {
+    const json = exportJSON();
+    const compact = JSON.stringify(JSON.parse(json));
+    const encoded = encodeURIComponent(b64encode(compact));
+    // Anchor to root so the link drops users at index.html with state intact
+    const baseUrl = inferRootUrl();
+    return `${baseUrl}/#state=${encoded}`;
+  }
+
+  function inferRootUrl() {
+    const origin = window.location.origin;
+    const pathname = window.location.pathname;
+    // Strip filename + the cluster/decisions/ideas subpath if present
+    let path = pathname.replace(/\/[^/]*$/, '');
+    path = path.replace(/\/(clusters|decisions|ideas|shared)(\/.*)?$/, '');
+    if (origin.startsWith('file://')) {
+      return 'https://juliabenable.github.io/idea-garden-review-1';
+    }
+    return origin + path;
+  }
+
+  function b64encode(s) {
+    return btoa(unescape(encodeURIComponent(s)));
+  }
+  function b64decode(s) {
+    try { return decodeURIComponent(escape(atob(s))); } catch (e) { return null; }
+  }
+
+  // Try loading state from URL hash on page load. Returns true if state was
+  // applied. Caller decides whether to keep existing state.
+  function tryLoadFromUrl() {
+    const hash = window.location.hash || '';
+    const match = hash.match(/state=([^&]+)/);
+    if (!match) return { found: false };
+    const decoded = b64decode(decodeURIComponent(match[1]));
+    if (!decoded) return { found: true, ok: false, error: 'corrupt' };
+    const result = importJSON(decoded);
+    if (result.ok) {
+      // Clean the hash so refresh doesn't keep re-importing
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (e) { /* ignore */ }
+    }
+    return { found: true, ...result };
+  }
+
+  // Best-effort autoload at module init. Pages can read the result if they
+  // care (e.g. show a "state loaded from link" toast).
+  let __autoLoadResult = { found: false };
+  if (typeof window !== 'undefined') {
+    try { __autoLoadResult = tryLoadFromUrl(); } catch (e) { /* ignore */ }
+  }
+  function getAutoLoadResult() { return __autoLoadResult; }
+
   // Public API
   global.IGR = {
     getState,
@@ -276,6 +371,10 @@
     clearDecision,
     setClusterLane,
     setIdeaFlag,
+    setIdeaStage,
+    getIdeaStage,
+    setFollowupTask,
+    getFollowupTask,
     setMondayBlock,
     setFreeNotes,
     clearAll,
@@ -285,6 +384,9 @@
     getProgressCounts,
     copyToClipboard,
     downloadJSON,
+    getShareableUrl,
+    tryLoadFromUrl,
+    getAutoLoadResult,
     STORAGE_KEY
   };
 })(window);

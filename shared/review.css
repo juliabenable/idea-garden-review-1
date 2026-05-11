@@ -759,3 +759,137 @@ footer {
 }
 .idea-flag:hover { color: var(--orange-500); background: var(--bg-weak); }
 .idea-flag.on { color: var(--orange-500); }
+
+/* Follow-up tasks checklist on each picked decision */
+.followups {
+  margin-top: var(--sp-16);
+  padding: var(--sp-16) var(--sp-20);
+  background: var(--bg-weak);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--brand-700);
+}
+.followups-header {
+  font-size: var(--body-xs);
+  font-weight: var(--w-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-900);
+  margin-bottom: var(--sp-12);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.followups-header .progress {
+  color: var(--text-medium);
+  font-weight: var(--w-regular);
+}
+.followup-task {
+  display: flex;
+  gap: var(--sp-12);
+  padding: var(--sp-8) 0;
+  align-items: flex-start;
+  border-top: 1px dashed var(--border-base);
+}
+.followup-task:first-child { border-top: none; }
+.followup-task .task-check {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-xsm);
+  border: 2px solid var(--border-medium);
+  background: var(--bg-body);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.followup-task.done .task-check {
+  background: var(--green-500);
+  border-color: var(--green-500);
+}
+.followup-task.done .task-check::after { content: '✓'; }
+.followup-task .task-body { flex: 1; min-width: 0; }
+.followup-task .task-text {
+  font-size: var(--body-sm);
+  line-height: 1.5;
+  color: var(--text-base);
+}
+.followup-task.done .task-text {
+  text-decoration: line-through;
+  color: var(--text-medium);
+}
+.followup-task .task-note {
+  width: 100%;
+  margin-top: var(--sp-8);
+  padding: 6px 10px;
+  font-size: var(--body-xs);
+  background: var(--bg-body);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-xsm);
+  resize: vertical;
+  font-family: inherit;
+  min-height: 26px;
+  color: var(--text-base);
+}
+.followup-task .task-note:focus { outline: none; border-color: var(--brand-400); }
+.followup-task .task-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.followup-task .task-actions button {
+  background: none;
+  border: none;
+  color: var(--text-medium);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: var(--radius-xsm);
+}
+.followup-task .task-actions button:hover { background: var(--bg-body); color: var(--brand-900); }
+
+/* Idea stage picker on all-ideas page */
+.stage-picker {
+  display: inline-flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.stage-pill {
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-weak);
+  color: var(--text-medium);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.stage-pill:hover { border-color: var(--brand-400); color: var(--brand-900); }
+.stage-pill.active {
+  font-weight: var(--w-medium);
+}
+.stage-pill[data-stage="spark"].active { background: var(--orange-100); color: var(--orange-700); border-color: var(--orange-500); }
+.stage-pill[data-stage="exploring"].active { background: var(--blue-100); color: var(--blue-700); border-color: var(--blue-500); }
+.stage-pill[data-stage="has-legs"].active { background: var(--green-100); color: var(--green-700); border-color: var(--green-500); }
+.stage-pill[data-stage="ready"].active { background: var(--brand-100); color: var(--brand-900); border-color: var(--brand-700); }
+.stage-pill[data-stage="park"].active { background: var(--bg-subtle); color: var(--text-medium); border-color: var(--neutral-500); }
+
+.stage-tag {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: var(--w-medium);
+  background: var(--bg-weak);
+  color: var(--text-medium);
+}
+.stage-tag[data-stage="spark"] { background: var(--orange-100); color: var(--orange-700); }
+.stage-tag[data-stage="exploring"] { background: var(--blue-100); color: var(--blue-700); }
+.stage-tag[data-stage="has-legs"] { background: var(--green-100); color: var(--green-700); }
+.stage-tag[data-stage="ready"] { background: var(--brand-100); color: var(--brand-900); }
+.stage-tag[data-stage="park"] { background: var(--bg-subtle); color: var(--text-medium); }

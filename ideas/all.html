@@ -6,6 +6,7 @@
 <title>All Ideas (Searchable Index) · Idea Garden Review</title>
 <link rel="stylesheet" href="../shared/benable.css" />
 <link rel="stylesheet" href="../shared/review.css" />
+<script src="../shared/state.js" defer></script>
 <style>
   .idea-table {
     width: 100%;
@@ -84,13 +85,22 @@
     <div class="container">
       <input type="search" class="search" id="search" placeholder="Search by title, ID, cluster, or recommendation..." />
       <div class="filter-row">
-        <span class="filter-pill" data-rec="all">All</span>
+        <span class="filter-pill" data-rec="all">All recs</span>
         <span class="filter-pill" data-rec="Build">Build</span>
         <span class="filter-pill" data-rec="Spec">Spec</span>
         <span class="filter-pill" data-rec="Design">Design</span>
         <span class="filter-pill" data-rec="Research">Research</span>
         <span class="filter-pill" data-rec="Decide">Decide</span>
         <span class="filter-pill" data-rec="Park">Park</span>
+      </div>
+      <div class="filter-row">
+        <span class="filter-pill" data-stage="all">All stages</span>
+        <span class="filter-pill" data-stage="spark">✨ Spark</span>
+        <span class="filter-pill" data-stage="exploring">🔍 Exploring</span>
+        <span class="filter-pill" data-stage="has-legs">🦵 Has legs</span>
+        <span class="filter-pill" data-stage="ready">📋 Ready to scope</span>
+        <span class="filter-pill" data-stage="park">📥 Parked</span>
+        <span class="filter-pill" data-stage="none" style="color: var(--text-subtle);">Untagged</span>
       </div>
 
       <div class="card" style="padding: 0; overflow: hidden;">
@@ -101,7 +111,7 @@
               <th>Title</th>
               <th>Cluster</th>
               <th>Rec</th>
-              <th>Source</th>
+              <th>Stage</th>
             </tr>
           </thead>
           <tbody id="idea-tbody">
@@ -279,47 +289,113 @@ function recClass(rec) {
   return 'rec rec-' + rec.toLowerCase();
 }
 
-function render(rows) {
-  tbody.innerHTML = rows.map(idea => `
-    <tr data-rec="${idea.rec}">
-      <td class="idea-id-cell">${idea.id}</td>
-      <td class="idea-title-cell"><a href="${idea.clusterUrl}" style="color: inherit;">${idea.title}</a></td>
-      <td class="idea-cluster-cell">${idea.cluster}</td>
-      <td class="idea-rec-cell"><span class="${recClass(idea.rec)}">${idea.rec}</span></td>
-      <td class="t-muted" style="font-size: 12px;">${idea.source}</td>
-    </tr>
-  `).join('') || `<tr><td colspan="5" style="text-align:center; padding: 32px; color: var(--text-medium);">No matches.</td></tr>`;
+const STAGES = [
+  { value: '', label: '—', emoji: '' },
+  { value: 'spark', label: 'Spark', emoji: '✨' },
+  { value: 'exploring', label: 'Exploring', emoji: '🔍' },
+  { value: 'has-legs', label: 'Has legs', emoji: '🦵' },
+  { value: 'ready', label: 'Ready', emoji: '📋' },
+  { value: 'park', label: 'Park', emoji: '📥' }
+];
+
+function stagePickerHtml(id, currentStage) {
+  return STAGES.map(s => `
+    <span class="stage-pill ${s.value === currentStage ? 'active' : ''}" data-stage="${s.value}" data-idea="${id}" title="${s.label}">${s.emoji || '—'}</span>
+  `).join('');
 }
 
-let currentRec = 'all';
-function applyFilter() {
-  const q = search.value.toLowerCase().trim();
-  let rows = ideas;
-  if (currentRec !== 'all') rows = rows.filter(i => i.rec === currentRec);
-  if (q) {
-    rows = rows.filter(i =>
-      String(i.id).includes(q) ||
-      i.title.toLowerCase().includes(q) ||
-      i.cluster.toLowerCase().includes(q) ||
-      i.rec.toLowerCase().includes(q) ||
-      (i.source || '').toLowerCase().includes(q)
-    );
+function whenReady(fn) {
+  if (window.IGR) fn();
+  else window.addEventListener('DOMContentLoaded', fn);
+}
+
+whenReady(() => {
+
+  function getStage(id) {
+    return (window.IGR.getState().ideaStages || {})[id] || '';
   }
-  render(rows);
-}
 
-search.addEventListener('input', applyFilter);
-document.querySelectorAll('.filter-pill').forEach(p => {
-  p.addEventListener('click', () => {
-    document.querySelectorAll('.filter-pill').forEach(o => o.classList.remove('active'));
-    p.classList.add('active');
-    currentRec = p.dataset.rec;
-    applyFilter();
+  function render(rows) {
+    tbody.innerHTML = rows.map(idea => {
+      const stage = getStage(idea.id);
+      return `
+        <tr data-rec="${idea.rec}" data-stage="${stage || 'none'}">
+          <td class="idea-id-cell">${idea.id}</td>
+          <td class="idea-title-cell"><a href="${idea.clusterUrl}" style="color: inherit;">${idea.title}</a></td>
+          <td class="idea-cluster-cell">${idea.cluster}</td>
+          <td class="idea-rec-cell"><span class="${recClass(idea.rec)}">${idea.rec}</span></td>
+          <td><div class="stage-picker">${stagePickerHtml(idea.id, stage)}</div></td>
+        </tr>
+      `;
+    }).join('') || `<tr><td colspan="5" style="text-align:center; padding: 32px; color: var(--text-medium);">No matches.</td></tr>`;
+
+    // Wire up stage pill clicks
+    tbody.querySelectorAll('.stage-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = pill.dataset.idea;
+        const stage = pill.dataset.stage;
+        const current = getStage(id);
+        // Toggle off if same; else set
+        IGR.setIdeaStage(id, stage === current ? '' : stage);
+      });
+    });
+  }
+
+  let currentRec = 'all';
+  let currentStage = 'all';
+
+  function applyFilter() {
+    const q = search.value.toLowerCase().trim();
+    let rows = ideas;
+    if (currentRec !== 'all') rows = rows.filter(i => i.rec === currentRec);
+    if (currentStage !== 'all') {
+      rows = rows.filter(i => {
+        const stage = getStage(i.id) || '';
+        if (currentStage === 'none') return stage === '';
+        return stage === currentStage;
+      });
+    }
+    if (q) {
+      rows = rows.filter(i =>
+        String(i.id).includes(q) ||
+        i.title.toLowerCase().includes(q) ||
+        i.cluster.toLowerCase().includes(q) ||
+        i.rec.toLowerCase().includes(q) ||
+        (i.source || '').toLowerCase().includes(q)
+      );
+    }
+    render(rows);
+  }
+
+  search.addEventListener('input', applyFilter);
+
+  document.querySelectorAll('.filter-pill[data-rec]').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill[data-rec]').forEach(o => o.classList.remove('active'));
+      p.classList.add('active');
+      currentRec = p.dataset.rec;
+      applyFilter();
+    });
   });
-});
-document.querySelector('.filter-pill[data-rec="all"]').classList.add('active');
 
-render(ideas);
+  document.querySelectorAll('.filter-pill[data-stage]').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill[data-stage]').forEach(o => o.classList.remove('active'));
+      p.classList.add('active');
+      currentStage = p.dataset.stage;
+      applyFilter();
+    });
+  });
+
+  document.querySelector('.filter-pill[data-rec="all"]').classList.add('active');
+  document.querySelector('.filter-pill[data-stage="all"]').classList.add('active');
+
+  // Re-render when state changes (so stage pill updates apply visually)
+  document.addEventListener('igr:state-changed', () => applyFilter());
+
+  applyFilter();
+});
 </script>
 </body>
 </html>

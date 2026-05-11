@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cluster Lanes · Idea Garden Review</title>
+<link rel="stylesheet" href="shared/benable.css" />
+<link rel="stylesheet" href="shared/review.css" />
+<script src="shared/state.js" defer></script>
+<style>
+  .lane-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-16);
+    padding: var(--sp-24) var(--sp-32) var(--sp-48);
+  }
+  .lane {
+    background: var(--bg-weak);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-16);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-12);
+    transition: background 0.18s ease, outline 0.12s ease;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+  }
+  .lane.drag-over { background: var(--brand-100); outline-color: var(--brand-700); }
+  .lane-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+  }
+  .lane-title {
+    font-size: var(--body-sm);
+    font-weight: var(--w-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .lane-count {
+    background: var(--bg-body);
+    color: var(--text-medium);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: var(--w-medium);
+  }
+  .lane[data-lane="now"] .lane-title { color: var(--green-700); }
+  .lane[data-lane="next"] .lane-title { color: var(--brand-900); }
+  .lane[data-lane="later"] .lane-title { color: var(--blue-700); }
+  .lane[data-lane="park"] .lane-title { color: var(--text-medium); }
+
+  .lane-card {
+    background: var(--bg-body);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-md);
+    padding: var(--sp-12) var(--sp-16);
+    cursor: grab;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    position: relative;
+  }
+  .lane-card:hover { border-color: var(--brand-400); box-shadow: var(--shadow-sm); }
+  .lane-card:active { cursor: grabbing; }
+  .lane-card.dragging { opacity: 0.4; }
+  .lane-card .card-id {
+    font-family: ui-monospace, monospace;
+    font-size: 10px;
+    color: var(--brand-900);
+    background: var(--brand-300);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .lane-card h4 {
+    font-size: var(--body-sm);
+    font-weight: var(--w-bold);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .lane-card .card-blurb {
+    font-size: 11px;
+    color: var(--text-medium);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .lane-card .card-foot {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .lane-card a {
+    color: var(--brand-700);
+    font-size: 11px;
+    text-decoration: none;
+  }
+  .lane-card a:hover { text-decoration: underline; }
+
+  /* Mobile: lanes stack */
+  @media (max-width: 880px) {
+    .lane-board { grid-template-columns: 1fr; }
+    .lane { min-height: 0; }
+  }
+
+  /* Tiny menu for lane move on click */
+  .move-menu {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .move-pill {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: var(--radius-full);
+    background: var(--bg-weak);
+    color: var(--text-medium);
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .move-pill:hover { border-color: var(--brand-400); color: var(--brand-900); }
+  .move-pill.active {
+    background: var(--brand-700);
+    color: var(--text-inverse);
+    font-weight: var(--w-medium);
+  }
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="index.html" style="color: inherit;">Idea Garden Review</a> · Lanes</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="decisions/open-questions.html">Decisions</a>
+        <a class="btn btn-ghost btn-sm" href="decisions/status.html">Status</a>
+        <a class="btn btn-primary btn-sm" href="index.html">All clusters</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="index.html">Review</a> / Lanes</div>
+      <h1>Cluster lanes board.</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px;">
+        Drag clusters between lanes, or tap a lane pill on a card. Default lanes use my initial recommendation; overrides save automatically. Use this when you want a board view instead of a long index list.
+      </p>
+    </div>
+  </section>
+
+  <div class="lane-board" id="lane-board">
+    <div class="lane" data-lane="now">
+      <div class="lane-header">
+        <span class="lane-title">Now</span>
+        <span class="lane-count" data-count="now">0</span>
+      </div>
+    </div>
+    <div class="lane" data-lane="next">
+      <div class="lane-header">
+        <span class="lane-title">Next</span>
+        <span class="lane-count" data-count="next">0</span>
+      </div>
+    </div>
+    <div class="lane" data-lane="later">
+      <div class="lane-header">
+        <span class="lane-title">Later</span>
+        <span class="lane-count" data-count="later">0</span>
+      </div>
+    </div>
+    <div class="lane" data-lane="park">
+      <div class="lane-header">
+        <span class="lane-title">Park</span>
+        <span class="lane-count" data-count="park">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Moved</div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Clusters</a>
+        <a class="btn btn-primary btn-sm" href="decisions/status.html">Status →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+function whenReady(fn) {
+  if (window.IGR) fn();
+  else window.addEventListener('DOMContentLoaded', fn);
+}
+
+const CLUSTERS = [
+  { id: '01', slug: 'ugc-studio', title: 'UGC Studio & Content Licensing', blurb: 'Most-validated unlock. Strongest moat opportunity.', defaultLane: 'now' },
+  { id: '02', slug: 'brand-portal-sales', title: 'Brand Portal Sales Tools', blurb: 'Brand intelligence, CRM, alerts. Renewal-driving.', defaultLane: 'now' },
+  { id: '03', slug: 'campaign-config', title: 'Brand Campaign Configuration', blurb: 'Campaign builder v2. Mostly table-stakes.', defaultLane: 'now' },
+  { id: '04', slug: 'creator-onboarding', title: 'Creator Onboarding & Profile', blurb: 'Fixes 50% rejection rate at the source.', defaultLane: 'next' },
+  { id: '05', slug: 'creator-portal-qol', title: 'Creator Portal Quality of Life', blurb: 'Listen sprint: 14 small validated wins.', defaultLane: 'next' },
+  { id: '06', slug: 'affiliate-links', title: 'Affiliate Links Management', blurb: 'ShopMy parity gap. Link library + analytics.', defaultLane: 'next' },
+  { id: '07', slug: 'discovery-rethink', title: 'Discovery & Homepage Rethink', blurb: 'Big bet. 3-week prototype sprint, commit Q4.', defaultLane: 'later' },
+  { id: '08', slug: 'community-social', title: 'People-First / Community', blurb: 'Pilot one real community before generalizing.', defaultLane: 'next' },
+  { id: '09', slug: 'growth-loops', title: 'Reactivation, Referrals, Growth', blurb: 'Reactivation autopilot + referral multiplier.', defaultLane: 'next' },
+  { id: '10', slug: 'events-strategy', title: 'Events Strategy', blurb: 'Productize the event-loop. Likely Tony\'s team.', defaultLane: 'later' },
+  { id: '11', slug: 'local-matching', title: 'Local Matching', blurb: 'Research first. 2-week experiment.', defaultLane: 'later' },
+  { id: '12', slug: 'internal-ai', title: 'Internal AI Tools', blurb: 'Opportunistic. Finish prototype review tool.', defaultLane: 'later' },
+  { id: '13', slug: 'mobile-investigation', title: 'Mobile Invite Investigation', blurb: 'Hot bug from May 8 thread. Resilience layer.', defaultLane: 'now' },
+  { id: '14', slug: 'idea-garden', title: 'Idea Garden Self-Improvement', blurb: 'Maturation scorecard, signal board.', defaultLane: 'park' }
+];
+
+whenReady(() => {
+  const board = document.getElementById('lane-board');
+  const toast = document.getElementById('toast');
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1100);
+  }
+
+  function getLaneFor(cluster) {
+    const state = IGR.getState();
+    return state.clusterLanes[cluster.id] || cluster.defaultLane;
+  }
+
+  function setLane(clusterId, lane) {
+    IGR.setClusterLane(clusterId, lane);
+  }
+
+  function render() {
+    // Clear existing cards (preserve headers)
+    document.querySelectorAll('.lane').forEach(lane => {
+      lane.querySelectorAll('.lane-card').forEach(c => c.remove());
+    });
+
+    const counts = { now: 0, next: 0, later: 0, park: 0 };
+
+    CLUSTERS.forEach(cluster => {
+      const lane = getLaneFor(cluster);
+      counts[lane] = (counts[lane] || 0) + 1;
+      const card = document.createElement('div');
+      card.className = 'lane-card';
+      card.draggable = true;
+      card.dataset.clusterId = cluster.id;
+      card.innerHTML = `
+        <div class="card-id">C${cluster.id}</div>
+        <h4>${cluster.title}</h4>
+        <div class="card-blurb">${cluster.blurb}</div>
+        <div class="card-foot">
+          <a href="clusters/${cluster.id}-${cluster.slug}/index.html">Open →</a>
+        </div>
+        <div class="move-menu" data-cluster-id="${cluster.id}">
+          <span class="move-pill ${lane === 'now' ? 'active' : ''}" data-lane="now">Now</span>
+          <span class="move-pill ${lane === 'next' ? 'active' : ''}" data-lane="next">Next</span>
+          <span class="move-pill ${lane === 'later' ? 'active' : ''}" data-lane="later">Later</span>
+          <span class="move-pill ${lane === 'park' ? 'active' : ''}" data-lane="park">Park</span>
+        </div>
+      `;
+      const laneEl = document.querySelector(`.lane[data-lane="${lane}"]`);
+      laneEl.appendChild(card);
+
+      // Drag handlers
+      card.addEventListener('dragstart', (e) => {
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', cluster.id);
+      });
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+      });
+    });
+
+    // Update counts
+    Object.entries(counts).forEach(([lane, c]) => {
+      const el = document.querySelector(`[data-count="${lane}"]`);
+      if (el) el.textContent = c;
+    });
+
+    // Wire pill clicks
+    document.querySelectorAll('.move-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const menu = pill.closest('.move-menu');
+        const clusterId = menu.dataset.clusterId;
+        const newLane = pill.dataset.lane;
+        const currentLane = getLaneFor({ id: clusterId, defaultLane: CLUSTERS.find(c => c.id === clusterId).defaultLane });
+        if (newLane === currentLane) return;
+        setLane(clusterId, newLane);
+        showToast(`Moved to ${newLane.charAt(0).toUpperCase() + newLane.slice(1)}`);
+      });
+    });
+  }
+
+  // Lane drop targets
+  document.querySelectorAll('.lane').forEach(lane => {
+    lane.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      lane.classList.add('drag-over');
+    });
+    lane.addEventListener('dragleave', (e) => {
+      // Only remove if the leave target is the lane itself
+      if (e.target === lane) lane.classList.remove('drag-over');
+    });
+    lane.addEventListener('drop', (e) => {
+      e.preventDefault();
+      lane.classList.remove('drag-over');
+      const clusterId = e.dataTransfer.getData('text/plain');
+      const newLane = lane.dataset.lane;
+      const currentLane = getLaneFor({ id: clusterId, defaultLane: CLUSTERS.find(c => c.id === clusterId).defaultLane });
+      if (newLane === currentLane) return;
+      setLane(clusterId, newLane);
+      showToast(`Moved to ${newLane.charAt(0).toUpperCase() + newLane.slice(1)}`);
+    });
+  });
+
+  render();
+  document.addEventListener('igr:state-changed', render);
+});
+</script>
+</body>
+</html>
