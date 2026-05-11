@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Decisions Status · Idea Garden Review</title>
+<link rel="stylesheet" href="../shared/benable.css" />
+<link rel="stylesheet" href="../shared/review.css" />
+<script src="../shared/state.js" defer></script>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../index.html" style="color: inherit;">Idea Garden Review</a> · Status</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="open-questions.html">Decisions</a>
+        <a class="btn btn-ghost btn-sm" href="monday-prep.html">Monday plan</a>
+        <a class="btn btn-primary btn-sm" href="../index.html">All clusters</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../index.html">Review</a> / Status</div>
+      <h1>Your decisions, in one place.</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px;" id="header-summary">
+        Loading your current state...
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">Hand off to Claude</h2>
+      <p class="section-lead">Use these buttons to share your current state. The "Copy summary for Claude" button is the fastest — paste it into the chat and I'll see exactly what you've decided.</p>
+
+      <div class="export-grid">
+        <button class="export-btn" id="btn-copy-summary">
+          <span class="label">📋 Copy summary for Claude</span>
+          <span class="hint">Formatted markdown · paste into chat</span>
+        </button>
+        <button class="export-btn" id="btn-copy-json">
+          <span class="label">{ } Copy JSON</span>
+          <span class="hint">Full state · for restoring elsewhere</span>
+        </button>
+        <button class="export-btn" id="btn-download-json">
+          <span class="label">⬇ Download decisions.json</span>
+          <span class="hint">Commit to repo to share across devices</span>
+        </button>
+        <button class="export-btn" id="btn-import-json">
+          <span class="label">⬆ Import JSON</span>
+          <span class="hint">Paste a previous state to restore</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="decisions-section">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">Decisions made</h2>
+      <p class="section-lead" id="decisions-empty" style="display:none;">No decisions yet. Head over to <a href="open-questions.html">Open decisions</a> to start picking options.</p>
+      <div id="decisions-list" class="status-card"></div>
+    </div>
+  </section>
+
+  <section class="section" id="lanes-section" style="display:none;">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">Cluster lanes</h2>
+      <div id="lanes-list" class="status-card"></div>
+    </div>
+  </section>
+
+  <section class="section" id="blocks-section" style="display:none;">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">Monday plan progress</h2>
+      <div id="blocks-list" class="status-card"></div>
+    </div>
+  </section>
+
+  <section class="section" id="flags-section" style="display:none;">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">Flagged ideas</h2>
+      <div id="flags-list" class="status-card"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">General notes</h2>
+      <p class="section-lead">Anything you want me to know that doesn't fit a specific decision.</p>
+      <textarea id="free-notes" class="decision-note" style="min-height: 120px;" placeholder="e.g. Pause Cluster 11 entirely. Discovery experiment owners: me + Des. Ask Tony about D-06 directly."></textarea>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12); color: var(--red-700);">Reset</h2>
+      <p class="section-lead">Clear all decisions, lanes, flags, and notes. There's no undo, but if you've downloaded a JSON earlier you can re-import.</p>
+      <button class="btn btn-ghost btn-sm" id="btn-clear-all" style="color: var(--red-700); border-color: var(--red-300);">Clear everything</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast">Copied to clipboard</div>
+
+  <!-- Import modal -->
+  <div id="import-modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; display: flex; flex-direction: column;">
+      <h3 style="margin-bottom: 8px;">Import decisions JSON</h3>
+      <p style="color: var(--text-medium); font-size: 14px; margin-bottom: 16px;">Paste a previously-exported JSON below. This replaces your current state.</p>
+      <textarea id="import-textarea" class="decision-note" style="min-height: 240px; font-family: ui-monospace, monospace; font-size: 12px;"></textarea>
+      <div id="import-error" style="color: var(--red-700); font-size: 13px; margin-top: 8px; display: none;"></div>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button class="btn btn-ghost" id="btn-import-cancel">Cancel</button>
+        <button class="btn btn-primary" id="btn-import-confirm" style="margin-left: auto;">Replace state</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="open-questions.html">← Open decisions</a>
+        <a class="btn btn-primary btn-sm" href="../index.html">Back to clusters</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ---- Wait for IGR (loaded via defer) ----
+function whenReady(fn) {
+  if (window.IGR) fn();
+  else window.addEventListener('DOMContentLoaded', fn);
+}
+
+whenReady(() => {
+  const headerSummary = document.getElementById('header-summary');
+  const decisionsList = document.getElementById('decisions-list');
+  const decisionsEmpty = document.getElementById('decisions-empty');
+  const lanesSection = document.getElementById('lanes-section');
+  const lanesList = document.getElementById('lanes-list');
+  const blocksSection = document.getElementById('blocks-section');
+  const blocksList = document.getElementById('blocks-list');
+  const flagsSection = document.getElementById('flags-section');
+  const flagsList = document.getElementById('flags-list');
+  const freeNotes = document.getElementById('free-notes');
+  const toast = document.getElementById('toast');
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1600);
+  }
+
+  // Decision titles for nicer rendering
+  const decisionTitles = {
+    'D-01': 'UGC Studio · pool boundary',
+    'D-02': 'UGC Studio · pricing model / take rate',
+    'D-03': 'UGC Studio · Story content in v1',
+    'D-04': 'Brand Portal · category rankings tier',
+    'D-05': 'Brand Portal · dashboard placement in IA',
+    'D-06': 'Brand Portal · CRM build vs Attio/HubSpot',
+    'D-07': 'Campaign builder · wizard vs form',
+    'D-08': 'Selection-cap mobile UX',
+    'D-09': '"Why brands should pick you" · friction or filter',
+    'D-10': 'Brand ratings on creator profiles',
+    'D-11': 'Hashtag automation · helper or gate',
+    'D-12': 'Link library placement in creator portal',
+    'D-13': 'Link revenue data source for v1',
+    'D-14': 'Stories · keep / hide / remove',
+    'D-15': 'Vertical strategy',
+    'D-16': 'Discovery work · defer to Q4?',
+    'D-17': 'Community pilot · PNW or POTS',
+    'D-18': 'Forum / tagging · pilot now or wait',
+    'D-19': 'Reactivation · existing email tool or build',
+    'D-20': 'Referral rewards · financial / status / hybrid',
+    'D-21': 'Event loop · product or ops tooling',
+    'D-22': 'Local · restaurants or experiences first',
+    'D-23': 'Internal AI · own track / opportunistic / outsourced',
+    'D-24': 'Mobile · backfill attribution for affected users'
+  };
+
+  function clusterLink(id) {
+    const map = {
+      'D-01': '../clusters/01-ugc-studio/index.html',
+      'D-02': '../clusters/01-ugc-studio/index.html',
+      'D-03': '../clusters/01-ugc-studio/index.html',
+      'D-04': '../clusters/02-brand-portal-sales/index.html',
+      'D-05': '../clusters/02-brand-portal-sales/index.html',
+      'D-06': '../clusters/02-brand-portal-sales/index.html',
+      'D-07': '../clusters/03-campaign-config/index.html',
+      'D-08': '../clusters/03-campaign-config/index.html',
+      'D-09': '../clusters/04-creator-onboarding/index.html',
+      'D-10': '../clusters/04-creator-onboarding/index.html',
+      'D-11': '../clusters/05-creator-portal-qol/index.html',
+      'D-12': '../clusters/06-affiliate-links/index.html',
+      'D-13': '../clusters/06-affiliate-links/index.html',
+      'D-14': '../clusters/07-discovery-rethink/index.html',
+      'D-15': '../clusters/07-discovery-rethink/index.html',
+      'D-16': '../clusters/07-discovery-rethink/index.html',
+      'D-17': '../clusters/08-community-social/index.html',
+      'D-18': '../clusters/08-community-social/index.html',
+      'D-19': '../clusters/09-growth-loops/index.html',
+      'D-20': '../clusters/09-growth-loops/index.html',
+      'D-21': '../clusters/10-events-strategy/index.html',
+      'D-22': '../clusters/11-local-matching/index.html',
+      'D-23': '../clusters/12-internal-ai/index.html',
+      'D-24': '../clusters/13-mobile-investigation/index.html'
+    };
+    return map[id] || 'open-questions.html';
+  }
+
+  function render() {
+    const state = IGR.getState();
+    const counts = IGR.getProgressCounts();
+    const ts = state.updatedAt ? new Date(state.updatedAt).toLocaleString() : null;
+
+    // Header
+    headerSummary.innerHTML = `
+      <strong>${counts.decisionsMade}</strong> of ${counts.decisionsTotal} decisions made ·
+      <strong>${counts.blocksDone}</strong> of ${counts.blocksTotal} Monday blocks done ·
+      ${counts.flaggedIdeas} idea${counts.flaggedIdeas === 1 ? '' : 's'} flagged
+      ${ts ? `<br><span style="color: var(--text-subtle); font-size: 12px;">Last updated ${ts}</span>` : ''}
+    `;
+
+    // Decisions
+    const decisionIds = Object.keys(state.decisions).sort((a, b) => {
+      const na = parseInt(a.replace(/\D/g, ''), 10);
+      const nb = parseInt(b.replace(/\D/g, ''), 10);
+      return na - nb;
+    });
+    if (decisionIds.length === 0) {
+      decisionsList.style.display = 'none';
+      decisionsEmpty.style.display = 'block';
+    } else {
+      decisionsList.style.display = 'block';
+      decisionsEmpty.style.display = 'none';
+      decisionsList.innerHTML = decisionIds.map(id => {
+        const d = state.decisions[id];
+        const pickText = d.option === 'custom'
+          ? `Custom — <em>${d.customText || '(no text)'}</em>`
+          : `Option <strong>${d.option}</strong>`;
+        const note = d.note
+          ? `<div class="status-note">${d.note.replace(/</g, '&lt;')}</div>`
+          : '';
+        return `
+          <div class="status-row">
+            <div class="status-id">${id}</div>
+            <div class="status-body">
+              <div style="font-size: 13px; color: var(--text-medium); margin-bottom: 2px;">${decisionTitles[id] || ''}</div>
+              <div class="status-pick">${pickText}</div>
+              ${note}
+            </div>
+            <a href="${clusterLink(id)}" class="btn btn-link" style="font-size: 12px;">View →</a>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Lanes
+    const laneIds = Object.keys(state.clusterLanes);
+    if (laneIds.length === 0) {
+      lanesSection.style.display = 'none';
+    } else {
+      lanesSection.style.display = 'block';
+      lanesList.innerHTML = laneIds.sort().map(id => `
+        <div class="status-row">
+          <div class="status-id">C${id}</div>
+          <div class="status-body">
+            <div class="status-pick">Lane: <strong>${state.clusterLanes[id]}</strong></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Blocks
+    const doneBlocks = Object.keys(state.mondayBlocks).filter(id => state.mondayBlocks[id]);
+    if (doneBlocks.length === 0) {
+      blocksSection.style.display = 'none';
+    } else {
+      blocksSection.style.display = 'block';
+      blocksList.innerHTML = doneBlocks.sort().map(id => `
+        <div class="status-row">
+          <div class="status-id">B${id}</div>
+          <div class="status-body"><div class="status-pick">✓ Done</div></div>
+        </div>
+      `).join('');
+    }
+
+    // Flags
+    const flagIds = Object.keys(state.ideaFlags);
+    if (flagIds.length === 0) {
+      flagsSection.style.display = 'none';
+    } else {
+      flagsSection.style.display = 'block';
+      flagsList.innerHTML = flagIds.sort((a, b) => parseInt(a) - parseInt(b)).map(id => `
+        <span class="pill pill-warn" style="margin-right: 6px;">ID ${id}</span>
+      `).join('');
+    }
+
+    // Free notes
+    if (freeNotes.value !== state.freeNotes) {
+      freeNotes.value = state.freeNotes || '';
+    }
+  }
+
+  // Render now + on state change
+  render();
+  document.addEventListener('igr:state-changed', render);
+
+  // Free notes
+  let notesTimer = null;
+  freeNotes.addEventListener('input', () => {
+    clearTimeout(notesTimer);
+    notesTimer = setTimeout(() => {
+      IGR.setFreeNotes(freeNotes.value);
+    }, 400);
+  });
+
+  // Export buttons
+  document.getElementById('btn-copy-summary').addEventListener('click', async () => {
+    const text = IGR.exportSummary();
+    const ok = await IGR.copyToClipboard(text);
+    showToast(ok ? '✓ Summary copied — paste into chat with Claude' : 'Copy failed');
+  });
+
+  document.getElementById('btn-copy-json').addEventListener('click', async () => {
+    const ok = await IGR.copyToClipboard(IGR.exportJSON());
+    showToast(ok ? '✓ JSON copied to clipboard' : 'Copy failed');
+  });
+
+  document.getElementById('btn-download-json').addEventListener('click', () => {
+    IGR.downloadJSON();
+    showToast('✓ Downloaded');
+  });
+
+  // Import modal
+  const importModal = document.getElementById('import-modal');
+  const importTextarea = document.getElementById('import-textarea');
+  const importError = document.getElementById('import-error');
+
+  document.getElementById('btn-import-json').addEventListener('click', () => {
+    importTextarea.value = '';
+    importError.style.display = 'none';
+    importModal.style.display = 'flex';
+  });
+
+  document.getElementById('btn-import-cancel').addEventListener('click', () => {
+    importModal.style.display = 'none';
+  });
+
+  document.getElementById('btn-import-confirm').addEventListener('click', () => {
+    const result = IGR.importJSON(importTextarea.value);
+    if (result.ok) {
+      importModal.style.display = 'none';
+      showToast('✓ State imported');
+    } else {
+      importError.textContent = `Couldn't parse JSON: ${result.error}`;
+      importError.style.display = 'block';
+    }
+  });
+
+  importModal.addEventListener('click', (e) => {
+    if (e.target === importModal) importModal.style.display = 'none';
+  });
+
+  // Clear all
+  document.getElementById('btn-clear-all').addEventListener('click', () => {
+    if (confirm('Clear all decisions, lanes, flags, and notes? This can\'t be undone (unless you exported a JSON earlier).')) {
+      IGR.clearAll();
+      freeNotes.value = '';
+      showToast('Cleared');
+    }
+  });
+});
+</script>
+</body>
+</html>

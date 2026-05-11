@@ -506,3 +506,256 @@ footer {
   .cluster-layout { grid-template-columns: 1fr; }
   .section { page-break-inside: avoid; }
 }
+
+/* === Interactive state === */
+
+/* Make option cards clickable */
+.option {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.06s ease;
+}
+.option:hover { border-color: var(--brand-400); }
+.option:active { transform: scale(0.997); }
+.option.picked {
+  border-color: var(--brand-700);
+  background: var(--brand-100);
+  box-shadow: 0 0 0 3px rgba(174, 148, 249, 0.15);
+}
+.option.picked .opt-label::after {
+  content: ' · your pick';
+  color: var(--action-text-active);
+  font-weight: var(--w-medium);
+}
+/* Override the "recommended" label when picked */
+.option.option-recommended.picked .opt-label::after { content: ' · your pick (was recommended)'; }
+.option.option-recommended:not(.picked) .opt-label::after { content: ' · recommended'; }
+
+/* Decision saved indicator */
+.decision-status {
+  margin-top: var(--sp-12);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  font-size: var(--body-xs);
+  color: var(--text-medium);
+}
+.decision-status.saved { color: var(--green-700); }
+.decision-status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--neutral-300);
+}
+.decision-status.saved .dot { background: var(--green-500); }
+
+/* Decision note field */
+.decision-note {
+  width: 100%;
+  margin-top: var(--sp-12);
+  padding: var(--sp-12) var(--sp-16);
+  background: var(--bg-body);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--body-sm);
+  color: var(--text-base);
+  resize: vertical;
+  min-height: 38px;
+  line-height: 1.5;
+}
+.decision-note:focus { outline: none; border-color: var(--brand-400); background: white; }
+.decision-note::placeholder { color: var(--text-subtle); }
+
+/* Decision actions row */
+.decision-actions {
+  display: flex;
+  gap: var(--sp-8);
+  align-items: center;
+  margin-top: var(--sp-12);
+}
+.decision-actions .btn-link.danger { color: var(--red-500); }
+
+/* Progress banner (top of index) */
+.progress-banner {
+  position: sticky;
+  top: 64px;
+  z-index: 40;
+  background: var(--brand-100);
+  border-bottom: 1px solid var(--brand-300);
+  padding: var(--sp-12) var(--sp-32);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-16);
+}
+.progress-banner .progress-text {
+  font-size: var(--body-sm);
+  color: var(--brand-900);
+}
+.progress-banner .progress-text strong { font-weight: var(--w-bold); }
+.progress-banner .progress-actions { display: flex; gap: var(--sp-8); }
+
+/* Monday block checkbox card */
+.block-card {
+  position: relative;
+}
+.block-card .block-check {
+  position: absolute;
+  top: var(--sp-20);
+  right: var(--sp-20);
+  width: 22px; height: 22px;
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-xsm);
+  cursor: pointer;
+  background: var(--bg-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: white;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.block-card.done .block-check {
+  background: var(--green-500);
+  border-color: var(--green-500);
+}
+.block-card.done .block-check::after { content: '✓'; }
+.block-card.done {
+  background: var(--green-100);
+  border-color: var(--green-500);
+}
+.block-card.done h2,
+.block-card.done h4 {
+  text-decoration: line-through;
+  text-decoration-color: var(--green-700);
+  text-decoration-thickness: 2px;
+}
+
+/* Status page specific */
+.status-card {
+  background: var(--bg-body);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-24);
+  margin-bottom: var(--sp-16);
+}
+.status-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-16);
+  padding: var(--sp-12) 0;
+  border-bottom: 1px solid var(--border-base);
+}
+.status-row:last-child { border-bottom: none; }
+.status-row .status-id {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-weight: var(--w-bold);
+  color: var(--brand-900);
+  width: 60px;
+  flex-shrink: 0;
+}
+.status-row .status-body { flex: 1; }
+.status-row .status-pick {
+  font-weight: var(--w-medium);
+  color: var(--text-base);
+}
+.status-row .status-note {
+  margin-top: var(--sp-4);
+  font-size: var(--body-sm);
+  color: var(--text-medium);
+}
+
+/* Export / import buttons */
+.export-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--sp-12);
+  margin-top: var(--sp-16);
+}
+.export-btn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-16) var(--sp-20);
+  background: var(--bg-body);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.export-btn:hover { border-color: var(--brand-400); background: var(--bg-weak); }
+.export-btn .label { font-weight: var(--w-medium); font-size: var(--body-sm); }
+.export-btn .hint { font-size: var(--body-xs); color: var(--text-medium); }
+
+/* Toast for "copied" feedback */
+.toast {
+  position: fixed;
+  bottom: var(--sp-24);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--neutral-800);
+  color: var(--text-inverse);
+  padding: var(--sp-12) var(--sp-20);
+  border-radius: var(--radius-full);
+  font-size: var(--body-sm);
+  font-weight: var(--w-medium);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 100;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Custom-option write-in */
+.custom-option {
+  margin-top: var(--sp-12);
+  padding: var(--sp-12) var(--sp-16);
+  border: 1px dashed var(--border-base);
+  border-radius: var(--radius-sm);
+  background: var(--bg-body);
+}
+.custom-option.picked {
+  border-style: solid;
+  border-color: var(--brand-700);
+  background: var(--brand-100);
+}
+.custom-option-label {
+  font-size: var(--body-xs);
+  color: var(--text-medium);
+  font-weight: var(--w-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.custom-option-input {
+  display: block;
+  width: 100%;
+  margin-top: var(--sp-8);
+  padding: var(--sp-8) var(--sp-12);
+  border: 1px solid var(--border-base);
+  border-radius: var(--radius-xsm);
+  font-family: inherit;
+  font-size: var(--body-sm);
+}
+.custom-option-input:focus { outline: none; border-color: var(--brand-400); }
+
+/* Idea flag star */
+.idea-flag {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--neutral-300);
+  padding: 4px 8px;
+  border-radius: var(--radius-xsm);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.idea-flag:hover { color: var(--orange-500); background: var(--bg-weak); }
+.idea-flag.on { color: var(--orange-500); }

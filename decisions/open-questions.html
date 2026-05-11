@@ -6,6 +6,7 @@
 <title>Open Decisions · Monday Review</title>
 <link rel="stylesheet" href="../shared/benable.css" />
 <link rel="stylesheet" href="../shared/review.css" />
+<script src="../shared/state.js" defer></script>
 </head>
 <body>
 <div class="review-shell">
@@ -27,13 +28,14 @@
     <div class="container">
       <div class="breadcrumbs"><a href="../index.html">Review</a> / Open decisions</div>
       <h1>24 open decisions, with options</h1>
-      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">Each decision below has a recommended option. Skim the question, glance at the recommendation, approve or override. Most can be answered in 30–60 seconds. Linked back to the cluster page where the full context lives.</p>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">Click an option to lock it in. Add a note if you want context to come back to. Your picks save automatically in this browser — when you're ready to send them to Claude, hit <a href="status.html">Status</a> and copy the summary.</p>
 
       <div class="row" style="margin-top: var(--sp-24);">
-        <span class="pill pill-brand">8 strategy</span>
+        <span class="pill pill-brand" id="progress-pill">0 of 24 made</span>
         <span class="pill pill-info">9 product</span>
         <span class="pill pill-warn">4 process</span>
         <span class="pill pill-success">3 build-mode</span>
+        <a class="btn btn-ghost btn-sm" href="status.html" style="margin-left: auto;">Status →</a>
       </div>
     </div>
   </section>
@@ -531,6 +533,147 @@
     </div>
   </footer>
 
+  <div class="toast" id="toast">Saved</div>
+
 </div>
+
+<script>
+function whenReady(fn) {
+  if (window.IGR) fn();
+  else window.addEventListener('DOMContentLoaded', fn);
+}
+
+whenReady(() => {
+  const toast = document.getElementById('toast');
+  const progressPill = document.getElementById('progress-pill');
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1200);
+  }
+
+  function updateProgress() {
+    const counts = IGR.getProgressCounts();
+    progressPill.textContent = `${counts.decisionsMade} of ${counts.decisionsTotal} made`;
+    if (counts.decisionsMade > 0) {
+      progressPill.classList.remove('pill-brand');
+      progressPill.classList.add('pill-success');
+    } else {
+      progressPill.classList.remove('pill-success');
+      progressPill.classList.add('pill-brand');
+    }
+  }
+
+  // Auto-wire every .decision block
+  const decisionBlocks = document.querySelectorAll('.decision');
+  decisionBlocks.forEach((block) => {
+    const qEl = block.querySelector('.decision-q');
+    if (!qEl) return;
+
+    // Extract decision ID like "D-08" from the question text
+    const match = qEl.textContent.match(/D-\d+/);
+    if (!match) return;
+    const decisionId = match[0];
+    block.dataset.decisionId = decisionId;
+
+    // Label options A, B, C, ... based on order and wire click handlers
+    const options = block.querySelectorAll('.option');
+    options.forEach((opt, idx) => {
+      const letter = String.fromCharCode(65 + idx); // A, B, C
+      opt.dataset.option = letter;
+      opt.setAttribute('role', 'button');
+      opt.setAttribute('tabindex', '0');
+      opt.addEventListener('click', () => pickOption(decisionId, letter, block));
+      opt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          pickOption(decisionId, letter, block);
+        }
+      });
+    });
+
+    // Note field + actions row
+    const actions = document.createElement('div');
+    actions.className = 'decision-actions';
+    actions.innerHTML = `
+      <span class="decision-status" data-status>
+        <span class="dot"></span>
+        <span class="label">Not picked yet</span>
+      </span>
+      <button class="btn btn-link" data-clear style="margin-left: auto; font-size: 12px; color: var(--text-medium);">Clear</button>
+    `;
+
+    const note = document.createElement('textarea');
+    note.className = 'decision-note';
+    note.placeholder = 'Add a note (optional) — context, gotchas, who to loop in...';
+    note.dataset.note = decisionId;
+
+    block.appendChild(note);
+    block.appendChild(actions);
+
+    // Note autosave (debounced)
+    let timer = null;
+    note.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        IGR.setDecisionNote(decisionId, note.value);
+        showToast('✓ Note saved');
+      }, 400);
+    });
+
+    // Clear button
+    actions.querySelector('[data-clear]').addEventListener('click', (e) => {
+      e.preventDefault();
+      IGR.clearDecision(decisionId);
+      note.value = '';
+      showToast('Cleared');
+    });
+  });
+
+  function pickOption(decisionId, letter, block) {
+    IGR.setDecision(decisionId, letter);
+    showToast(`✓ ${decisionId} → Option ${letter}`);
+  }
+
+  // Render state into the DOM
+  function render() {
+    const state = IGR.getState();
+    decisionBlocks.forEach((block) => {
+      const decisionId = block.dataset.decisionId;
+      if (!decisionId) return;
+      const decision = state.decisions[decisionId];
+
+      // Reset all options
+      block.querySelectorAll('.option').forEach(opt => opt.classList.remove('picked'));
+
+      const statusEl = block.querySelector('[data-status]');
+      const statusLabel = statusEl.querySelector('.label');
+
+      if (decision && decision.option) {
+        const picked = block.querySelector(`.option[data-option="${decision.option}"]`);
+        if (picked) picked.classList.add('picked');
+        statusEl.classList.add('saved');
+        statusLabel.textContent = `Locked in · Option ${decision.option}`;
+      } else {
+        statusEl.classList.remove('saved');
+        statusLabel.textContent = 'Not picked yet';
+      }
+
+      const noteEl = block.querySelector('textarea[data-note]');
+      if (noteEl && decision && decision.note && noteEl.value !== decision.note) {
+        noteEl.value = decision.note;
+      } else if (noteEl && (!decision || !decision.note) && noteEl.value !== '') {
+        noteEl.value = '';
+      }
+    });
+
+    updateProgress();
+  }
+
+  render();
+  document.addEventListener('igr:state-changed', render);
+});
+</script>
 </body>
 </html>

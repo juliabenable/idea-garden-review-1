@@ -6,6 +6,7 @@
 <title>Idea Garden Review · Monday Prep</title>
 <link rel="stylesheet" href="shared/benable.css" />
 <link rel="stylesheet" href="shared/review.css" />
+<script src="shared/state.js" defer></script>
 </head>
 <body>
 <div class="review-shell">
@@ -18,10 +19,19 @@
       </div>
       <div class="row-tight">
         <a class="btn btn-ghost btn-sm" href="decisions/open-questions.html">Open decisions</a>
+        <a class="btn btn-ghost btn-sm" href="decisions/status.html">Status</a>
         <a class="btn btn-primary btn-sm" href="decisions/monday-prep.html">Monday plan</a>
       </div>
     </div>
   </header>
+
+  <div class="progress-banner" id="progress-banner" style="display:none;">
+    <div class="progress-text" id="progress-text">No decisions yet · start with the Now lane</div>
+    <div class="progress-actions">
+      <a class="btn btn-ghost btn-sm" href="decisions/status.html">View status</a>
+      <button class="btn btn-primary btn-sm" id="btn-banner-copy">📋 Copy for Claude</button>
+    </div>
+  </div>
 
   <section class="hero">
     <div class="container">
@@ -334,6 +344,51 @@
     </div>
   </footer>
 
+  <div class="toast" id="toast">Copied</div>
+
 </div>
+
+<script>
+function whenReady(fn) {
+  if (window.IGR) fn();
+  else window.addEventListener('DOMContentLoaded', fn);
+}
+
+whenReady(() => {
+  const banner = document.getElementById('progress-banner');
+  const text = document.getElementById('progress-text');
+  const copyBtn = document.getElementById('btn-banner-copy');
+  const toast = document.getElementById('toast');
+
+  function showToast(t) {
+    toast.textContent = t;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1600);
+  }
+
+  function render() {
+    const c = IGR.getProgressCounts();
+    const total = c.decisionsMade + c.blocksDone + c.flaggedIdeas + Object.keys(IGR.getState().clusterLanes).length;
+    if (total === 0) {
+      banner.style.display = 'none';
+      return;
+    }
+    banner.style.display = 'flex';
+    const parts = [];
+    if (c.decisionsMade > 0) parts.push(`<strong>${c.decisionsMade}</strong> of ${c.decisionsTotal} decisions made`);
+    if (c.blocksDone > 0) parts.push(`<strong>${c.blocksDone}</strong> of ${c.blocksTotal} Monday blocks done`);
+    if (c.flaggedIdeas > 0) parts.push(`<strong>${c.flaggedIdeas}</strong> flagged`);
+    text.innerHTML = parts.join(' · ');
+  }
+
+  render();
+  document.addEventListener('igr:state-changed', render);
+
+  copyBtn.addEventListener('click', async () => {
+    const ok = await IGR.copyToClipboard(IGR.exportSummary());
+    showToast(ok ? '✓ Summary copied — paste into Claude' : 'Copy failed');
+  });
+});
+</script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <title>Monday Plan · Idea Garden Review</title>
 <link rel="stylesheet" href="../shared/benable.css" />
 <link rel="stylesheet" href="../shared/review.css" />
+<script src="../shared/state.js" defer></script>
 </head>
 <body>
 <div class="review-shell">
@@ -18,6 +19,7 @@
       </div>
       <div class="row-tight">
         <a class="btn btn-ghost btn-sm" href="open-questions.html">Open decisions</a>
+        <a class="btn btn-ghost btn-sm" href="status.html">Status</a>
         <a class="btn btn-ghost btn-sm" href="../index.html">All clusters</a>
       </div>
     </div>
@@ -28,10 +30,12 @@
       <div class="breadcrumbs"><a href="../index.html">Review</a> / Monday plan</div>
       <h1>Your Monday in 90 minutes.</h1>
       <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">A suggested order to ship the most decisions before lunch. Each block is a self-contained chunk; you can stop after any of them and have moved the work forward.</p>
+      <p style="margin-top: var(--sp-12); color: var(--text-medium); font-size: var(--body-sm); max-width: 760px;">Tap the checkmark in the top-right corner of any block to mark it done. Progress persists in this browser.</p>
     </div>
   </section>
 
-  <section class="section" id="now-lane">
+  <section class="section block-card" id="now-lane" data-block="1">
+    <div class="block-check" title="Mark this block done"></div>
     <div class="container">
       <h2>Block 1 · Lock the "Now" lane (20 min)</h2>
       <p class="section-lead">Three clusters are recommended for the next quarter. Confirm or swap.</p>
@@ -72,7 +76,8 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section block-card" data-block="2">
+    <div class="block-check" title="Mark this block done"></div>
     <div class="container">
       <h2>Block 2 · Resolve open decisions inside "Now" (30 min)</h2>
       <p class="section-lead">8 decisions across the 3 confirmed clusters. Each has a recommended option — skim, approve, override.</p>
@@ -89,7 +94,8 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section block-card" data-block="3">
+    <div class="block-check" title="Mark this block done"></div>
     <div class="container">
       <h2>Block 3 · Skim "Next" clusters (20 min)</h2>
       <p class="section-lead">Clusters 04, 05, 06, 08, 09. One yes/no per cluster — does the recommended approach feel right?</p>
@@ -124,7 +130,8 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section block-card" data-block="4">
+    <div class="block-check" title="Mark this block done"></div>
     <div class="container">
       <h2>Block 4 · Park or schedule research bets (15 min)</h2>
       <p class="section-lead">Clusters 07 (Discovery rethink) and 11 (Local). These need experiments, not specs.</p>
@@ -144,7 +151,8 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section block-card" data-block="5">
+    <div class="block-check" title="Mark this block done"></div>
     <div class="container">
       <h2>Block 5 · Decide ownership for support clusters (5 min)</h2>
       <p class="section-lead">These belong with people other than you, but it's worth confirming.</p>
@@ -193,6 +201,52 @@
     </div>
   </footer>
 
+  <div class="toast" id="toast">Saved</div>
+
 </div>
+
+<script>
+function whenReady(fn) {
+  if (window.IGR) fn();
+  else window.addEventListener('DOMContentLoaded', fn);
+}
+
+whenReady(() => {
+  const toast = document.getElementById('toast');
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1200);
+  }
+
+  const blocks = document.querySelectorAll('.block-card');
+  blocks.forEach((block) => {
+    const id = block.dataset.block;
+    const check = block.querySelector('.block-check');
+    if (!check || !id) return;
+    check.addEventListener('click', (e) => {
+      e.preventDefault();
+      const state = IGR.getState();
+      const currentlyDone = !!state.mondayBlocks[id];
+      IGR.setMondayBlock(id, !currentlyDone);
+      showToast(currentlyDone ? `Block ${id} marked incomplete` : `✓ Block ${id} done`);
+    });
+  });
+
+  function render() {
+    const state = IGR.getState();
+    blocks.forEach((block) => {
+      const id = block.dataset.block;
+      if (state.mondayBlocks[id]) {
+        block.classList.add('done');
+      } else {
+        block.classList.remove('done');
+      }
+    });
+  }
+  render();
+  document.addEventListener('igr:state-changed', render);
+});
+</script>
 </body>
 </html>
