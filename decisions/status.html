@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../shared/benable.css" />
 <link rel="stylesheet" href="../shared/review.css" />
 <script src="../shared/state.js" defer></script>
+<script src="../shared/continue-prompts.js" defer></script>
 </head>
 <body>
 <div class="review-shell">
@@ -41,9 +42,13 @@
       <p class="section-lead">Use these buttons to share your current state. The "Copy summary for Claude" button is the fastest — paste it into the chat and I'll see exactly what you've decided.</p>
 
       <div class="export-grid">
+        <button class="export-btn" id="btn-continue-all" style="grid-column: span 2; background: var(--brand-100); border-color: var(--brand-700);">
+          <span class="label" style="color: var(--brand-900);">▶ Continue all my decisions with Claude</span>
+          <span class="hint">Generates a context-rich prompt covering every pick + the follow-up work to explore next</span>
+        </button>
         <button class="export-btn" id="btn-copy-summary">
           <span class="label">📋 Copy summary for Claude</span>
-          <span class="hint">Formatted markdown · paste into chat</span>
+          <span class="hint">Short markdown · what you decided, no follow-ups</span>
         </button>
         <button class="export-btn" id="btn-copy-json">
           <span class="label">{ } Copy JSON</span>
@@ -257,11 +262,24 @@ whenReady(() => {
               <div style="font-size: 13px; color: var(--text-medium); margin-bottom: 2px;">${decisionTitles[id] || ''}</div>
               <div class="status-pick">${pickText}</div>
               ${note}
+              <div style="display: flex; gap: 8px; margin-top: 10px; align-items: center;">
+                <button class="btn btn-secondary btn-sm" data-continue="${id}" style="font-size: 12px;">▶ Continue prompt</button>
+                <a href="${clusterLink(id)}" class="btn btn-link" style="font-size: 12px;">View cluster →</a>
+              </div>
             </div>
-            <a href="${clusterLink(id)}" class="btn btn-link" style="font-size: 12px;">View →</a>
           </div>
         `;
       }).join('');
+
+      // Wire per-decision continue buttons
+      decisionsList.querySelectorAll('[data-continue]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.continue;
+          const prompt = window.IGR.continuePrompt(id);
+          const ok = await window.IGR.copyToClipboard(prompt);
+          showToast(ok ? `✓ Prompt for ${id} copied — paste into Claude` : 'Copy failed');
+        });
+      });
     }
 
     // Lanes
@@ -325,6 +343,12 @@ whenReady(() => {
   });
 
   // Export buttons
+  document.getElementById('btn-continue-all').addEventListener('click', async () => {
+    const text = IGR.continuePromptForAll();
+    const ok = await IGR.copyToClipboard(text);
+    showToast(ok ? '✓ Continue-all prompt copied — paste into Claude' : 'Copy failed');
+  });
+
   document.getElementById('btn-copy-summary').addEventListener('click', async () => {
     const text = IGR.exportSummary();
     const ok = await IGR.copyToClipboard(text);

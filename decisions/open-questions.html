@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="../shared/benable.css" />
 <link rel="stylesheet" href="../shared/review.css" />
 <script src="../shared/state.js" defer></script>
+<script src="../shared/continue-prompts.js" defer></script>
 </head>
 <body>
 <div class="review-shell">
@@ -601,7 +602,8 @@ whenReady(() => {
         <span class="dot"></span>
         <span class="label">Not picked yet</span>
       </span>
-      <button class="btn btn-link" data-clear style="margin-left: auto; font-size: 12px; color: var(--text-medium);">Clear</button>
+      <button class="btn btn-secondary btn-sm" data-continue style="margin-left: auto; font-size: 12px; display: none;">▶ Continue with Claude</button>
+      <button class="btn btn-link" data-clear style="font-size: 12px; color: var(--text-medium);">Clear</button>
     `;
 
     const note = document.createElement('textarea');
@@ -629,6 +631,14 @@ whenReady(() => {
       note.value = '';
       showToast('Cleared');
     });
+
+    // Continue button
+    actions.querySelector('[data-continue]').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const prompt = IGR.continuePrompt(decisionId);
+      const ok = await IGR.copyToClipboard(prompt);
+      showToast(ok ? `✓ ${decisionId} continue prompt copied` : 'Copy failed');
+    });
   });
 
   function pickOption(decisionId, letter, block) {
@@ -649,15 +659,18 @@ whenReady(() => {
 
       const statusEl = block.querySelector('[data-status]');
       const statusLabel = statusEl.querySelector('.label');
+      const continueBtn = block.querySelector('[data-continue]');
 
       if (decision && decision.option) {
         const picked = block.querySelector(`.option[data-option="${decision.option}"]`);
         if (picked) picked.classList.add('picked');
         statusEl.classList.add('saved');
         statusLabel.textContent = `Locked in · Option ${decision.option}`;
+        if (continueBtn) continueBtn.style.display = '';
       } else {
         statusEl.classList.remove('saved');
         statusLabel.textContent = 'Not picked yet';
+        if (continueBtn) continueBtn.style.display = 'none';
       }
 
       const noteEl = block.querySelector('textarea[data-note]');
