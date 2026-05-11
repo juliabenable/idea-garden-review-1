@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>All Ideas (Searchable Index) · Idea Garden Review</title>
+<link rel="stylesheet" href="../shared/benable.css" />
+<link rel="stylesheet" href="../shared/review.css" />
+<style>
+  .idea-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--body-sm);
+  }
+  .idea-table th {
+    text-align: left;
+    padding: var(--sp-12) var(--sp-16);
+    font-size: var(--body-xs);
+    font-weight: var(--w-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-medium);
+    border-bottom: 1px solid var(--border-base);
+    background: var(--bg-weak);
+    position: sticky;
+    top: 64px;
+    z-index: 10;
+  }
+  .idea-table td {
+    padding: var(--sp-12) var(--sp-16);
+    border-bottom: 1px solid var(--border-base);
+    vertical-align: top;
+  }
+  .idea-table tr:hover td { background: var(--bg-weak); }
+  .idea-id-cell {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-weight: var(--w-bold);
+    color: var(--brand-900);
+    width: 50px;
+  }
+  .idea-title-cell { font-weight: var(--w-medium); width: 30%; }
+  .idea-cluster-cell { width: 20%; color: var(--text-medium); }
+  .idea-rec-cell { width: 80px; }
+  .search {
+    width: 100%;
+    padding: var(--sp-12) var(--sp-20);
+    font-size: var(--body-md);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-full);
+    background: var(--bg-body);
+    margin-bottom: var(--sp-16);
+  }
+  .search:focus { outline: none; border-color: var(--brand-700); }
+  .empty-row { display: none; }
+  .empty-row.show { display: table-row; }
+  .filter-row { margin-bottom: var(--sp-12); }
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../index.html" style="color: inherit;">Idea Garden Review</a> · All ideas</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="../decisions/open-questions.html">Decisions</a>
+        <a class="btn btn-ghost btn-sm" href="../index.html">Clusters</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../index.html">Review</a> / All ideas</div>
+      <h1>All 146 ideas, searchable.</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px;">Type any keyword — title, cluster, recommendation, ID — and rows filter live. Click any row to jump to its cluster page.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <input type="search" class="search" id="search" placeholder="Search by title, ID, cluster, or recommendation..." />
+      <div class="filter-row">
+        <span class="filter-pill" data-rec="all">All</span>
+        <span class="filter-pill" data-rec="Build">Build</span>
+        <span class="filter-pill" data-rec="Spec">Spec</span>
+        <span class="filter-pill" data-rec="Design">Design</span>
+        <span class="filter-pill" data-rec="Research">Research</span>
+        <span class="filter-pill" data-rec="Decide">Decide</span>
+        <span class="filter-pill" data-rec="Park">Park</span>
+      </div>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <table class="idea-table" id="idea-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Cluster</th>
+              <th>Rec</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody id="idea-tbody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="../index.html">← Clusters</a>
+        <a class="btn btn-primary btn-sm" href="../decisions/monday-prep.html">Monday plan →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+const ideas = [
+  {id:148, title:"Make campaign product-selection cap configurable", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Slack May 8"},
+  {id:147, title:"Review max-2 product-selection warning UX", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Design", source:"Slack May 8"},
+  {id:146, title:"Verify/fix onboarding route when invite arrives late", cluster:"13 Mobile", clusterUrl:"../clusters/13-mobile-investigation/index.html", rec:"Build", source:"Slack May 8-9"},
+  {id:145, title:"Improve invite/deep-link logging", cluster:"13 Mobile", clusterUrl:"../clusters/13-mobile-investigation/index.html", rec:"Build", source:"Slack May 8-9"},
+  {id:144, title:"Fullstory + DB audit for invite-code dropoff users", cluster:"13 Mobile", clusterUrl:"../clusters/13-mobile-investigation/index.html", rec:"Build", source:"Slack May 8-9"},
+  {id:143, title:"Invite link QA matrix across install states", cluster:"13 Mobile", clusterUrl:"../clusters/13-mobile-investigation/index.html", rec:"Build", source:"Slack May 8-9"},
+  {id:142, title:"AppsFlyer iOS deferred invite-link investigation", cluster:"13 Mobile", clusterUrl:"../clusters/13-mobile-investigation/index.html", rec:"Research", source:"Slack May 8-9"},
+  {id:141, title:"Brand Ratings on Creator Profiles", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Spec", source:"Granola: Jessica White Mar 26"},
+  {id:140, title:"Metabase / CSV Creator Data Dashboard", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Build", source:"Granola Apr 24"},
+  {id:139, title:"AI Feedback Agent (Tony's Voice)", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Decide", source:"Granola: AI Town Hall Apr 14"},
+  {id:138, title:"Figma to Dev Event Tracking Automation", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Build", source:"Granola: AI Build-A-Thon Apr 20"},
+  {id:137, title:"Figma to Mobile Codebase Integration", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Research", source:"Granola: Creator Portal Redesign Apr 15"},
+  {id:136, title:"Auto-Generate Brand Call Materials", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: AI Town Hall Apr 14"},
+  {id:135, title:"Benny Reliability Improvements", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Spec", source:"Granola: Build-with-AI Post-Mortem Apr 21"},
+  {id:134, title:"Prototype Review Tool", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Build", source:"Granola: Apr 20-21"},
+  {id:133, title:"Design System Constraints", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Spec", source:"Granola: Build-with-AI Apr 21"},
+  {id:132, title:"AI-Generated Creator Cards", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Granola: People-Management Apr 24"},
+  {id:131, title:"Benny Security Architecture", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Build", source:"Granola: Build-with-AI Apr 21"},
+  {id:130, title:"Brand Owner Referral Program", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Spec", source:"Granola: Event Strategy Apr 2"},
+  {id:129, title:"Creator Testimonial Video Campaigns", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Build", source:"Granola: Event Strategy Apr 2"},
+  {id:128, title:"Local Brand Lunch Pre-Event", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Spec", source:"Granola: Event Strategy Apr 2"},
+  {id:127, title:"Automatic Brand-Match Outreach", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Sophia Salem Apr 1"},
+  {id:126, title:"QR Code Station at Events", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Build", source:"Granola: Event Strategy Apr 2"},
+  {id:125, title:"Email Active Users About Events", cluster:"09 Growth Loops", clusterUrl:"../clusters/09-growth-loops/index.html", rec:"Build", source:"Granola: Event Strategy Apr 2"},
+  {id:124, title:"Speech Booth at Events", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Build", source:"Granola: Event Strategy Apr 2"},
+  {id:123, title:"Post-Event Outreach to Local Brands (12hr)", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Build", source:"Granola: Event Strategy Apr 2"},
+  {id:122, title:"Post-Event Creator Outreach Window", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Build", source:"Granola: Event Strategy Apr 2"},
+  {id:121, title:"Local Audience Verification", cluster:"11 Local", clusterUrl:"../clusters/11-local-matching/index.html", rec:"Research", source:"Granola: Jessica + Sydny"},
+  {id:120, title:"Reservation Tracking for Local Restaurants", cluster:"11 Local", clusterUrl:"../clusters/11-local-matching/index.html", rec:"Spec", source:"Granola: Jessica White Mar 26"},
+  {id:119, title:"Experience-Based Collaborations", cluster:"11 Local", clusterUrl:"../clusters/11-local-matching/index.html", rec:"Spec", source:"Granola: Sydny Short Apr 6"},
+  {id:118, title:"Creator-Property Owner Matchmaking", cluster:"11 Local", clusterUrl:"../clusters/11-local-matching/index.html", rec:"Research", source:"Granola: Sydny Short Apr 6"},
+  {id:117, title:"SMB Credibility Pages", cluster:"11 Local", clusterUrl:"../clusters/11-local-matching/index.html", rec:"Park", source:"Granola: Board Meeting Mar 26"},
+  {id:116, title:"Social Listening from Benable User Base", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Spec", source:"Granola: UGC Studio Vision Apr 15"},
+  {id:115, title:"Competitor Analysis Tools for Brands", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Brand Portal Insights Apr 15"},
+  {id:114, title:"Reactions, Threads, Uploads, Advice", cluster:"07 Discovery / 08 Community", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Park", source:"Granola: Onboarding Apr 3"},
+  {id:113, title:"Human Authenticity as Core Differentiator", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Park", source:"Tony"},
+  {id:112, title:"Niche Community Building", cluster:"08 Community", clusterUrl:"../clusters/08-community-social/index.html", rec:"Spec", source:"Granola: Sophia + Sydny"},
+  {id:111, title:"First-Session Magic Rethink", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Design", source:"Granola: Onboarding Apr 3"},
+  {id:110, title:"Stories Removal", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Decide", source:"Tony Apr 30"},
+  {id:109, title:"Discovery Algorithm Post-Top-60", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Research", source:"Tony Apr 30"},
+  {id:108, title:"Forum / Tagging System (PiFi-style)", cluster:"08 Community", clusterUrl:"../clusters/08-community-social/index.html", rec:"Decide", source:"Granola: Cassidy Bidwell Apr 2"},
+  {id:107, title:"List Sharing to Instagram Posts", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Build", source:"Granola: Sydny Short Apr 6"},
+  {id:106, title:"Social / Community Features", cluster:"08 Community", clusterUrl:"../clusters/08-community-social/index.html", rec:"Spec", source:"Granola: Sophia Salem Apr 1"},
+  {id:105, title:"Benable List to Instagram Carousel Export", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Design", source:"Granola: Sydny Short Apr 6"},
+  {id:104, title:"Homepage Redesign / Personalization", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Research", source:"Tony Apr 30"},
+  {id:103, title:"People-First Discovery", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Design", source:"Granola: Sophia + Sydny"},
+  {id:102, title:"Pinterest-Style Interest Selection at Onboarding", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Design", source:"Tony Apr 30"},
+  {id:101, title:"Audio Analysis of Brand Mentions", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Park", source:"Granola: UGC Studio Vision Apr 15"},
+  {id:100, title:"UGC as Brand Discovery Tool", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Spec", source:"Granola: UGC Studio Vision"},
+  {id:99, title:"Visual Product Recognition in Posts", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Park", source:"Granola: UGC Studio Vision Apr 15"},
+  {id:98, title:"Auto-Negotiate Within Creator Parameters", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Spec", source:"Granola: Sophia Salem Apr 1"},
+  {id:97, title:"Content Metadata Storage", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Build", source:"Granola: UGC Studio Vision Apr 15"},
+  {id:96, title:"Social Content Auto-Detection", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Build", source:"Granola: UGC Studio + Social Listening Apr 15"},
+  {id:95, title:"Organic Brand Mention Alerts", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Build", source:"Granola: Kelly Meng Apr 14"},
+  {id:94, title:"Instant Content Rights Purchase", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Design", source:"Granola: UGC Studio Vision Apr 15"},
+  {id:93, title:"Hashtag Blocking / Automation", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Decide", source:"Granola: Leea Sarvela Apr 9"},
+  {id:92, title:"Campaign Filter/Sort by Brand Values", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Design", source:"Granola: Sophia Salem Apr 1"},
+  {id:91, title:"One Round of Feedback for Paid Campaigns", cluster:"03 / 05 Campaigns + QoL", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Granola: Hanah Bae Mar 25"},
+  {id:90, title:"PR vs Gifted vs Paid Preference Settings", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Granola: Kelly + Jessica"},
+  {id:89, title:"Mini Portfolio / Creator Profile Feature", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Design", source:"Granola: Sydny + Jessica"},
+  {id:88, title:"Brand Category Filtering for Creators", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Granola: Jessica White Mar 26"},
+  {id:87, title:"Content Type Clarity", cluster:"03 / 05 Campaigns + QoL", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Granola: Leea Sarvela Apr 9"},
+  {id:86, title:"Address Confirmation Visibility", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Granola: Leea Sarvela Apr 9"},
+  {id:85, title:"In-App Campaign Invite Notifications", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Granola: Leea Sarvela Apr 9"},
+  {id:84, title:"Keyboard Extension for Affiliate Links", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Build", source:"Granola: Kelly + Creator Portal"},
+  {id:83, title:"Creator Onboarding Redesign", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Design", source:"Granola: Kanisha Patel Apr 22"},
+  {id:82, title:"Deadline / Urgency Mechanic", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Granola: Sophia Salem Apr 1"},
+  {id:81, title:"Affiliate Link Page: Swipeable Product Tiles", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Design", source:"Granola: Creator Portal Apr 15"},
+  {id:80, title:"Content Upload: Link Submission Flow", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Build", source:"Granola: UGC Studio Apr 20"},
+  {id:79, title:"Creator Intake Form Additions", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Granola: Sophia + Dogfooding"},
+  {id:78, title:"Onboarding Editable Post-Submission", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Granola: Product Design Apr 24"},
+  {id:77, title:"Post-Event Flash Discount for Brand Portal", cluster:"02 / 10 Brand Portal + Events", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Event Strategy Apr 2"},
+  {id:76, title:"AI Pre-Screening of Creator Content", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Admin Portal Mar 25"},
+  {id:75, title:"Full Creator Pipeline Kanban", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Admin Portal Mar 25"},
+  {id:74, title:"Founder-to-Founder Outreach for Mid-Large Brands", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Research", source:"Granola: Jessie Siu Apr 9"},
+  {id:73, title:"Nudge Automation for Stalled Creators", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: Admin Portal Mar 25"},
+  {id:72, title:"Free Trial Campaign for Event Brand Partners", cluster:"02 / 10", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: Brand Portal Insights Apr 15"},
+  {id:71, title:"Logan's Tool / Admin Integration", cluster:"02 / 12", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Creator Process Apr 21"},
+  {id:70, title:"Instagram Photo Scraping for Brand Page", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: Demo session Apr 1"},
+  {id:69, title:"Never Show Again Tagging for Creators", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Granola: People-Management Apr 24"},
+  {id:68, title:"Brand Storytelling / Founder Note", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: multiple creator Apr 1-22"},
+  {id:67, title:"Usage Rights Clarity", cluster:"03 / 05", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Granola: Veronica Apr 10"},
+  {id:66, title:"Brand Credibility Signals", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: Veronica Oliver Apr 10"},
+  {id:65, title:"Brand-Specific Creator Pools", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: People-Management"},
+  {id:64, title:"Shipping Automation", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Granola: Brand Portal Insights"},
+  {id:63, title:"AI Creator Matching Automation", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Brand Portal Insights"},
+  {id:62, title:"Admin Content Review Queue", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Granola: Admin Portal Mar 25"},
+  {id:61, title:"Pre-Screening in Onboarding to Cut Rejection Rate", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Granola: Brand Portal Apr 21"},
+  {id:60, title:"Inline Editing Throughout Brand Portal", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Granola: Demo Apr 1"},
+  {id:59, title:"Campaign Naming AI Fix", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Granola: Demo Apr 1"},
+  {id:58, title:"Product Basket Redesign", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Design", source:"Granola: Brand Portal + Apr 30 strategy"},
+  {id:57, title:"Creator Scoring System", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Spec", source:"Granola: People-Management Apr 24"},
+  {id:56, title:"Gift Card Campaigns", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Granola: Apr 17 + 24"},
+  {id:55, title:"Debut Collabs — Creators Buy Product", cluster:"01 UGC Studio (related)", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Park", source:"Dibs Beauty (Feb 13)"},
+  {id:54, title:"Stories UGC Monetization", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Decide", source:"Tony Apr 2"},
+  {id:53, title:"Automated Creator Outreach Sequencing", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Des Apr 20, Sienna"},
+  {id:52, title:"Spec Gap Detector for Eng Handoffs", cluster:"12 Internal AI", clusterUrl:"../clusters/12-internal-ai/index.html", rec:"Build", source:"Julia Apr 20"},
+  {id:51, title:"Share-Moment Capture via Native Share Flow", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Design", source:"Growth experiment Mar 3"},
+  {id:50, title:"AEO / AI Search Optimization for Rec Pages", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Build", source:"Bevin/AEO Mar 22"},
+  {id:49, title:"Seasonal Rec Refresh Campaigns", cluster:"09 Growth Loops", clusterUrl:"../clusters/09-growth-loops/index.html", rec:"Build", source:"Des Apr 20"},
+  {id:48, title:"Creator Onboarding Friction for Quality", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Decide", source:"Post-Veronica Apr 10"},
+  {id:47, title:"Vertical Landing Pages for Acquisition", cluster:"07 / 09", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Build", source:"Growth Apr 1, Des"},
+  {id:46, title:"ManyChat / Comment-Link Integration", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Spec", source:"Hanah Bae Mar 25"},
+  {id:45, title:"Event-in-a-Box for Creator-Led Meetups", cluster:"10 Events Strategy", clusterUrl:"../clusters/10-events-strategy/index.html", rec:"Research", source:"Des Apr 20, Sydny"},
+  {id:44, title:"Search Quality Overhaul", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Build", source:"Tony Mar 23, Logan"},
+  {id:43, title:"Curated 'For You' Daily Discovery Feed", cluster:"07 Discovery", clusterUrl:"../clusters/07-discovery-rethink/index.html", rec:"Design", source:"Tony Mar 23"},
+  {id:42, title:"Reactivation Autopilot with Smart Copy", cluster:"09 Growth Loops", clusterUrl:"../clusters/09-growth-loops/index.html", rec:"Build", source:"Des reactivation analysis Apr 9"},
+  {id:41, title:"Referral Momentum Multiplier", cluster:"09 Growth Loops", clusterUrl:"../clusters/09-growth-loops/index.html", rec:"Design", source:"Des, Ananth K-factor Apr 1"},
+  {id:40, title:"Location-Powered Creator Discovery", cluster:"11 Local", clusterUrl:"../clusters/11-local-matching/index.html", rec:"Research", source:"Jessica Apr 2, Tony"},
+  {id:39, title:"Link Management System (ShopMy Parity)", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Design", source:"Morgan Apr 2"},
+  {id:38, title:"TTC Comment-to-Creator Pipeline", cluster:"09 Growth Loops", clusterUrl:"../clusters/09-growth-loops/index.html", rec:"Build", source:"Des Apr 20, TTC data"},
+  {id:37, title:"What I'm Into This Week — Weekly Prompts", cluster:"08 / 09", clusterUrl:"../clusters/09-growth-loops/index.html", rec:"Build", source:"Des Apr 20"},
+  {id:36, title:"Vouch System — Co-sign Existing Recs", cluster:"08 Community", clusterUrl:"../clusters/08-community-social/index.html", rec:"Build", source:"Des Apr 20"},
+  {id:35, title:"Creator Engagement Metrics Visible to Brands", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Jessica Apr 2"},
+  {id:34, title:"Smart Onboarding by Source Channel", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Spec", source:"Des Apr 20"},
+  {id:33, title:"Creator Intro Videos on Profiles", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Charisse Reid Apr 8"},
+  {id:32, title:"Gmail Purchase History Integration", cluster:"06 Affiliate Links (related)", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Research", source:"Grace, Charisse, Jessica"},
+  {id:31, title:"Creator Portfolio / Shareable Brand Work Page", cluster:"04 Onboarding & Profile", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Jessica Apr 2"},
+  {id:30, title:"Creator Collab Type & Category Opt-In", cluster:"04 / 05", clusterUrl:"../clusters/04-creator-onboarding/index.html", rec:"Build", source:"Jessica Apr 2"},
+  {id:29, title:"Creator Community / Accountability Groups", cluster:"08 Community", clusterUrl:"../clusters/08-community-social/index.html", rec:"Design", source:"Sydny Short Apr 7"},
+  {id:28, title:"List Optimization Indicator Specificity", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Sydny Short Apr 7"},
+  {id:27, title:"Instagram Carousel Export from Lists", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Design", source:"Sydny Short Apr 7"},
+  {id:26, title:"Link Click Analytics for Creators", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Design", source:"Sydny Short Apr 7"},
+  {id:25, title:"Benable Custom Keyboard Extension", cluster:"06 Affiliate Links", clusterUrl:"../clusters/06-affiliate-links/index.html", rec:"Build", source:"Tony Apr 1, Nisarg Apr 13"},
+  {id:24, title:"Variable Content Timelines per Deliverable", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Leea Sarvela Apr 10"},
+  {id:23, title:"Campaign Invitation Push Notifications", cluster:"05 Creator Portal QoL", clusterUrl:"../clusters/05-creator-portal-qol/index.html", rec:"Build", source:"Leea Sarvela Apr 10"},
+  {id:22, title:"'About the Brand' Legitimacy Section", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Veronica Apr 10, Sienna"},
+  {id:21, title:"Events-to-Brand-Portal Conversion Funnel", cluster:"02 / 10", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Tony sales strategy"},
+  {id:20, title:"Brand CRM / Sales Operating System", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Tony spec Apr 21"},
+  {id:19, title:"Affiliate Network Integrations (Impact/CJ)", cluster:"03 / 06", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Spec", source:"Hawke Media Feb 25"},
+  {id:18, title:"Shopify Buy Integration", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Multiple brands, Katie"},
+  {id:17, title:"Gift Card Campaign Infrastructure", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"COUTR Apr 17"},
+  {id:16, title:"Per-Creator Commission Flexing", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Emily Hebert Feb 11"},
+  {id:15, title:"Brand-Specific Social Listening for UGC", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Spec", source:"Nisarg Apr 16, Tony"},
+  {id:14, title:"Campaign Templates — Reusable Workflows", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Build", source:"Nisarg Apr 7, Tony"},
+  {id:13, title:"Flexible Content Requirements per Campaign", cluster:"03 Campaign Config", clusterUrl:"../clusters/03-campaign-config/index.html", rec:"Design", source:"Leea + Jessica"},
+  {id:12, title:"Brand Portal Social Proof Engine", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Bevin Mar 22, Tony"},
+  {id:11, title:"Brand Email Segmentation", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Build", source:"Tony Apr 6"},
+  {id:10, title:"Aspirational Brand-Based Creator Sourcing", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Morgan Apr 2"},
+  {id:9, title:"Send Alerts to Creators", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Spec", source:"Ulta + Emily Hebert"},
+  {id:8, title:"Brand Intelligence Dashboard", cluster:"02 Brand Portal Sales", clusterUrl:"../clusters/02-brand-portal-sales/index.html", rec:"Design", source:"Tony, Ulta, Olivia/Peta Jane"},
+  {id:7, title:"UGC Studio — Brand Content Licensing", cluster:"01 UGC Studio", clusterUrl:"../clusters/01-ugc-studio/index.html", rec:"Design", source:"Hanah, Morgan, Solara, Tony"},
+  {id:6, title:"Idea maturation scorecard", cluster:"14 Idea Garden", clusterUrl:"../clusters/14-idea-garden/index.html", rec:"Design", source:"team retro"},
+  {id:5, title:"Quiet parking lot for weird experiments", cluster:"14 Idea Garden", clusterUrl:"../clusters/14-idea-garden/index.html", rec:"Build", source:"shower thought"},
+  {id:4, title:"Signal board for creator request patterns", cluster:"14 Idea Garden", clusterUrl:"../clusters/14-idea-garden/index.html", rec:"Build", source:"support thread"},
+  {id:3, title:"AI-assisted wishlists for seasonal trends", cluster:"14 Idea Garden", clusterUrl:"../clusters/14-idea-garden/index.html", rec:"Spec", source:"planning chat"}
+];
+
+const tbody = document.getElementById('idea-tbody');
+const search = document.getElementById('search');
+
+function recClass(rec) {
+  return 'rec rec-' + rec.toLowerCase();
+}
+
+function render(rows) {
+  tbody.innerHTML = rows.map(idea => `
+    <tr data-rec="${idea.rec}">
+      <td class="idea-id-cell">${idea.id}</td>
+      <td class="idea-title-cell"><a href="${idea.clusterUrl}" style="color: inherit;">${idea.title}</a></td>
+      <td class="idea-cluster-cell">${idea.cluster}</td>
+      <td class="idea-rec-cell"><span class="${recClass(idea.rec)}">${idea.rec}</span></td>
+      <td class="t-muted" style="font-size: 12px;">${idea.source}</td>
+    </tr>
+  `).join('') || `<tr><td colspan="5" style="text-align:center; padding: 32px; color: var(--text-medium);">No matches.</td></tr>`;
+}
+
+let currentRec = 'all';
+function applyFilter() {
+  const q = search.value.toLowerCase().trim();
+  let rows = ideas;
+  if (currentRec !== 'all') rows = rows.filter(i => i.rec === currentRec);
+  if (q) {
+    rows = rows.filter(i =>
+      String(i.id).includes(q) ||
+      i.title.toLowerCase().includes(q) ||
+      i.cluster.toLowerCase().includes(q) ||
+      i.rec.toLowerCase().includes(q) ||
+      (i.source || '').toLowerCase().includes(q)
+    );
+  }
+  render(rows);
+}
+
+search.addEventListener('input', applyFilter);
+document.querySelectorAll('.filter-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.filter-pill').forEach(o => o.classList.remove('active'));
+    p.classList.add('active');
+    currentRec = p.dataset.rec;
+    applyFilter();
+  });
+});
+document.querySelector('.filter-pill[data-rec="all"]').classList.add('active');
+
+render(ideas);
+</script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Creator Portal QoL · Design Exploration</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+<style>
+  .design-page { background: var(--bg-weak); padding: var(--sp-48) 0 var(--sp-96); }
+  .design-canvas { background: var(--bg-body); border: 1px solid var(--border-base); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: var(--sp-32); }
+  .design-canvas-header { padding: var(--sp-20) var(--sp-32); border-bottom: 1px solid var(--border-base); background: var(--bg-weak); display: flex; justify-content: space-between; align-items: center; }
+  .design-canvas-body { padding: var(--sp-48); background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
+  .design-annotation { margin-top: var(--sp-16); padding: var(--sp-16) var(--sp-24); background: var(--bg-weak); border-top: 1px solid var(--border-base); font-size: var(--body-sm); color: var(--text-medium); }
+  .design-annotation strong { color: var(--text-base); }
+  .direction-badge { font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full); }
+
+  .phone { width: 300px; margin: 0 auto; border-radius: 38px; background: var(--neutral-900); padding: 12px; box-shadow: var(--shadow-lg); }
+  .phone-screen { border-radius: 28px; background: var(--bg-body); overflow: hidden; height: 620px; position: relative; display: flex; flex-direction: column; }
+
+  .pill-toggle { display: inline-flex; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: var(--bg-weak); color: var(--text-medium); cursor: pointer; border: 1px solid transparent; }
+  .pill-toggle.on { background: var(--brand-100); color: var(--brand-900); border-color: var(--brand-700); font-weight: 500; }
+  .pill-toggle.danger { background: var(--red-100); color: var(--red-700); border-color: var(--red-300); }
+
+  /* Notification mocks */
+  .lock-screen {
+    background: linear-gradient(180deg, #2a3450, #1a2238);
+    border-radius: 28px;
+    padding: 24px 14px;
+    color: white;
+    height: 100%;
+  }
+  .lock-time { font-size: 56px; font-weight: 200; letter-spacing: -2px; text-align: center; margin: 24px 0 8px; }
+  .lock-date { text-align: center; font-size: 13px; opacity: 0.7; margin-bottom: 32px; }
+  .lock-notif {
+    background: rgba(60, 60, 60, 0.7);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    color: white;
+  }
+  .lock-notif-row { display: flex; gap: 10px; align-items: flex-start; }
+  .lock-notif-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--brand-700), var(--brand-900));
+    flex-shrink: 0;
+  }
+  .lock-notif-content { flex: 1; }
+  .lock-notif-row-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .lock-notif-app { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.04em; }
+  .lock-notif-time { font-size: 11px; opacity: 0.6; }
+  .lock-notif-title { font-weight: 600; font-size: 13px; margin-top: 2px; }
+  .lock-notif-body { font-size: 12px; opacity: 0.85; margin-top: 3px; line-height: 1.4; }
+  .lock-notif-actions { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .lock-notif-action {
+    flex: 1;
+    padding: 7px 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .lock-notif-action.primary {
+    background: var(--brand-700);
+  }
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Creator QoL · Design</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back to spec</a>
+        <a class="btn btn-ghost btn-sm" href="../../index.html">All clusters</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / <a href="index.html">Cluster 05</a> / Design</div>
+      <h1>Creator QoL · Design Exploration</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">Two surfaces. The creator's <strong>"What I want" preferences screen</strong> (consolidates 4 scattered settings) and three takes on the <strong>campaign invite notification</strong> — the Leea Sarvela missed-invite problem.</p>
+    </div>
+  </section>
+
+  <div class="design-page">
+    <div class="container">
+
+      <h2 style="margin-bottom: var(--sp-12);">Surface 1 · "What I want" preferences</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Single screen consolidating collab types (ID 90), categories (ID 88), brand values (ID 92), and blocks. Same data drives matching and onboarding.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION</span>
+            <strong style="margin-left: 12px;">Single screen · all preferences scannable</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="phone">
+            <div class="phone-screen">
+              <div style="padding: 20px 20px 0; display: flex; justify-content: space-between; align-items: center;">
+                <button style="background: none; border: none; color: var(--text-medium); font-size: 20px;">←</button>
+                <span style="font-size: 13px; color: var(--text-medium);">Preferences</span>
+                <a href="#" style="font-size: 12px; color: var(--brand-700);">Save</a>
+              </div>
+              <div style="padding: 12px 20px 20px;">
+                <h2 style="font-size: 24px; letter-spacing: -0.01em;">What I want</h2>
+                <p style="font-size: 12px; color: var(--text-medium); margin-top: 4px;">Affects which campaigns we surface, and how brands find you.</p>
+              </div>
+
+              <div style="padding: 0 20px; flex: 1; overflow-y: auto;">
+
+                <div style="margin-top: 8px;">
+                  <div style="font-size: 11px; color: var(--brand-900); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">OPEN TO</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <span class="pill-toggle on">Gifted</span>
+                    <span class="pill-toggle on">Paid</span>
+                    <span class="pill-toggle">PR / seeding only</span>
+                    <span class="pill-toggle on">UGC licensing</span>
+                  </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <div style="font-size: 11px; color: var(--brand-900); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">CATEGORIES I'LL WORK IN</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <span class="pill-toggle on">Beauty</span>
+                    <span class="pill-toggle on">Wellness</span>
+                    <span class="pill-toggle on">Fashion</span>
+                    <span class="pill-toggle">Food</span>
+                    <span class="pill-toggle">Travel</span>
+                    <span class="pill-toggle">+ Add</span>
+                  </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <div style="font-size: 11px; color: var(--brand-900); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">I WON'T WORK WITH</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <span class="pill-toggle danger">CBD ×</span>
+                    <span class="pill-toggle danger">Tobacco ×</span>
+                    <span class="pill-toggle danger">Temu-style ×</span>
+                    <span class="pill-toggle">+ Add</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-medium); margin-top: 6px;">We'll hide these campaigns from you entirely.</div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <div style="font-size: 11px; color: var(--brand-900); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">VALUES I CARE ABOUT</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <span class="pill-toggle on" style="background: var(--green-100); color: var(--green-700); border-color: var(--green-500);">Sustainability</span>
+                    <span class="pill-toggle on" style="background: var(--green-100); color: var(--green-700); border-color: var(--green-500);">Female-founded</span>
+                    <span class="pill-toggle">B-Corp</span>
+                    <span class="pill-toggle">Cruelty-free</span>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-medium); margin-top: 6px;">Brands matching these get surfaced higher.</div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <div style="font-size: 11px; color: var(--brand-900); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">RESPONSE TIME</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <span class="pill-toggle on">~24 hours</span>
+                    <span class="pill-toggle">A few days</span>
+                    <span class="pill-toggle">A week or more</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Tap-and-toggle interaction throughout. Color-coded by intent (brand purple for positive preferences, red for blocks, green for values). Maps 1:1 to brand-side filters in cluster 02 — what brands filter by IS what creators set here.
+          <br><br>
+          <strong>Behavior:</strong> Toggle is instant (no Save until you leave). Each change immediately affects which campaigns surface — show a toast like "now showing 38 campaigns" right after a toggle to make the cause-effect visible.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Surface 2 · Campaign invite notification</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Leea Sarvela missed her invite entirely. Three takes on the lock-screen / in-app drawer that should make this impossible to miss.</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">A · Rich push with both names</span>
+            <span class="rec rec-build">Recommended</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="lock-screen">
+                  <div class="lock-time">9:24</div>
+                  <div class="lock-date">Monday, May 11</div>
+
+                  <div class="lock-notif">
+                    <div class="lock-notif-row">
+                      <div class="lock-notif-icon"></div>
+                      <div class="lock-notif-content">
+                        <div class="lock-notif-row-top">
+                          <span class="lock-notif-app">BENABLE</span>
+                          <span class="lock-notif-time">now</span>
+                        </div>
+                        <div class="lock-notif-title">Soluna invited you, Leea</div>
+                        <div class="lock-notif-body">Spring Skin Reset · gifted · 2 products · 5 days · accept by Fri</div>
+                      </div>
+                    </div>
+                    <div class="lock-notif-actions">
+                      <div class="lock-notif-action">View</div>
+                      <div class="lock-notif-action primary">Accept</div>
+                    </div>
+                  </div>
+
+                  <div class="lock-notif" style="opacity: 0.6;">
+                    <div class="lock-notif-row">
+                      <div class="lock-notif-icon" style="background: #00C300;"></div>
+                      <div class="lock-notif-content">
+                        <div class="lock-notif-row-top">
+                          <span class="lock-notif-app">WHATSAPP · MOM</span>
+                          <span class="lock-notif-time">7m</span>
+                        </div>
+                        <div class="lock-notif-title">Call me when you're up ❤️</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Both names in the title — fixes Leea's exact problem ("I didn't know what 'New campaign invite' meant"). Key terms inline. Accept directly from lock screen. Highest conversion possible.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">B · In-app pinned drawer (always-on)</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 14px 16px; background: var(--brand-100); border-bottom: 1px solid var(--brand-300);">
+                  <div style="font-size: 10px; color: var(--brand-900); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;">NEW INVITE</div>
+                  <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+                    <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--brand-700), var(--brand-900));"></div>
+                    <div style="flex: 1;">
+                      <div style="font-weight: 700; font-size: 13px;">Soluna · Spring Skin Reset</div>
+                      <div style="font-size: 11px; color: var(--text-medium);">Accept in 2d 14h</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" style="font-size: 11px; padding: 6px 14px;">View</button>
+                  </div>
+                </div>
+
+                <div style="padding: 16px;">
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px;">YOUR CAMPAIGNS · 2 ACTIVE</div>
+                  <div style="padding: 12px; border: 1px solid var(--border-base); border-radius: 10px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                      <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                      <div style="flex: 1;">
+                        <div style="font-weight: 600; font-size: 12px;">Necessaire · Body care</div>
+                        <div style="font-size: 11px; color: var(--orange-700);">3 days to post</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="padding: 12px; border: 1px solid var(--border-base); border-radius: 10px; margin-top: 8px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                      <div style="width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--orange-500), var(--orange-700));"></div>
+                      <div style="flex: 1;">
+                        <div style="font-weight: 600; font-size: 12px;">Tower28 · Lip oil</div>
+                        <div style="font-size: 11px; color: var(--text-medium);">Posted Apr 30 · waiting on review</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Pinned at top of home — impossible to miss if you open the app. Doesn't help if creator never opens the app. Best paired with A.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">C · Email with subject line discipline</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px; background: #f5f5f7; border-bottom: 1px solid var(--border-base);">
+                  <div style="font-size: 12px; color: var(--text-medium);">📧 Inbox</div>
+                </div>
+                <div style="flex: 1; overflow-y: auto;">
+                  <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-base); background: white;">
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--brand-700), var(--brand-900)); flex-shrink: 0;"></div>
+                      <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between;">
+                          <span style="font-weight: 600; font-size: 13px;">Benable</span>
+                          <span style="font-size: 11px; color: var(--text-medium);">now</span>
+                        </div>
+                        <div style="font-weight: 600; font-size: 13px; margin-top: 2px;">Leea — Soluna invited you to "Spring Skin Reset"</div>
+                        <div style="font-size: 12px; color: var(--text-medium); margin-top: 4px; line-height: 1.4;">Gifted, 2 products, 5 days. Accept by Friday May 16 — view in app or reply YES to accept.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="padding: 14px 16px; border-bottom: 1px solid var(--border-base); background: white; opacity: 0.7;">
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                      <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--neutral-300); flex-shrink: 0;"></div>
+                      <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between;">
+                          <span style="font-weight: 500; font-size: 13px;">Substack</span>
+                          <span style="font-size: 11px; color: var(--text-medium);">2h</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-medium); margin-top: 4px;">Your weekly digest is ready...</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Subject line opens with the creator's name, then both brand and campaign. Best for creators who live in their inbox. Reply-to-accept trick can short-circuit a missed push.
+          </div>
+        </div>
+
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-16);">Recommendation</h2>
+      <div class="card">
+        <p style="font-size: var(--body-md); line-height: 1.6;">
+          Ship <strong>A + B + C as one feature</strong>. They cover the three miss patterns: didn't see push (B catches on open), didn't open app (C catches in email), or already on-device (A wins). All three reference both brand and creator name — that's the Leea-specific fix.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Cluster 05 spec</a>
+        <a class="btn btn-primary btn-sm" href="../../index.html">All clusters →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

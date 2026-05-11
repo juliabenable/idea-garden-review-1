@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mobile Invite / Deep Link Investigation · Cluster 13</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Cluster 13</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="../12-internal-ai/index.html">← Cluster 12</a>
+        <a class="btn btn-ghost btn-sm" href="../14-idea-garden/index.html">Cluster 14 →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / Cluster 13</div>
+      <h1>Mobile Invite / Deep Link Investigation</h1>
+
+      <div class="cluster-summary">
+        <div class="why">
+          <p><strong>Why this is cluster 13.</strong> The hot file from May 8–9. Real users (Walteria Curtis, Millie Meza) hit <code>sign-up/code-entry</code> instead of <code>sign-up/invited-by</code>, getting attributed to skip1 instead of Tony's GTA6S code. This is a quality bug, not a product idea — but it has compounding cost: every iOS fresh-install loses inviter credit, breaks our referral measurement, and harms the people Tony personally invited.</p>
+          <p style="margin-top: var(--sp-12);">Recommendation: this cluster ships now, in parallel with everything else. It's eng-led, not PM-led. Your Monday role is approving the QA matrix and the resilience-vs-AppsFlyer-fix tradeoff.</p>
+        </div>
+        <dl class="meta">
+          <dt>Cluster recommendation</dt>
+          <dd><span class="rec rec-build">Build</span> the resilience layer in parallel with AppsFlyer investigation.</dd>
+          <dt>Ideas covered</dt>
+          <dd>6 (IDs 142, 143, 144, 145, 146)</dd>
+          <dt>Validation</dt>
+          <dd>Two confirmed broken users; investigation thread active.</dd>
+          <dt>Effort</dt>
+          <dd>1–2 sprints. Most of it is logging + a fallback path.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>The known facts (May 8-9 thread)</h2>
+      <div class="spec stack-16">
+        <div>
+          <ul>
+            <li>Invite link: <code>https://benable.com/i/GTA6S</code> → maps to Tony Staehelin (inviter ID 2).</li>
+            <li>Expected valid flow: <code>permissions → sign-up/invited-by → username</code></li>
+            <li>Expected organic flow: <code>permissions → sign-up/code-entry → Skip → username</code></li>
+            <li>Broken: invite-link users on iOS fresh install hit <code>sign-up/code-entry</code> as if organic.</li>
+            <li>Failed: Walteria Curtis (uid 1238685, FS 1539489060982836240) → <code>code_used=skip1</code>, inviter_id=3929.</li>
+            <li>Recovered: Millie Meza (uid 1238666) → eventually attributed to <code>gta6s</code> after a restart.</li>
+            <li>Source-of-truth attribution table during investigation: <code>public.user_source_info</code> (because <code>analytics.clean_users</code> was lagging).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Ideas in this cluster</h2>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">142</span>
+          <div class="idea-body">
+            <h4>AppsFlyer iOS deferred invite-link investigation</h4>
+            <div class="idea-blurb">Why iOS fresh installs sometimes lose the invite payload after the App Store redirect. Check OneLink config, click/install attribution, deferred deep-link payload, Universal Links, SDK retrieval/parsing.</div>
+            <div class="idea-source">Slack May 8-9 invite thread</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-research">Research</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">143</span>
+          <div class="idea-body">
+            <h4>Invite link QA matrix across installed/fresh-install states</h4>
+            <div class="idea-blurb">QA matrix: desktop web, mobile web, iOS already installed, iOS fresh install via App Store, Android already installed, Android fresh install. Record persistence, route, attribution.</div>
+            <div class="idea-source">Slack May 8-9</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">144</span>
+          <div class="idea-body">
+            <h4>Fullstory + DB audit for invite-code dropoff users</h4>
+            <div class="idea-blurb">Audit pass for users who appear to enter onboarding from invite path but hit code-entry or end up attributed to skip1.</div>
+            <div class="idea-source">Slack May 8-9</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">145</span>
+          <div class="idea-body">
+            <h4>Improve invite/deep-link logging at app open and signup</h4>
+            <div class="idea-blurb">Explicit instrumentation: original URL, AppsFlyer callback payload, deep_link_value/invite_code/af_dp/custom params, Universal Link source, route decision, stored invite code, final attribution write.</div>
+            <div class="idea-source">Slack May 8-9</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">146</span>
+          <div class="idea-body">
+            <h4>Verify/fix onboarding route when invite code arrives late</h4>
+            <div class="idea-blurb">Harden signup routing so a valid invite code never leaves a fresh-install user stuck on code-entry. If deferred deep-link data arrives after permissions/code-entry renders, app should recover.</div>
+            <div class="idea-source">Slack May 8-9</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Eng plan · two parallel tracks</h2>
+      <p class="section-lead">Don't wait for the AppsFlyer fix to ship the resilience layer. Both happen in parallel.</p>
+
+      <div class="spec stack-24">
+        <div>
+          <h4>Track 1 · Root cause (AppsFlyer / OneLink)</h4>
+          <ol>
+            <li>Audit OneLink template: confirm <code>deep_link_value</code> contains the invite code; confirm Universal Link domain + Associated Domains entitlement on iOS.</li>
+            <li>Reproduce the broken iOS fresh-install path with a controlled new code (not GTA6S; avoid noise).</li>
+            <li>Inspect AppsFlyer SDK callback timing — is <code>onConversionDataSuccess</code> called before or after the splash → permissions → code-entry render?</li>
+            <li>If timing race: implement the resilience pattern (Track 2) regardless. Don't paper over with a longer splash.</li>
+            <li>If config bug: fix OneLink + redeploy.</li>
+          </ol>
+        </div>
+
+        <div>
+          <h4>Track 2 · Resilience layer (ID 146)</h4>
+          <p>Independent of root cause. Pattern:</p>
+          <ol>
+            <li>Code-entry screen subscribes to deep-link state. If a valid invite arrives <em>while it's mounted</em>, auto-fill the code field, show "Inviter found: Tony Staehelin," and advance.</li>
+            <li>If user has already advanced past code-entry to username before invite arrives: route a stale-invite handler that walks back to invited-by with one tap.</li>
+            <li>Add a manual "I had an invite link" affordance on code-entry — last-resort fallback for users who manually re-enter.</li>
+          </ol>
+        </div>
+
+        <div>
+          <h4>Track 3 · Logging + audit (IDs 144, 145)</h4>
+          <ul>
+            <li>Add structured logging at: app open, AppsFlyer callback, deep-link parse, invite-code store, route decision, attribution write.</li>
+            <li>Build the historical audit query: users with <code>code_used=skip1</code> who had any invite-pattern Fullstory events. Quantify the bleed.</li>
+            <li>Build the QA matrix as a reusable test plan in confluence/Notion. Run it pre-release for any deep-link-touching change.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Open product decisions</h4>
+          <div class="decision">
+            <div class="decision-q">D-24 · How transparent are we to affected users (Walteria, etc.)?</div>
+            <div class="options">
+              <div class="option option-recommended">
+                <div class="opt-label">Option A · Backfill attribution silently + add inviter relationship</div>
+                <div class="opt-tradeoff">Walteria gets credit applied to Tony retroactively. No user-facing comm. Low embarrassment, low surprise. Recommended.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option B · Send affected users a "we noticed" email + manual acceptance</div>
+                <div class="opt-tradeoff">Most transparent. Heavy: requires building a UI to confirm/decline a backfilled inviter. Probably overkill given the affected user count.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option C · Don't backfill; only fix forward</div>
+                <div class="opt-tradeoff">Cheapest engineering. Tony's referrals don't get credit; users like Walteria stay attributed wrong. Unfair to inviters.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="../12-internal-ai/index.html">← Cluster 12</a>
+        <a class="btn btn-primary btn-sm" href="../14-idea-garden/index.html">Cluster 14 · Idea Garden →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

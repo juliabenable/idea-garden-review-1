@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brand Intelligence Dashboard · Design Exploration</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+<style>
+  .design-page { background: var(--bg-weak); padding: var(--sp-48) 0 var(--sp-96); }
+  .design-canvas {
+    background: var(--bg-body);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: var(--sp-32);
+  }
+  .design-canvas-header {
+    padding: var(--sp-20) var(--sp-32);
+    border-bottom: 1px solid var(--border-base);
+    background: var(--bg-weak);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .design-canvas-body { padding: var(--sp-48); background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
+  .design-annotation {
+    margin-top: var(--sp-16);
+    padding: var(--sp-16) var(--sp-24);
+    background: var(--bg-weak);
+    border-top: 1px solid var(--border-base);
+    font-size: var(--body-sm);
+    color: var(--text-medium);
+  }
+  .design-annotation strong { color: var(--text-base); }
+  .direction-badge {
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--brand-900);
+    background: var(--brand-300);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+  }
+
+  .desktop { width: 880px; margin: 0 auto; background: white; border-radius: var(--radius-md); box-shadow: 0 20px 50px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06); overflow: hidden; }
+  .desktop-chrome { background: var(--neutral-100); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-base); }
+  .desktop-chrome .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .desktop-chrome .url { flex: 1; background: white; border-radius: 14px; padding: 6px 14px; font-size: 11px; color: var(--text-medium); text-align: center; margin-left: 24px; }
+  .desktop-content { background: white; min-height: 500px; }
+
+  .bp-nav { background: white; border-bottom: 1px solid var(--border-base); padding: 14px 24px; display: flex; align-items: center; gap: 32px; }
+  .bp-nav .logo { font-weight: 700; color: var(--brand-900); letter-spacing: -0.01em; }
+  .bp-nav .nav-links { display: flex; gap: 24px; font-size: 13px; }
+  .bp-nav .nav-link { color: var(--text-medium); cursor: pointer; }
+  .bp-nav .nav-link.active { color: var(--brand-900); font-weight: 500; }
+  .bp-nav .nav-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+
+  /* Hero metric layout */
+  .dash-hero {
+    background: linear-gradient(135deg, var(--brand-100) 0%, white 60%);
+    padding: 40px 32px;
+    border-bottom: 1px solid var(--border-base);
+  }
+  .dash-hero h1 {
+    font-size: 38px;
+    letter-spacing: -0.02em;
+    margin: 8px 0;
+    color: var(--brand-900);
+  }
+  .dash-trend {
+    display: flex; gap: 8px; align-items: baseline;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .dash-trend .pct-up { color: var(--green-700); font-weight: 700; }
+  .dash-trend .vs { color: var(--text-medium); }
+
+  /* Sparkline */
+  .dash-spark { margin-top: 24px; }
+  .dash-spark svg { width: 100%; height: 80px; }
+
+  /* Stats row */
+  .dash-stats-row {
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .dash-stat-card {
+    background: white;
+    border: 1px solid var(--border-base);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .dash-stat-label {
+    font-size: 10px;
+    color: var(--text-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .dash-stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--brand-900);
+    letter-spacing: -0.02em;
+    margin-top: 4px;
+  }
+  .dash-stat-sub {
+    font-size: 11px;
+    color: var(--text-medium);
+    margin-top: 4px;
+  }
+
+  /* Quote callout */
+  .dash-quote {
+    margin: 24px 32px;
+    padding: 24px 28px;
+    background: white;
+    border: 1px solid var(--border-base);
+    border-radius: 14px;
+    border-left: 3px solid var(--brand-700);
+  }
+  .dash-quote-text {
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--text-base);
+  }
+  .dash-quote-attr {
+    margin-top: 12px;
+    display: flex; gap: 10px; align-items: center;
+    font-size: 12px;
+    color: var(--text-medium);
+  }
+  .dash-quote-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-700), var(--brand-900));
+  }
+
+  /* Creator highlights row */
+  .dash-creators {
+    padding: 0 32px 32px;
+  }
+  .dash-creators-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .dash-creator-tile {
+    background: white;
+    border: 1px solid var(--border-base);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .dash-creator-tile .avatar {
+    width: 48px; height: 48px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-700), var(--brand-900));
+    margin-bottom: 8px;
+  }
+  .dash-creator-tile .name { font-weight: 700; font-size: 12px; }
+  .dash-creator-tile .meta { font-size: 10px; color: var(--text-medium); margin-top: 2px; }
+
+  /* Newsroom layout (alt) */
+  .news-shell {
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .news-card {
+    background: white;
+    border: 1px solid var(--border-base);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .news-card.highlight {
+    background: linear-gradient(135deg, var(--brand-100), white);
+    border-color: var(--brand-300);
+  }
+  .news-card-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--brand-900);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  .news-card-title { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+  .news-card-body { font-size: 13px; color: var(--text-medium); line-height: 1.5; }
+  .news-card-foot {
+    display: flex; gap: 12px; align-items: center;
+    margin-top: 4px;
+    font-size: 11px;
+  }
+  .news-card-cta {
+    margin-left: auto;
+    color: var(--brand-700);
+    font-weight: 500;
+  }
+
+  /* Competitor rank visualization */
+  .rank-viz {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 12px;
+  }
+  .rank-row {
+    display: flex; gap: 12px; align-items: center;
+    padding: 10px 12px;
+    background: var(--bg-weak);
+    border-radius: 8px;
+  }
+  .rank-row.you { background: var(--brand-100); border: 1px solid var(--brand-700); }
+  .rank-pos {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    background: white;
+    color: var(--text-medium);
+  }
+  .rank-row.you .rank-pos { background: var(--brand-700); color: white; }
+  .rank-brand { flex: 1; font-size: 13px; font-weight: 500; }
+  .rank-count { font-size: 12px; color: var(--text-medium); }
+
+  /* Email digest layout (alt 3) */
+  .email-shell {
+    max-width: 600px;
+    margin: 32px auto;
+    background: white;
+    border: 1px solid var(--border-base);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  }
+  .email-header {
+    padding: 32px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--brand-100), white);
+  }
+  .email-eyebrow {
+    font-size: 11px;
+    color: var(--text-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .email-headline {
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin: 8px 0 4px;
+    color: var(--brand-900);
+  }
+  .email-sub {
+    font-size: 14px;
+    color: var(--text-medium);
+  }
+  .email-section {
+    padding: 28px 32px;
+    border-top: 1px solid var(--border-base);
+  }
+  .email-section h3 {
+    font-size: 14px;
+    color: var(--text-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Brand Intelligence · Design</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back to spec</a>
+        <a class="btn btn-ghost btn-sm" href="../03-campaign-config/design.html">Cluster 03 design →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / <a href="index.html">Cluster 02</a> / Design</div>
+      <h1>Brand Intelligence Dashboard · Design Exploration</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">The dashboard that decides whether a brand renews. Three directions for the "do I renew?" moment: a <strong>hero-metric</strong> layout, a <strong>newsroom feed</strong>, and a <strong>weekly email digest</strong>. Same data; different ways of presenting "you're winning."</p>
+    </div>
+  </section>
+
+  <div class="design-page">
+    <div class="container">
+
+      <h2 style="margin-bottom: var(--sp-12);">Direction A · Hero metric layout</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Lead with the single most-asked-for number: how many creators recommend you. Trend, then category context, then social proof. First 30 seconds = wow.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION A</span>
+            <strong style="margin-left: 12px;">Hero metric · the front door of the brand portal</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / soluna</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link active">Home</span>
+                  <span class="nav-link">Campaigns</span>
+                  <span class="nav-link">UGC Studio</span>
+                  <span class="nav-link">Settings</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna · Skin Co.</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div class="dash-hero">
+                <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;">SOLUNA · LAST 30 DAYS</div>
+                <h1>128 creators recommend Soluna</h1>
+                <div class="dash-trend">
+                  <span class="pct-up">+18%</span>
+                  <span class="vs">vs previous 30 days · trending up in clean beauty</span>
+                </div>
+
+                <div class="dash-spark">
+                  <svg viewBox="0 0 800 80" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#AE94F9" stop-opacity="0.4"/>
+                        <stop offset="100%" stop-color="#AE94F9" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M0,60 Q40,55 80,52 T160,42 T240,38 T320,30 T400,25 T480,20 T560,18 T640,12 T720,8 T800,4"
+                          stroke="#AE94F9" stroke-width="2.5" fill="none"/>
+                    <path d="M0,60 Q40,55 80,52 T160,42 T240,38 T320,30 T400,25 T480,20 T560,18 T640,12 T720,8 T800,4 L800,80 L0,80 Z"
+                          fill="url(#grad)"/>
+                    <circle cx="800" cy="4" r="5" fill="#AE94F9"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="dash-stats-row">
+                <div class="dash-stat-card">
+                  <div class="dash-stat-label">CATEGORY RANK</div>
+                  <div class="dash-stat-value">#2</div>
+                  <div class="dash-stat-sub">in clean beauty</div>
+                </div>
+                <div class="dash-stat-card">
+                  <div class="dash-stat-label">UGC THIS WEEK</div>
+                  <div class="dash-stat-value">12</div>
+                  <div class="dash-stat-sub" style="color: var(--green-700);">+3 vs last week</div>
+                </div>
+                <div class="dash-stat-card">
+                  <div class="dash-stat-label">REACH (EST)</div>
+                  <div class="dash-stat-value">2.4M</div>
+                  <div class="dash-stat-sub">across creator audiences</div>
+                </div>
+                <div class="dash-stat-card">
+                  <div class="dash-stat-label">CAMPAIGN ROI</div>
+                  <div class="dash-stat-value">3.8×</div>
+                  <div class="dash-stat-sub">last 3 campaigns</div>
+                </div>
+              </div>
+
+              <div class="dash-quote">
+                <div class="dash-quote-text">"Soluna's serum is the only one that didn't break me out — three months in, my skin is calmer than it's ever been."</div>
+                <div class="dash-quote-attr">
+                  <div class="dash-quote-avatar"></div>
+                  <span><strong style="color: var(--text-base);">@hanahbae</strong> · 28k followers · posted 4 days ago</span>
+                </div>
+              </div>
+
+              <div class="dash-creators">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <h3 style="font-size: 14px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;">TOP CREATORS MENTIONING YOU</h3>
+                  <a href="#" style="font-size: 12px; color: var(--brand-700);">View all 128 →</a>
+                </div>
+                <div class="dash-creators-grid">
+                  <div class="dash-creator-tile">
+                    <div class="avatar"></div>
+                    <div class="name">@hanahbae</div>
+                    <div class="meta">28k · 4 mentions</div>
+                  </div>
+                  <div class="dash-creator-tile">
+                    <div class="avatar" style="background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                    <div class="name">@morgan</div>
+                    <div class="meta">15k · 3 mentions</div>
+                  </div>
+                  <div class="dash-creator-tile">
+                    <div class="avatar" style="background: linear-gradient(135deg, var(--orange-500), var(--orange-700));"></div>
+                    <div class="name">@kelseyalpine</div>
+                    <div class="meta">42k · 2 mentions</div>
+                  </div>
+                  <div class="dash-creator-tile">
+                    <div class="avatar" style="background: linear-gradient(135deg, var(--red-500), var(--red-700));"></div>
+                    <div class="name">@sophiasalem</div>
+                    <div class="meta">9k · 2 mentions</div>
+                  </div>
+                  <div class="dash-creator-tile">
+                    <div class="avatar" style="background: linear-gradient(135deg, var(--blue-500), var(--blue-700));"></div>
+                    <div class="name">@charissereid</div>
+                    <div class="meta">22k · 2 mentions</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> The hero number is what every brand on a call says first: "How many creators talk about us?" Trend gives the "we're winning" beat. Stats row covers the secondary asks (rank, ROI, reach). Quote provides emotional payoff. Creator grid gives them ammunition for their next team meeting.
+          <br><br>
+          <strong>Critical:</strong> The "+18%" needs to be true and meaningful. If we surface a fake-feeling number, we lose trust fast. Suggest: compute weekly, smooth over 4 weeks, hide if dataset too small.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Direction B · Newsroom feed</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Reads like a feed of "things that happened to your brand this week." Each item is a CTA. Better for engagement loop than first-time wow.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION B</span>
+            <strong style="margin-left: 12px;">Newsroom · cards as story beats</strong>
+          </div>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / soluna</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link active">Home</span>
+                  <span class="nav-link">Campaigns</span>
+                  <span class="nav-link">UGC Studio</span>
+                  <span class="nav-link">Settings</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div style="padding: 32px 32px 16px;">
+                <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;">THIS WEEK ON BENABLE</div>
+                <h2 style="font-size: 26px; letter-spacing: -0.02em; margin-top: 4px;">Soluna had a great week.</h2>
+                <p style="color: var(--text-medium); margin-top: 6px; font-size: 14px;">5 things worth your attention.</p>
+              </div>
+
+              <div class="news-shell">
+                <div class="news-card highlight" style="grid-column: span 2;">
+                  <div class="news-card-tag">
+                    <span style="background: var(--brand-700); width: 6px; height: 6px; border-radius: 50%;"></span>
+                    TRENDING
+                  </div>
+                  <div class="news-card-title">@morgan and @kelseyalpine both posted about you this week.</div>
+                  <div class="news-card-body">Combined reach: 58k. Both pieces are licensable through UGC Studio at standard rates.</div>
+                  <div class="news-card-foot">
+                    <div style="display:flex; gap: -8px;">
+                      <div style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700)); border: 2px solid white;"></div>
+                      <div style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--orange-500), var(--orange-700)); border: 2px solid white; margin-left: -8px;"></div>
+                    </div>
+                    <span style="color: var(--text-medium);">Costs: $250 + $320</span>
+                    <a href="#" class="news-card-cta">License both →</a>
+                  </div>
+                </div>
+
+                <div class="news-card">
+                  <div class="news-card-tag">
+                    <span style="background: var(--green-500); width: 6px; height: 6px; border-radius: 50%;"></span>
+                    RANKING
+                  </div>
+                  <div class="news-card-title">You moved up to #2 in clean beauty.</div>
+                  <div class="news-card-body">Tower28 is #1 by 14 mentions. Saie just dropped to #3.</div>
+                  <a href="#" class="news-card-cta" style="margin-top: auto;">See category breakdown →</a>
+                </div>
+
+                <div class="news-card">
+                  <div class="news-card-tag">
+                    <span style="background: var(--orange-500); width: 6px; height: 6px; border-radius: 50%;"></span>
+                    OPPORTUNITY
+                  </div>
+                  <div class="news-card-title">3 creators recommended you organically.</div>
+                  <div class="news-card-body">Not in any campaign. Worth reaching out — we can pre-fill the invite.</div>
+                  <a href="#" class="news-card-cta" style="margin-top: auto;">Send invites →</a>
+                </div>
+
+                <div class="news-card">
+                  <div class="news-card-tag">
+                    <span style="background: var(--blue-500); width: 6px; height: 6px; border-radius: 50%;"></span>
+                    INSIGHT
+                  </div>
+                  <div class="news-card-title">"Calming" is becoming your strongest word.</div>
+                  <div class="news-card-body">Up from 8 mentions to 24 in the last 90 days. Consider amplifying in your brief.</div>
+                  <a href="#" class="news-card-cta" style="margin-top: auto;">See word cloud →</a>
+                </div>
+
+                <div class="news-card">
+                  <div class="news-card-tag">
+                    <span style="background: var(--brand-700); width: 6px; height: 6px; border-radius: 50%;"></span>
+                    CAMPAIGN
+                  </div>
+                  <div class="news-card-title">"Spring Skin Reset" wrap-up is ready.</div>
+                  <div class="news-card-body">12 creators delivered. ROI: 4.1×. Highest-engagement reel earned 12k likes.</div>
+                  <a href="#" class="news-card-cta" style="margin-top: auto;">See full recap →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Every card is a decision the brand could make. The highlight at the top + 4 follow-on cards give a "5 things you should know" feel. Each card has its own micro-CTA. Maps cleanly to a weekly cadence.
+          <br><br>
+          <strong>When this wins:</strong> Better for engaged brands who log in often. Risk: empty state. If a brand has a slow week, the feed looks empty. Need a fallback for low-activity weeks ("nothing major this week, but you're holding steady at...").
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Direction C · Weekly email digest</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Push rather than pull. Land in their inbox every Monday. Best at re-engagement; weakest at a "wow on signup" moment.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION C</span>
+            <strong style="margin-left: 12px;">Email digest · Monday morning recap</strong>
+          </div>
+        </div>
+        <div class="design-canvas-body">
+          <div class="email-shell">
+            <div class="email-header">
+              <div class="email-eyebrow">SOLUNA · WEEK OF MAY 11</div>
+              <div class="email-headline">128 creators · +18%</div>
+              <div class="email-sub">Your week on Benable</div>
+            </div>
+
+            <div class="email-section">
+              <h3>THIS WEEK'S WIN</h3>
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="width: 60px; aspect-ratio: 4/5; background: linear-gradient(135deg, var(--brand-700), var(--brand-900)); border-radius: 8px; flex-shrink: 0;"></div>
+                <div>
+                  <div style="font-weight: 700;">@hanahbae · 2.4k likes</div>
+                  <div style="font-size: 12px; color: var(--text-medium); margin-top: 4px; line-height: 1.5;">"Soluna's serum is the only one that didn't break me out — three months in, my skin is calmer than it's ever been."</div>
+                  <button class="btn btn-primary btn-sm" style="margin-top: 10px; padding: 6px 14px; font-size: 12px;">License this asset · $250</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="email-section">
+              <h3>CATEGORY RANK · CLEAN BEAUTY</h3>
+              <div class="rank-viz">
+                <div class="rank-row">
+                  <div class="rank-pos">1</div>
+                  <div class="rank-brand">Tower28</div>
+                  <div class="rank-count">142 mentions</div>
+                </div>
+                <div class="rank-row you">
+                  <div class="rank-pos">2</div>
+                  <div class="rank-brand">Soluna (you)</div>
+                  <div class="rank-count">128 mentions</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank-pos">3</div>
+                  <div class="rank-brand">Saie</div>
+                  <div class="rank-count">114 mentions</div>
+                </div>
+                <div class="rank-row">
+                  <div class="rank-pos">4</div>
+                  <div class="rank-brand">Glow Recipe</div>
+                  <div class="rank-count">96 mentions</div>
+                </div>
+              </div>
+              <p style="font-size: 12px; color: var(--text-medium); margin-top: 12px;">You're 14 mentions behind Tower28. One more good campaign could close the gap.</p>
+            </div>
+
+            <div class="email-section">
+              <h3>WHAT'S NEW</h3>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 13px;">
+                  <span style="color: var(--brand-700); flex-shrink: 0;">✓</span>
+                  <span>3 creators recommended you organically. <a href="#" style="color: var(--brand-700);">Send pre-filled invites →</a></span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 13px;">
+                  <span style="color: var(--brand-700); flex-shrink: 0;">✓</span>
+                  <span>"Spring Skin Reset" wrap-up is ready. ROI 4.1×. <a href="#" style="color: var(--brand-700);">See recap →</a></span>
+                </li>
+                <li style="display: flex; gap: 10px; align-items: flex-start; font-size: 13px;">
+                  <span style="color: var(--brand-700); flex-shrink: 0;">✓</span>
+                  <span>"Calming" is now your strongest descriptor. Consider amplifying in next brief.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="email-section" style="background: var(--bg-weak); text-align: center;">
+              <a href="#" style="font-size: 12px; color: var(--text-medium);">View full dashboard on web</a>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Lands in their inbox without requiring login. Forwardable to their CMO. Each section maps to a question their team is asking. The rank visualization is the killer feature — they can show this slide as-is in a board meeting.
+          <br><br>
+          <strong>Combination strategy:</strong> Build A (dashboard) and C (email) as one product. The email is a digest of the dashboard. They reinforce each other — email pulls brand back to the dashboard for the deep dive.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-16);">Recommendation</h2>
+      <div class="card">
+        <p style="font-size: var(--body-md); line-height: 1.6;">
+          <strong>Ship Direction A as the brand-portal home, paired with Direction C as the Monday digest.</strong> Direction B's newsroom pattern becomes a "What's New" section <em>inside</em> Direction A — fewer separate surfaces to maintain, same content beats.
+        </p>
+        <p style="margin-top: var(--sp-12); color: var(--text-medium); font-size: var(--body-sm);">
+          The email digest does the re-engagement work; the dashboard does the on-call "show your CMO this number" work. Together they solve both the "wow on signup" and the "compel them to renew" problems.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Cluster 02 spec</a>
+        <a class="btn btn-primary btn-sm" href="../03-campaign-config/design.html">Cluster 03 design →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

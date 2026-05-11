@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Creator Onboarding &amp; Profile · Design Exploration</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+<style>
+  .design-page { background: var(--bg-weak); padding: var(--sp-48) 0 var(--sp-96); }
+  .design-canvas { background: var(--bg-body); border: 1px solid var(--border-base); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: var(--sp-32); }
+  .design-canvas-header { padding: var(--sp-20) var(--sp-32); border-bottom: 1px solid var(--border-base); background: var(--bg-weak); display: flex; justify-content: space-between; align-items: center; }
+  .design-canvas-body { padding: var(--sp-48); background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
+  .design-annotation { margin-top: var(--sp-16); padding: var(--sp-16) var(--sp-24); background: var(--bg-weak); border-top: 1px solid var(--border-base); font-size: var(--body-sm); color: var(--text-medium); }
+  .design-annotation strong { color: var(--text-base); }
+  .direction-badge { font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full); }
+
+  .desktop { width: 880px; margin: 0 auto; background: white; border-radius: var(--radius-md); box-shadow: 0 20px 50px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06); overflow: hidden; }
+  .desktop-chrome { background: var(--neutral-100); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-base); }
+  .desktop-chrome .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .desktop-chrome .url { flex: 1; background: white; border-radius: 14px; padding: 6px 14px; font-size: 11px; color: var(--text-medium); text-align: center; margin-left: 24px; }
+  .desktop-content { background: white; min-height: 540px; }
+
+  .bp-nav { background: white; border-bottom: 1px solid var(--border-base); padding: 14px 24px; display: flex; align-items: center; gap: 32px; }
+  .bp-nav .logo { font-weight: 700; color: var(--brand-900); }
+  .bp-nav .nav-links { display: flex; gap: 24px; font-size: 13px; }
+  .bp-nav .nav-link { color: var(--text-medium); }
+  .bp-nav .nav-link.active { color: var(--brand-900); font-weight: 500; }
+  .bp-nav .nav-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+
+  /* Profile magazine layout (brand-side view) */
+  .profile-shell { display: grid; grid-template-columns: 1fr 320px; gap: 32px; padding: 32px; background: var(--bg-weak); }
+  .profile-main { background: white; border-radius: 16px; overflow: hidden; }
+  .profile-hero {
+    padding: 32px;
+    display: flex; gap: 20px; align-items: flex-start;
+    border-bottom: 1px solid var(--border-base);
+  }
+  .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--brand-700), var(--brand-900)); flex-shrink: 0; }
+  .profile-name { font-size: 24px; letter-spacing: -0.01em; font-weight: 700; }
+  .profile-handle { font-size: 13px; color: var(--text-medium); margin-top: 2px; }
+  .profile-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .verified-badge {
+    display: inline-flex; gap: 4px; align-items: center;
+    background: var(--green-100); color: var(--green-700);
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    margin-top: 8px;
+  }
+
+  .profile-intro-video {
+    margin: 0 32px 32px;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--brand-300), var(--brand-700));
+    position: relative;
+    cursor: pointer;
+  }
+  .profile-intro-play {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-circle {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    color: var(--brand-900);
+  }
+
+  .profile-section { padding: 28px 32px; border-bottom: 1px solid var(--border-base); }
+  .profile-section:last-child { border-bottom: none; }
+  .profile-section h3 {
+    font-size: 11px; color: var(--text-medium);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 14px; font-weight: 500;
+  }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .stat-block { text-align: center; padding: 16px; background: var(--bg-weak); border-radius: 12px; }
+  .stat-block .v { font-size: 22px; font-weight: 700; color: var(--brand-900); letter-spacing: -0.01em; }
+  .stat-block .l { font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+
+  .work-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .work-tile {
+    aspect-ratio: 1; border-radius: 10px;
+    position: relative; overflow: hidden;
+  }
+  .work-tile .badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(0,0,0,0.5); color: white;
+    padding: 2px 6px; border-radius: 4px; font-size: 9px;
+  }
+
+  .ratings-row { display: flex; gap: 16px; align-items: center; padding: 16px; background: var(--bg-weak); border-radius: 12px; }
+  .ratings-big { font-size: 36px; font-weight: 700; color: var(--brand-900); letter-spacing: -0.02em; }
+  .ratings-stars { color: var(--orange-500); }
+  .ratings-sub { font-size: 12px; color: var(--text-medium); margin-top: 4px; }
+
+  /* Sidebar */
+  .profile-aside .ad-card { background: white; border-radius: 14px; padding: 20px; border: 1px solid var(--border-base); margin-bottom: 16px; }
+  .profile-aside h4 { font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; font-weight: 500; }
+  .audience-bar { height: 6px; border-radius: 3px; background: var(--bg-subtle); margin-bottom: 8px; overflow: hidden; }
+  .audience-bar-fill { height: 100%; background: var(--brand-700); border-radius: 3px; }
+  .audience-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; }
+  .audience-row .v { font-weight: 600; }
+
+  /* Mobile onboarding direction */
+  .phone { width: 280px; margin: 0 auto; border-radius: 36px; background: var(--neutral-900); padding: 12px; box-shadow: var(--shadow-lg); }
+  .phone-screen { border-radius: 28px; background: var(--bg-body); overflow: hidden; height: 600px; position: relative; display: flex; flex-direction: column; }
+
+  .pill-toggle { display: inline-flex; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: var(--bg-weak); color: var(--text-medium); cursor: pointer; border: 1px solid transparent; }
+  .pill-toggle.on { background: var(--brand-100); color: var(--brand-900); border-color: var(--brand-700); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Creator Profile · Design</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back to spec</a>
+        <a class="btn btn-ghost btn-sm" href="../05-creator-portal-qol/design.html">Cluster 05 design →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / <a href="index.html">Cluster 04</a> / Design</div>
+      <h1>Creator Profile + Onboarding · Design Exploration</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">Two surfaces. The brand-side <strong>creator profile</strong> (magazine layout, full-page) and the creator-side <strong>onboarding flow</strong> with source-aware branching (D-09).</p>
+    </div>
+  </section>
+
+  <div class="design-page">
+    <div class="container">
+
+      <h2 style="margin-bottom: var(--sp-12);">Surface 1 · Creator profile (brand-side view)</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">When a brand is reviewing a creator from their pool. The screen that decides whether a small creator gets a chance.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION</span>
+            <strong style="margin-left: 12px;">Magazine layout · intro video hero, stats supporting</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / pool / hanahbae</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link">Home</span>
+                  <span class="nav-link">Campaigns</span>
+                  <span class="nav-link active">Pool</span>
+                  <span class="nav-link">UGC Studio</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div style="padding: 16px 32px; background: var(--bg-weak); border-bottom: 1px solid var(--border-base); display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--text-medium);">
+                <a href="#" style="color: var(--brand-700);">← Back to Skincare creators</a>
+                <span>·</span>
+                <span>2 of 42</span>
+                <div style="margin-left: auto; display: flex; gap: 8px;">
+                  <button class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;">← Previous</button>
+                  <button class="btn btn-ghost btn-sm" style="padding: 6px 12px; font-size: 12px;">Next →</button>
+                </div>
+              </div>
+
+              <div class="profile-shell">
+                <div class="profile-main">
+                  <div class="profile-hero">
+                    <div class="profile-avatar"></div>
+                    <div style="flex: 1;">
+                      <div class="profile-name">Hanah Bae</div>
+                      <div class="profile-handle">@hanahbae · Brooklyn, NY</div>
+                      <div class="verified-badge">✓ Verified creator</div>
+                      <div class="profile-tags">
+                        <span class="pill pill-brand" style="font-size: 11px;">Skin care</span>
+                        <span class="pill pill-brand" style="font-size: 11px;">Wellness</span>
+                        <span class="pill pill-outline" style="font-size: 11px;">Open to gifted</span>
+                        <span class="pill pill-outline" style="font-size: 11px;">Open to paid</span>
+                        <span class="pill pill-outline" style="font-size: 11px;">UGC licensing</span>
+                      </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                      <button class="btn btn-primary btn-sm">Invite to campaign</button>
+                      <button class="btn btn-ghost btn-sm">Save to pool</button>
+                    </div>
+                  </div>
+
+                  <div class="profile-intro-video">
+                    <div class="profile-intro-play">
+                      <div class="play-circle">▶</div>
+                    </div>
+                    <div style="position: absolute; bottom: 12px; left: 16px; color: white; font-size: 12px;">
+                      <div style="font-weight: 500;">Hi, I'm Hanah</div>
+                      <div style="font-size: 11px; opacity: 0.85;">0:42 · added Apr 18</div>
+                    </div>
+                  </div>
+
+                  <div class="profile-section">
+                    <h3>WHY HANAH</h3>
+                    <p style="font-size: 14px; line-height: 1.6; color: var(--text-base);">"I focus on calm, real routines for sensitive skin. I've worked with brands like Tower28, Glow Recipe, and Saie — and I'm picky about the products I post. If I love it, my audience knows."</p>
+                  </div>
+
+                  <div class="profile-section">
+                    <h3>BY THE NUMBERS</h3>
+                    <div class="stats-grid">
+                      <div class="stat-block">
+                        <div class="v">28k</div>
+                        <div class="l">FOLLOWERS</div>
+                      </div>
+                      <div class="stat-block">
+                        <div class="v" style="color: var(--green-700);">8.2%</div>
+                        <div class="l">ENGAGEMENT</div>
+                      </div>
+                      <div class="stat-block">
+                        <div class="v">12</div>
+                        <div class="l">CAMPAIGNS</div>
+                      </div>
+                      <div class="stat-block">
+                        <div class="v">★ 4.8</div>
+                        <div class="l">BRAND RATING</div>
+                      </div>
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-medium); margin-top: 12px;">Engagement well above 28k-tier average (3.1%). Brand rating from 12 completed campaigns; aggregate only.</p>
+                  </div>
+
+                  <div class="profile-section">
+                    <h3>RECENT BRAND WORK</h3>
+                    <div class="work-grid">
+                      <div class="work-tile" style="background: linear-gradient(135deg, var(--brand-700), var(--brand-900));">
+                        <span class="badge">Reel</span>
+                      </div>
+                      <div class="work-tile" style="background: linear-gradient(135deg, var(--green-500), var(--green-700));">
+                        <span class="badge">Post</span>
+                      </div>
+                      <div class="work-tile" style="background: linear-gradient(135deg, var(--orange-500), var(--orange-700));">
+                        <span class="badge">Reel</span>
+                      </div>
+                      <div class="work-tile" style="background: linear-gradient(135deg, var(--red-500), var(--red-700));">
+                        <span class="badge">Story</span>
+                      </div>
+                    </div>
+                    <p style="font-size: 12px; color: var(--brand-700); margin-top: 14px;">View full portfolio →</p>
+                  </div>
+
+                  <div class="profile-section">
+                    <h3>BRANDS WHO'D RECOMMEND</h3>
+                    <div class="ratings-row">
+                      <div>
+                        <div class="ratings-big">4.8</div>
+                        <div class="ratings-stars">★★★★★</div>
+                      </div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 13px; line-height: 1.5; color: var(--text-base);">"On-time, on-brief, and her content out-performed our average by 2.3×."</div>
+                        <div class="ratings-sub">Aggregate · 12 campaigns</div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="profile-aside">
+                  <div class="ad-card">
+                    <h4>AUDIENCE LOCATION</h4>
+                    <div class="audience-row"><span>New York City</span><span class="v">38%</span></div>
+                    <div class="audience-bar"><div class="audience-bar-fill" style="width: 38%;"></div></div>
+                    <div class="audience-row"><span>Los Angeles</span><span class="v">14%</span></div>
+                    <div class="audience-bar"><div class="audience-bar-fill" style="width: 14%; background: var(--brand-500);"></div></div>
+                    <div class="audience-row"><span>Other US</span><span class="v">36%</span></div>
+                    <div class="audience-bar"><div class="audience-bar-fill" style="width: 36%; background: var(--brand-500);"></div></div>
+                    <div class="audience-row"><span>International</span><span class="v">12%</span></div>
+                    <div class="audience-bar"><div class="audience-bar-fill" style="width: 12%; background: var(--brand-500);"></div></div>
+                  </div>
+
+                  <div class="ad-card">
+                    <h4>POSTING CADENCE</h4>
+                    <div style="font-size: 22px; font-weight: 700; color: var(--brand-900);">4.2 / week</div>
+                    <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">Last 30 days</div>
+                    <div style="margin-top: 12px; display: flex; gap: 3px;">
+                      <div style="flex: 1; height: 24px; background: var(--brand-700); border-radius: 2px;"></div>
+                      <div style="flex: 1; height: 18px; background: var(--brand-500); border-radius: 2px;"></div>
+                      <div style="flex: 1; height: 28px; background: var(--brand-700); border-radius: 2px;"></div>
+                      <div style="flex: 1; height: 22px; background: var(--brand-500); border-radius: 2px;"></div>
+                      <div style="flex: 1; height: 16px; background: var(--brand-300); border-radius: 2px;"></div>
+                      <div style="flex: 1; height: 24px; background: var(--brand-700); border-radius: 2px;"></div>
+                      <div style="flex: 1; height: 20px; background: var(--brand-500); border-radius: 2px;"></div>
+                    </div>
+                  </div>
+
+                  <div class="ad-card">
+                    <h4>RESPONSE TIME</h4>
+                    <div style="font-size: 22px; font-weight: 700; color: var(--green-700);">~4 hours</div>
+                    <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">Across last 5 invites</div>
+                  </div>
+
+                  <div class="ad-card">
+                    <h4>WORKS WITH</h4>
+                    <p style="font-size: 12px; line-height: 1.5;">Tower28, Glow Recipe, Saie, Necessaire, Soft Services</p>
+                  </div>
+
+                  <div class="ad-card">
+                    <h4>WON'T POST ABOUT</h4>
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                      <span class="pill pill-danger" style="font-size: 10px;">CBD</span>
+                      <span class="pill pill-danger" style="font-size: 10px;">Alcohol</span>
+                      <span class="pill pill-danger" style="font-size: 10px;">MLM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Intro video is the unlock for small creators — Charisse Reid described wanting this unprompted. Stats grid covers the filter check (followers, engagement, rating). Sidebar gives brands the operational signals — audience location, response time, posting cadence — that decide whether to invite. The "Why Hanah" first-person blurb humanizes.
+          <br><br>
+          <strong>D-10 visible:</strong> Aggregate rating only ("4.8 across 12 campaigns"). No individual brand names attached — prevents weaponizing single bad ratings. The "Brands who'd recommend" quote is editorial, brand-approved.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Surface 2 · Onboarding (creator side)</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Source-aware branching (ID 34). The first 3 screens of a TTC-arriving creator vs. a brand-invited creator. Same backend, different surface — implicit branching wins (Option A).</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">TTC referral · "we know why you're here"</span>
+            <span class="rec rec-build">Recommended treatment</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 24px 20px;">
+                  <div style="display: flex; gap: 4px; margin-bottom: 24px;">
+                    <div style="flex: 1; height: 4px; background: var(--brand-700); border-radius: 2px;"></div>
+                    <div style="flex: 1; height: 4px; background: var(--bg-subtle); border-radius: 2px;"></div>
+                    <div style="flex: 1; height: 4px; background: var(--bg-subtle); border-radius: 2px;"></div>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">FROM TONY'S TIKTOK</div>
+                  <h2 style="font-size: 24px; letter-spacing: -0.01em; line-height: 1.2; margin-top: 6px;">Came from the TikTok challenge? Let's keep it short.</h2>
+                  <p style="font-size: 13px; color: var(--text-medium); margin-top: 10px; line-height: 1.5;">3 quick questions, then you're in. We'll ask the rest later.</p>
+
+                  <div style="margin-top: 24px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">What kind of brands do you want?</div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                      <span class="pill-toggle on">Beauty</span>
+                      <span class="pill-toggle">Fashion</span>
+                      <span class="pill-toggle on">Wellness</span>
+                      <span class="pill-toggle">Food</span>
+                      <span class="pill-toggle">Travel</span>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 20px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">Open to gifted (no payment)?</div>
+                    <div style="display: flex; gap: 6px;">
+                      <span class="pill-toggle on">Yes, gifted is fine</span>
+                      <span class="pill-toggle">Paid only</span>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 20px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">Anything you won't post about?</div>
+                    <input type="text" placeholder="CBD, alcohol, MLMs..." style="width:100%; padding: 10px 14px; border: 1px solid var(--border-base); border-radius: 10px; font-size: 12px; box-sizing: border-box;">
+                  </div>
+                </div>
+                <div style="margin-top: auto; padding: 16px 20px; background: white; border-top: 1px solid var(--border-base);">
+                  <button class="btn btn-primary" style="width: 100%; justify-content: center;">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Title reflects entry point. Questions are tuned to "they came from a TikTok creator-aimed video" — they're already creators. Skip the "tell us about yourself" basics that organic users need.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Brand-invited · "Soluna invited you"</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 24px 20px;">
+                  <div style="display: flex; gap: 4px; margin-bottom: 24px;">
+                    <div style="flex: 1; height: 4px; background: var(--brand-700); border-radius: 2px;"></div>
+                    <div style="flex: 1; height: 4px; background: var(--bg-subtle); border-radius: 2px;"></div>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">SOLUNA INVITED YOU</div>
+                  <h2 style="font-size: 24px; letter-spacing: -0.01em; line-height: 1.2; margin-top: 6px;">Skip the small talk. See the campaign.</h2>
+                  <p style="font-size: 13px; color: var(--text-medium); margin-top: 10px; line-height: 1.5;">Soluna picked you for their Spring Skin Reset. Confirm a few things and you're in.</p>
+
+                  <div style="margin-top: 20px; padding: 14px; background: var(--bg-weak); border-radius: 12px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                      <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                      <div>
+                        <div style="font-weight: 700; font-size: 13px;">Spring Skin Reset</div>
+                        <div style="font-size: 11px; color: var(--text-medium);">Gifted · 2 products · 5 days</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 24px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">Where can we ship?</div>
+                    <input type="text" placeholder="Your address" style="width:100%; padding: 10px 14px; border: 1px solid var(--border-base); border-radius: 10px; font-size: 12px; box-sizing: border-box;">
+                  </div>
+
+                  <div style="margin-top: 16px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">Your Instagram handle</div>
+                    <input type="text" placeholder="@yourhandle" style="width:100%; padding: 10px 14px; border: 1px solid var(--border-base); border-radius: 10px; font-size: 12px; box-sizing: border-box;">
+                  </div>
+                </div>
+                <div style="margin-top: auto; padding: 16px 20px; background: white; border-top: 1px solid var(--border-base);">
+                  <button class="btn btn-primary" style="width: 100%; justify-content: center;">Accept campaign</button>
+                  <div style="text-align: center; margin-top: 8px;"><a href="#" style="font-size: 11px; color: var(--text-medium);">Set up profile first instead →</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Brand-invited creator sees the campaign first. Onboarding compressed to "where do we ship + your IG handle" — the rest comes later. Highest-conversion path because the campaign IS the carrot.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Organic · "tell us about you"</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 24px 20px;">
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">WELCOME TO BENABLE</div>
+                  <h2 style="font-size: 24px; letter-spacing: -0.01em; line-height: 1.2; margin-top: 6px;">Get matched with the right brands.</h2>
+                  <p style="font-size: 13px; color: var(--text-medium); margin-top: 10px; line-height: 1.5;">Tell us a bit and we'll only send you campaigns that fit.</p>
+
+                  <div style="margin-top: 24px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">What do you make content about?</div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                      <span class="pill-toggle">Beauty</span>
+                      <span class="pill-toggle">Fashion</span>
+                      <span class="pill-toggle">Wellness</span>
+                      <span class="pill-toggle">Food</span>
+                      <span class="pill-toggle">Travel</span>
+                      <span class="pill-toggle">Parenting</span>
+                      <span class="pill-toggle">Tech</span>
+                      <span class="pill-toggle">Other</span>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 24px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">How big is your audience?</div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                      <span class="pill-toggle">Under 5k</span>
+                      <span class="pill-toggle">5–25k</span>
+                      <span class="pill-toggle">25–100k</span>
+                      <span class="pill-toggle">100k+</span>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 24px;">
+                    <div style="font-size: 12px; font-weight: 500; color: var(--brand-900); margin-bottom: 8px;">Your Instagram handle</div>
+                    <input type="text" placeholder="@yourhandle" style="width:100%; padding: 10px 14px; border: 1px solid var(--border-base); border-radius: 10px; font-size: 12px; box-sizing: border-box;">
+                  </div>
+                </div>
+                <div style="margin-top: auto; padding: 16px 20px; background: white; border-top: 1px solid var(--border-base);">
+                  <button class="btn btn-primary" style="width: 100%; justify-content: center;">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Standard onboarding for someone who arrives organic. More setup, but they came with intent to figure it out. The fallback when source attribution is unknown.
+          </div>
+        </div>
+
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-16);">Recommendation</h2>
+      <div class="card">
+        <p style="font-size: var(--body-md); line-height: 1.6;">
+          <strong>Profile direction:</strong> ship the magazine layout. Strongest fit for small-creator credibility (Charisse, Jessica White asks).
+          <br><br>
+          <strong>Onboarding direction:</strong> implicit branching across all three entry points. The branching logic uses source attribution we already collect. Brand-invited path is highest conversion — protect it from creep.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Cluster 04 spec</a>
+        <a class="btn btn-primary btn-sm" href="../05-creator-portal-qol/design.html">Cluster 05 design →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

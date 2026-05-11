@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Idea Garden Review · Monday Prep</title>
+<link rel="stylesheet" href="shared/benable.css" />
+<link rel="stylesheet" href="shared/review.css" />
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span>Idea Garden · Monday Review</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="decisions/open-questions.html">Open decisions</a>
+        <a class="btn btn-primary btn-sm" href="decisions/monday-prep.html">Monday plan</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <p class="t-eyebrow">Prepared for Julia · 2026-05-09</p>
+      <h1>Your idea garden, organized into 14 clusters and ranked for Monday.</h1>
+      <p class="hero-sub">
+        146 ideas grouped by theme. Each cluster has a short framing, the ideas it covers, and either a product doc or a UI exploration with options. Decisions you need to make are surfaced separately so you can come in Monday and just pick.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-num">146</div>
+          <div class="stat-label">Ideas total · 145 queued, 1 exploring</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">14</div>
+          <div class="stat-label">Thematic clusters</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">23</div>
+          <div class="stat-label">Open decisions with options</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">7</div>
+          <div class="stat-label">"Now" candidates this quarter</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <a class="btn btn-primary" href="#clusters">Browse clusters</a>
+        <a class="btn btn-ghost" href="decisions/monday-prep.html">→ Monday agenda</a>
+        <a class="btn btn-ghost" href="ideas/all.html">→ All 146 ideas (searchable)</a>
+        <a class="btn btn-link" href="#how-to-read">How to read this</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-bottom: 0;">
+    <div class="container">
+      <h2 style="margin-bottom: var(--sp-12);">Design explorations · the first 5 clusters</h2>
+      <p class="section-lead">Full-page UI explorations with multiple directions per surface. Use these to see what each spec looks like in pixels, not just words.</p>
+
+      <div class="grid grid-auto" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+        <a class="cluster-card" href="clusters/01-ugc-studio/design.html">
+          <span class="cluster-badge" style="background: var(--green-100); color: var(--green-700);">DESIGN · 01</span>
+          <h3>UGC Studio</h3>
+          <p class="cluster-blurb">Brand-side license transaction (3 directions), marketplace browse, creator opt-in with comp data.</p>
+        </a>
+        <a class="cluster-card" href="clusters/02-brand-portal-sales/design.html">
+          <span class="cluster-badge" style="background: var(--green-100); color: var(--green-700);">DESIGN · 02</span>
+          <h3>Brand Intelligence Dashboard</h3>
+          <p class="cluster-blurb">3 directions: hero-metric layout, newsroom feed, weekly email digest.</p>
+        </a>
+        <a class="cluster-card" href="clusters/03-campaign-config/design.html">
+          <span class="cluster-badge" style="background: var(--green-100); color: var(--green-700);">DESIGN · 03</span>
+          <h3>Campaign Builder v2</h3>
+          <p class="cluster-blurb">Form vs. wizard for the builder. Selection-cap UX (the May 8 fix) in 3 mobile takes.</p>
+        </a>
+        <a class="cluster-card" href="clusters/04-creator-onboarding/design.html">
+          <span class="cluster-badge" style="background: var(--green-100); color: var(--green-700);">DESIGN · 04</span>
+          <h3>Creator Profile + Onboarding</h3>
+          <p class="cluster-blurb">Brand-side creator profile (magazine layout) + source-aware onboarding flow.</p>
+        </a>
+        <a class="cluster-card" href="clusters/05-creator-portal-qol/design.html">
+          <span class="cluster-badge" style="background: var(--green-100); color: var(--green-700);">DESIGN · 05</span>
+          <h3>Creator Preferences + Invite</h3>
+          <p class="cluster-blurb">"What I want" preferences screen + 3 invite-notification directions (Leea's missed-invite fix).</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how-to-read">
+    <div class="container">
+      <h2>How to read this</h2>
+      <p class="section-lead">The goal: you can land Monday morning, scan the clusters, and either approve the recommended option or pick a different one for each open decision. No clusters are blocked on you reading the original Slack/Granola transcripts — relevant excerpts are pulled inline.</p>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <div class="row-tight" style="margin-bottom: var(--sp-12);">
+            <span class="rec rec-build">Build</span>
+          </div>
+          <strong>Ready to ship</strong>
+          <p class="t-muted" style="font-size: var(--body-sm); margin-top: var(--sp-8);">Spec is clear, validation is strong, can move into a sprint with minor scoping.</p>
+        </div>
+        <div class="card">
+          <div class="row-tight" style="margin-bottom: var(--sp-12);">
+            <span class="rec rec-spec">Spec</span>
+          </div>
+          <strong>Needs PRD</strong>
+          <p class="t-muted" style="font-size: var(--body-sm); margin-top: var(--sp-8);">Concept is validated; need scope, success metrics, and decisions before eng picks up.</p>
+        </div>
+        <div class="card">
+          <div class="row-tight" style="margin-bottom: var(--sp-12);">
+            <span class="rec rec-design">Design</span>
+          </div>
+          <strong>Needs UI exploration</strong>
+          <p class="t-muted" style="font-size: var(--body-sm); margin-top: var(--sp-8);">Visual / interaction problem. Multiple shapes possible — pick the direction first.</p>
+        </div>
+        <div class="card">
+          <div class="row-tight" style="margin-bottom: var(--sp-12);">
+            <span class="rec rec-research">Research</span>
+          </div>
+          <strong>Needs validation</strong>
+          <p class="t-muted" style="font-size: var(--body-sm); margin-top: var(--sp-8);">Demand or shape is unclear — should run a small experiment / call before specing.</p>
+        </div>
+        <div class="card">
+          <div class="row-tight" style="margin-bottom: var(--sp-12);">
+            <span class="rec rec-decide">Decide</span>
+          </div>
+          <strong>Blocked on you</strong>
+          <p class="t-muted" style="font-size: var(--body-sm); margin-top: var(--sp-8);">There's an open product question with options. See decisions doc.</p>
+        </div>
+        <div class="card">
+          <div class="row-tight" style="margin-bottom: var(--sp-12);">
+            <span class="rec rec-park">Park</span>
+          </div>
+          <strong>Not now</strong>
+          <p class="t-muted" style="font-size: var(--body-sm); margin-top: var(--sp-8);">Worth keeping; depends on something else, or signal isn't strong enough yet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="clusters">
+    <div class="container">
+      <h2>The 14 clusters</h2>
+      <p class="section-lead">Sorted roughly by impact × readiness. The first three are where I'd spend the most energy this quarter.</p>
+
+      <div class="grid grid-auto" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
+
+        <a class="cluster-card" href="clusters/01-ugc-studio/index.html">
+          <span class="cluster-badge">CLUSTER 01 · NOW</span>
+          <h3>UGC Studio &amp; Content Licensing</h3>
+          <p class="cluster-blurb">The single most-validated unlock in the backlog. Multiple creators called it their #1 want. Builds a moat ShopMy/LTK don't have.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">12 ideas</span>
+            <span class="rec rec-build">Build</span>
+            <span class="rec rec-decide">3 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/02-brand-portal-sales/index.html">
+          <span class="cluster-badge">CLUSTER 02 · NOW</span>
+          <h3>Brand Portal Sales Tools</h3>
+          <p class="cluster-blurb">Brand intelligence dashboard, CRM/sales OS, social proof engine, alerts. The features brands actually pay for.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">14 ideas</span>
+            <span class="rec rec-spec">Spec</span>
+            <span class="rec rec-decide">3 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/03-campaign-config/index.html">
+          <span class="cluster-badge">CLUSTER 03 · NOW</span>
+          <h3>Brand Campaign Configuration</h3>
+          <p class="cluster-blurb">Campaign templates, content type flexibility, gift cards, Shopify, per-creator commissions. Table-stakes, mostly half-built.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">13 ideas</span>
+            <span class="rec rec-build">Build</span>
+            <span class="rec rec-decide">2 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/04-creator-onboarding/index.html">
+          <span class="cluster-badge">CLUSTER 04 · NEXT</span>
+          <h3>Creator Onboarding &amp; Profile</h3>
+          <p class="cluster-blurb">Reduce 50% rejection rate and improve match quality at the source. Includes profiles + portfolio + pre-screening.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">10 ideas</span>
+            <span class="rec rec-design">Design</span>
+            <span class="rec rec-decide">2 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/05-creator-portal-qol/index.html">
+          <span class="cluster-badge">CLUSTER 05 · NEXT</span>
+          <h3>Creator Portal Quality of Life</h3>
+          <p class="cluster-blurb">Notifications, address visibility, hashtag prompts, content type clarity, deadline mechanics. Many small, validated wins.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">14 ideas</span>
+            <span class="rec rec-build">Build</span>
+            <span class="rec rec-decide">1 decision</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/06-affiliate-links/index.html">
+          <span class="cluster-badge">CLUSTER 06 · NEXT</span>
+          <h3>Affiliate Link Management &amp; Distribution</h3>
+          <p class="cluster-blurb">ShopMy parity gap. Keyboard, link library, swipeable tiles, native share interception, ManyChat-style automations.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">10 ideas</span>
+            <span class="rec rec-design">Design</span>
+            <span class="rec rec-decide">2 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/07-discovery-rethink/index.html">
+          <span class="cluster-badge">CLUSTER 07 · BIG BET</span>
+          <h3>Discovery &amp; Homepage Rethink</h3>
+          <p class="cluster-blurb">"Top 60 then nothing" problem. Pinterest-style interests, people-first hierarchy, For You feed, vertical landing pages, AEO.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">12 ideas</span>
+            <span class="rec rec-research">Research</span>
+            <span class="rec rec-decide">3 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/08-community-social/index.html">
+          <span class="cluster-badge">CLUSTER 08 · NEXT</span>
+          <h3>People-First / Social / Community</h3>
+          <p class="cluster-blurb">Niche communities (POTS, PNW), forum tags, vouches, accountability groups, intro videos. Sticks with creators.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">13 ideas</span>
+            <span class="rec rec-spec">Spec</span>
+            <span class="rec rec-decide">2 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/09-growth-loops/index.html">
+          <span class="cluster-badge">CLUSTER 09 · NEXT</span>
+          <h3>Reactivation, Referrals &amp; Growth Loops</h3>
+          <p class="cluster-blurb">Referral momentum (40% of signups), reactivation autopilot (best 2.86%), seasonal refresh, weekly prompts.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">7 ideas</span>
+            <span class="rec rec-build">Build</span>
+            <span class="rec rec-decide">2 decisions</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/10-events-strategy/index.html">
+          <span class="cluster-badge">CLUSTER 10 · OPS</span>
+          <h3>Events Strategy &amp; Brand Acquisition</h3>
+          <p class="cluster-blurb">QR stations, speech booths, post-event 12hr outreach, free-trial campaigns, event-in-a-box. Productize the proven loop.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">11 ideas</span>
+            <span class="rec rec-spec">Spec</span>
+            <span class="rec rec-decide">1 decision</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/11-local-matching/index.html">
+          <span class="cluster-badge">CLUSTER 11 · LATER</span>
+          <h3>Local / Location-Based Matching</h3>
+          <p class="cluster-blurb">Local creator-brand matching for restaurants, hotels, SMBs. Big TAM if audience verification works.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">7 ideas</span>
+            <span class="rec rec-research">Research</span>
+            <span class="rec rec-decide">1 decision</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/12-internal-ai/index.html">
+          <span class="cluster-badge">CLUSTER 12 · INTERNAL</span>
+          <h3>Internal AI Tools &amp; Workflow</h3>
+          <p class="cluster-blurb">Spec gap detector, prototype review tool, AI feedback agent (Tony), Benny reliability, Logan's tool integration.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">10 ideas</span>
+            <span class="rec rec-spec">Spec</span>
+            <span class="rec rec-decide">1 decision</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/13-mobile-investigation/index.html">
+          <span class="cluster-badge">CLUSTER 13 · BUG</span>
+          <h3>Mobile Invite / Deep Link Investigation</h3>
+          <p class="cluster-blurb">AppsFlyer iOS deferred deep link issue. Real users hitting code-entry instead of invited-by. Hot file from May 8 thread.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">7 ideas</span>
+            <span class="rec rec-build">Build</span>
+            <span class="rec rec-decide">1 decision</span>
+          </div>
+        </a>
+
+        <a class="cluster-card" href="clusters/14-idea-garden/index.html">
+          <span class="cluster-badge">CLUSTER 14 · META</span>
+          <h3>Idea Garden Self-Improvement</h3>
+          <p class="cluster-blurb">Maturation scorecard, signal board, weird-experiments parking lot. Make the tool itself stronger.</p>
+          <div class="cluster-meta">
+            <span class="tag-chip">5 ideas</span>
+            <span class="rec rec-design">Design</span>
+            <span class="rec rec-decide">1 decision</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="suggested-flow">
+    <div class="container">
+      <h2>Suggested Monday flow</h2>
+      <p class="section-lead">If you have 90 minutes, do this. If you only have 30, just do step 1 + 2.</p>
+
+      <ol class="spec" style="font-size: var(--body-md); padding-left: var(--sp-32);">
+        <li style="margin-bottom: var(--sp-16);"><strong>Resolve the 23 open decisions (30 min).</strong> Most have a recommended option. Skim → approve or override. <a href="decisions/open-questions.html">Open decisions →</a></li>
+        <li style="margin-bottom: var(--sp-16);"><strong>Lock the "Now" lane (20 min).</strong> Confirm clusters 01–03 are the right top three for the quarter, or swap. <a href="decisions/monday-prep.html#now-lane">Now lane →</a></li>
+        <li style="margin-bottom: var(--sp-16);"><strong>Skim "Next" clusters (20 min).</strong> Clusters 04–06 + 08–09. These are scoped enough that one yes/no per cluster is enough.</li>
+        <li style="margin-bottom: var(--sp-16);"><strong>Park or schedule research bets (15 min).</strong> Cluster 07 (Discovery) and 11 (Local) — these need experiments before specs.</li>
+        <li><strong>Decide what stays in your court vs. delegated (5 min).</strong> Clusters 10 (Events) and 12 (Internal AI) likely belong with Tony / engineering rather than your roadmap.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="t-muted">
+        Generated 2026-05-09 from <code>julia-idea-garden-ai-handoff-2026-05-09.md</code>. All references to creator/brand calls are pulled from Granola sources cited in the handoff. Slack threads referenced inline where relevant.
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

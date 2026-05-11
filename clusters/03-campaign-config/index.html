@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brand Campaign Configuration · Cluster 03</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Cluster 03</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="../02-brand-portal-sales/index.html">← Cluster 02</a>
+        <a class="btn btn-ghost btn-sm" href="../04-creator-onboarding/index.html">Cluster 04 →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / Cluster 03</div>
+      <h1>Brand Campaign Configuration</h1>
+
+      <div class="cluster-summary">
+        <div class="why">
+          <p><strong>Why this is cluster 03.</strong> The bones of campaign creation — what brands can configure, what creators can pick from, how content/commission/fulfillment behave. Most of these are <em>table-stakes</em>: brands ask, "Why can't I X?" and we say, "Oh, that's hardcoded." Each individual fix is small; together they make the platform feel grown-up. Several already have backend deployed — UI is the gap.</p>
+          <p style="margin-top: var(--sp-12);">Most ideas here are <span class="rec rec-build">Build</span> with clear scopes. The <em>shape</em> of campaign config is the open question — see decision D-07.</p>
+        </div>
+        <dl class="meta">
+          <dt>Cluster recommendation</dt>
+          <dd><span class="rec rec-build">Build</span>. Frame as "Campaign config v2: things that should always have been configurable."</dd>
+          <dt>Ideas covered</dt>
+          <dd>13 (IDs 13, 14, 16, 17, 18, 19, 24, 56, 57, 58, 60, 64, 67, 91, 147, 148)</dd>
+          <dt>Validation</dt>
+          <dd>High. Direct asks across 5+ brands and 5+ creators.</dd>
+          <dt>Effort</dt>
+          <dd>Mostly small, except Shopify (heavy) and affiliate networks (medium).</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Ideas in this cluster</h2>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">A. Campaign templates &amp; reuse</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">14</span>
+          <div class="idea-body">
+            <h4>Campaign Templates — Reusable Brand Workflows</h4>
+            <div class="idea-blurb">Backend models exist (deployed Apr 7) but full UI not yet built. Reduces setup time for repeat campaigns.</div>
+            <div class="idea-source">Nisarg deploy (Apr 7), Tony weekly priorities</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">60</span>
+          <div class="idea-body">
+            <h4>Inline Editing Throughout Brand Portal</h4>
+            <div class="idea-blurb">Hover-to-edit + auto-save across all campaign brief fields. Same pattern as Benable lists.</div>
+            <div class="idea-source">Granola: Demo session Apr 1, Tony feedback</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">B. Content rules &amp; flexibility</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">13</span>
+          <div class="idea-body">
+            <h4>Flexible Content Requirements per Campaign</h4>
+            <div class="idea-blurb">Brands specify different content types per campaign (story / post / reel) and Benable assigns. Currently rigid one-format campaigns.</div>
+            <div class="idea-source">Leea Sarvela call (Apr 10), Jessica call (Apr 2)</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">24</span>
+          <div class="idea-body">
+            <h4>Variable Content Timelines per Deliverable Type</h4>
+            <div class="idea-blurb">48-hour works for stories; skincare/review needs 5-7 days. Timelines shouldn't be one-size-fits-all.</div>
+            <div class="idea-source">Leea Sarvela call (Apr 10)</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">87</span>
+          <div class="idea-body">
+            <h4>Content Type Clarity</h4>
+            <div class="idea-blurb">Specify Instagram story explicitly alongside posts/reels. Currently confusing.</div>
+            <div class="idea-source">Leea Sarvela Apr 9</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">67</span>
+          <div class="idea-body">
+            <h4>Usage Rights Clarity</h4>
+            <div class="idea-blurb">30-day organic only. Clear organic vs paid distinction. Creator attribution clause. Prominent upfront.</div>
+            <div class="idea-source">Veronica Apr 10, multiple creator sessions</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">91</span>
+          <div class="idea-body">
+            <h4>One Round of Feedback for Paid Campaigns</h4>
+            <div class="idea-blurb">Clear revision policy upfront. Hanah: explicit dos/don'ts + one feedback round in the contract.</div>
+            <div class="idea-source">Granola: Hanah Bae Mar 25</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">C. Commerce, commission, fulfillment</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">16</span>
+          <div class="idea-body">
+            <h4>Per-Creator Commission Flexing</h4>
+            <div class="idea-blurb">Different commission per creator within a campaign. Emily Hebert (Cirincion, ~20 brands) requested.</div>
+            <div class="idea-source">Emily Hebert call (Feb 11)</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">17</span>
+          <div class="idea-body">
+            <h4>Gift Card Campaign Infrastructure</h4>
+            <div class="idea-blurb">Full gift card support for brands that can't ship product. Admin shipped Apr 20; mobile creator targeting Apr 23. COUTR is first customer.</div>
+            <div class="idea-source">COUTR deal (Apr 17), Prose limitation</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">56</span>
+          <div class="idea-body">
+            <h4>Gift Card Campaigns (full flow)</h4>
+            <div class="idea-blurb">Admin toggle, creator screens, brand UI. Same-value v1; variable amounts in v2.</div>
+            <div class="idea-source">Granola: Apr 17 + Apr 24 sessions</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">18</span>
+          <div class="idea-body">
+            <h4>Shopify Buy Integration — Automated Fulfillment</h4>
+            <div class="idea-blurb">Full Shopify Buy API. Brands don't manually CSV-export. Shopify review submitted, waiting.</div>
+            <div class="idea-source">Multiple brand calls, Katie ops</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">64</span>
+          <div class="idea-body">
+            <h4>Shipping Automation</h4>
+            <div class="idea-blurb">Replace CSV export workaround. Shopify integration auto-fulfills with campaign tags.</div>
+            <div class="idea-source">Granola: Brand Portal Insights, Dogfooding</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">19</span>
+          <div class="idea-body">
+            <h4>Affiliate Network Integrations (Impact/CJ/Rakuten)</h4>
+            <div class="idea-blurb">Hawke Media: Impact integration "vital." Currently only AWIN + SkimLinks work smoothly.</div>
+            <div class="idea-source">Hawke Media (Feb 25), Affiliate Motion (Mar 10)</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">58</span>
+          <div class="idea-body">
+            <h4>Product Basket Redesign</h4>
+            <div class="idea-blurb">Drive $450+ basket value. Warning modal for sub-$50 products. Replace single low-value $15 selection.</div>
+            <div class="idea-source">Granola: Brand Portal Insights, Apr 30 strategy</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">D. Selection caps &amp; creator-side rules</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">147</span>
+          <div class="idea-body">
+            <h4>Review max-2 product-selection warning UX</h4>
+            <div class="idea-blurb">QA the warning/disabled state when creators try to pick &gt;2 products. Should it feel like an error?</div>
+            <div class="idea-source">Slack May 8 prototype QA thread</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">148</span>
+          <div class="idea-body">
+            <h4>Make campaign product-selection cap configurable</h4>
+            <div class="idea-blurb">Earth Science wants up to 3 products. Cap should be campaign-level config, not hard-coded 2.</div>
+            <div class="idea-source">Slack May 8 mobile prototype thread</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">57</span>
+          <div class="idea-body">
+            <h4>Creator Scoring System</h4>
+            <div class="idea-blurb">10-point rating after campaign. Manual override, speed/responsiveness tracking.</div>
+            <div class="idea-source">Granola: People-Management Tooling Apr 24</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Product doc · Campaign Config v2</h2>
+      <p class="section-lead">Bundle 8 small changes (IDs 13, 16, 17, 24, 56, 64, 67, 87, 91, 147, 148) into one well-shaped milestone instead of 8 individual tickets.</p>
+
+      <div class="spec stack-24">
+        <div>
+          <h3>Why bundle</h3>
+          <p>Each of these alone is a 3-line ticket. Together, they're "Campaign config v2" — a coherent story for the team and a noticeable feel-better moment for brands. Bundling forces a single design pass on the campaign-builder UI rather than 8 tactical patches that fight each other.</p>
+        </div>
+
+        <div>
+          <h4>Scope</h4>
+          <p>The campaign-builder gains five new configurable axes:</p>
+          <ul>
+            <li><strong>Content types per campaign:</strong> brand picks any combination of Story / Post / Reel / UGC. Benable assigns formats to creators or lets creators pick from the allowed set.</li>
+            <li><strong>Content timelines per deliverable type:</strong> default per format, brand-overridable.</li>
+            <li><strong>Product selection cap:</strong> default 2; brand can set 1–N.</li>
+            <li><strong>Per-creator commission:</strong> default brand-wide rate; per-row override on the creator pool.</li>
+            <li><strong>Fulfillment mode:</strong> shipped product / gift card / no fulfillment (UGC-only).</li>
+          </ul>
+          <p style="margin-top: var(--sp-8);">All of those need a usage-rights clause (ID 67) and a one-revision-round clause (ID 91) shown to creators on accept.</p>
+        </div>
+
+        <div>
+          <h4>Out of scope (explicitly)</h4>
+          <ul>
+            <li>Creator scoring (ID 57) — separate spec, depends on creator pipeline (Cluster 02).</li>
+            <li>Affiliate network integrations (ID 19) — heavier, separate dependency.</li>
+            <li>Shopify Buy integration (ID 18) — separate eng track, already in flight.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Open product decisions</h4>
+          <div class="decision">
+            <div class="decision-q">D-07 · Should the campaign builder become a wizard or stay form-based?</div>
+            <div class="options">
+              <div class="option option-recommended">
+                <div class="opt-label">Option A · Form with progressive disclosure</div>
+                <div class="opt-tradeoff">One scrollable page. Defaults handle 80% of cases. Power users can expand. Inline editing (ID 60) becomes a natural fit. Recommended.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option B · 4–5 step wizard</div>
+                <div class="opt-tradeoff">More guidance for new brands. Higher friction for experienced ones. More design work for back-navigation, save-and-resume.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option C · "Templates first, customize after"</div>
+                <div class="opt-tradeoff">Pulls campaign templates (ID 14) front-and-center. Best at reducing setup time for repeat campaigns. Requires templates to ship first.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="decision">
+            <div class="decision-q">D-08 · Selection-cap warning UX (ID 147)</div>
+            <div class="options">
+              <div class="option option-recommended">
+                <div class="opt-label">Option A · Soft "you can choose 2 of these" with disabled state on cards beyond cap</div>
+                <div class="opt-tradeoff">Doesn't feel like an error; sets expectation up front. Tap blocked card → tooltip "swap one of your picks first." Recommended.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option B · Allow tapping a 3rd, prompt "swap or cancel"</div>
+                <div class="opt-tradeoff">Action-first; surfaces intent. More forgiving. Slightly more complex state.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option C · Keep current toast warning</div>
+                <div class="opt-tradeoff">Status quo. Felt error-y in prototype review.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>UI exploration · selection cap UX (ID 147 / 148)</h2>
+      <p class="section-lead">The mobile prototype hit this. Three ways to handle the moment a creator hits the cap.</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option A · Soft state from the start</span>
+            <span class="rec rec-build">Recommended</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px 16px 0;">
+                  <div style="font-size: 11px; color: var(--text-medium);">Step 1 of 3</div>
+                  <h3 style="font-size: 18px; margin-top: 4px;">Pick up to 2 products</h3>
+                  <div style="font-size: 12px; color: var(--text-medium); margin-top: 4px;">Earth Science · 3 available</div>
+                </div>
+                <div style="padding: 16px; display:flex; flex-direction: column; gap: 12px;">
+                  <div style="display:flex; gap: 12px; padding: 12px; background: var(--brand-100); border: 1px solid var(--brand-700); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--green-500), var(--green-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 13px;">Vitamin C Serum</div>
+                      <div style="font-size: 11px; color: var(--text-medium); margin-top: 2px;">$48 · selected</div>
+                    </div>
+                    <div style="color: var(--brand-700); font-size: 18px;">✓</div>
+                  </div>
+                  <div style="display:flex; gap: 12px; padding: 12px; background: var(--brand-100); border: 1px solid var(--brand-700); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--orange-500), var(--orange-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 13px;">SPF Glow</div>
+                      <div style="font-size: 11px; color: var(--text-medium); margin-top: 2px;">$32 · selected</div>
+                    </div>
+                    <div style="color: var(--brand-700); font-size: 18px;">✓</div>
+                  </div>
+                  <div style="display:flex; gap: 12px; padding: 12px; opacity: 0.4; border: 1px solid var(--border-base); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 13px;">Eye Cream</div>
+                      <div style="font-size: 11px; color: var(--text-medium); margin-top: 2px;">$56 · swap one to add</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top: auto; padding: 16px; background: var(--bg-weak);">
+                  <div style="display:flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                    <span style="color: var(--text-medium);">2 of 2 picked</span>
+                    <span style="color: var(--brand-900); font-weight: 500;">$80 total</span>
+                  </div>
+                  <button class="btn btn-primary" style="width: 100%;">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Limit communicated up front in the title. Disabled cards say "swap one to add" — invitation, not error. Selected count visible always.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option B · Allow tap, prompt to swap</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px 16px 0;">
+                  <div style="font-size: 11px; color: var(--text-medium);">Step 1 of 3</div>
+                  <h3 style="font-size: 18px; margin-top: 4px;">Pick 2 products</h3>
+                </div>
+                <div style="padding: 16px; display:flex; flex-direction: column; gap: 12px;">
+                  <div style="display:flex; gap: 12px; padding: 12px; background: var(--brand-100); border: 1px solid var(--brand-700); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--green-500), var(--green-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;"><div style="font-weight: 700; font-size: 13px;">Vitamin C Serum</div></div>
+                    <div style="color: var(--brand-700);">✓</div>
+                  </div>
+                  <div style="display:flex; gap: 12px; padding: 12px; background: var(--brand-100); border: 1px solid var(--brand-700); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--orange-500), var(--orange-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;"><div style="font-weight: 700; font-size: 13px;">SPF Glow</div></div>
+                    <div style="color: var(--brand-700);">✓</div>
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: var(--bg-body); border-top: 1px solid var(--border-base); padding: 16px; box-shadow: 0 -8px 24px rgba(0,0,0,0.06);">
+                  <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px;">You picked Eye Cream — swap?</div>
+                  <div style="display:flex; gap: 8px;">
+                    <button class="btn btn-ghost btn-sm" style="flex:1; font-size: 11px;">Replace SPF Glow</button>
+                    <button class="btn btn-ghost btn-sm" style="flex:1; font-size: 11px;">Replace Vit C</button>
+                  </div>
+                  <button style="background: none; border: none; color: var(--text-medium); font-size: 11px; margin-top: 8px; width: 100%;">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Honors the user's tap. Surfaces intent at the moment they want a third item. Adds a sheet to dismiss; more state but more forgiving.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option C · Toast (current)</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px;">
+                  <h3 style="font-size: 18px;">Pick 2 products</h3>
+                </div>
+                <div style="padding: 0 16px; display:flex; flex-direction: column; gap: 12px;">
+                  <div style="display:flex; gap: 12px; padding: 12px; background: var(--brand-100); border: 1px solid var(--brand-700); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--green-500), var(--green-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;"><div style="font-weight: 700; font-size: 13px;">Vitamin C Serum</div></div>
+                  </div>
+                  <div style="display:flex; gap: 12px; padding: 12px; background: var(--brand-100); border: 1px solid var(--brand-700); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--orange-500), var(--orange-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;"><div style="font-weight: 700; font-size: 13px;">SPF Glow</div></div>
+                  </div>
+                  <div style="display:flex; gap: 12px; padding: 12px; opacity: 0.4; border: 1px solid var(--border-base); border-radius: 12px;">
+                    <div style="width: 50px; aspect-ratio: 1; background: linear-gradient(135deg, var(--blue-500), var(--blue-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;"><div style="font-weight: 700; font-size: 13px;">Eye Cream</div></div>
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 24px; left: 16px; right: 16px; background: var(--neutral-800); color: white; padding: 12px 16px; border-radius: 8px; font-size: 12px;">
+                  ⚠️ You can only pick 2 products
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Status quo. Reads like an error. Toast is gone in 3 seconds; user may not understand why their tap didn't take.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Smaller wins (build queue)</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <strong>ID 14 · Campaign templates UI</strong>
+          <p class="t-muted" style="margin-top: var(--sp-8); font-size: var(--body-sm);">Backend exists. UI is the gap. "Save as template" → template gallery → "Create from template." 1 sprint.</p>
+        </div>
+        <div class="card">
+          <strong>ID 60 · Inline editing on campaign briefs</strong>
+          <p class="t-muted" style="margin-top: var(--sp-8); font-size: var(--body-sm);">Same pattern as Benable lists. Tony explicitly asked. Pure execution.</p>
+        </div>
+        <div class="card">
+          <strong>ID 16 · Per-creator commission</strong>
+          <p class="t-muted" style="margin-top: var(--sp-8); font-size: var(--body-sm);">Add a commission column to the creator pool table; per-row override. Backend likely small.</p>
+        </div>
+        <div class="card">
+          <strong>ID 17 + 56 · Gift card campaigns</strong>
+          <p class="t-muted" style="margin-top: var(--sp-8); font-size: var(--body-sm);">Admin shipped. Mobile creator side targeted Apr 23. Same-value v1 confirms — variable amounts later.</p>
+        </div>
+        <div class="card">
+          <strong>ID 58 · Product basket redesign</strong>
+          <p class="t-muted" style="margin-top: var(--sp-8); font-size: var(--body-sm);">Drive $450+ basket value. Warning modal for sub-$50 picks. Behavioral nudge, not a hard limit.</p>
+        </div>
+        <div class="card">
+          <strong>ID 19 · Affiliate network integrations</strong>
+          <p class="t-muted" style="margin-top: var(--sp-8); font-size: var(--body-sm);">Impact / CJ / Rakuten / AWIN. Hawke says vital. Needs a separate spec doc — not a v2 bundle item.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="../02-brand-portal-sales/index.html">← Cluster 02</a>
+        <a class="btn btn-primary btn-sm" href="../04-creator-onboarding/index.html">Cluster 04 · Creator Onboarding →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

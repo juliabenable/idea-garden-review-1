@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UGC Studio · Design Exploration</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+<style>
+  .design-page { background: var(--bg-weak); padding: var(--sp-48) 0 var(--sp-96); }
+  .nav-tabs { display: flex; gap: var(--sp-8); margin-bottom: var(--sp-32); border-bottom: 1px solid var(--border-base); }
+  .nav-tab { padding: var(--sp-12) var(--sp-20); font-size: var(--body-sm); color: var(--text-medium); cursor: pointer; border-bottom: 2px solid transparent; }
+  .nav-tab.active { color: var(--brand-900); border-bottom-color: var(--brand-700); font-weight: var(--w-medium); }
+
+  .design-canvas {
+    background: var(--bg-body);
+    border: 1px solid var(--border-base);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: var(--sp-32);
+  }
+  .design-canvas-header {
+    padding: var(--sp-20) var(--sp-32);
+    border-bottom: 1px solid var(--border-base);
+    background: var(--bg-weak);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .design-canvas-body { padding: var(--sp-48); background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
+  .design-annotation {
+    margin-top: var(--sp-16);
+    padding: var(--sp-16) var(--sp-24);
+    background: var(--bg-weak);
+    border-top: 1px solid var(--border-base);
+    font-size: var(--body-sm);
+    color: var(--text-medium);
+  }
+  .design-annotation strong { color: var(--text-base); }
+
+  /* Desktop mockup */
+  .desktop {
+    width: 880px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+  .desktop-chrome {
+    background: var(--neutral-100);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-base);
+  }
+  .desktop-chrome .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .desktop-chrome .url {
+    flex: 1;
+    background: white;
+    border-radius: 14px;
+    padding: 6px 14px;
+    font-size: 11px;
+    color: var(--text-medium);
+    text-align: center;
+    margin-left: 24px;
+  }
+  .desktop-content { background: white; min-height: 500px; }
+
+  /* Brand portal nav */
+  .bp-nav {
+    background: white;
+    border-bottom: 1px solid var(--border-base);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .bp-nav .logo { font-weight: 700; color: var(--brand-900); letter-spacing: -0.01em; }
+  .bp-nav .nav-links { display: flex; gap: 24px; font-size: 13px; }
+  .bp-nav .nav-link { color: var(--text-medium); cursor: pointer; }
+  .bp-nav .nav-link.active { color: var(--brand-900); font-weight: 500; }
+  .bp-nav .nav-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+
+  /* Two-pane layout for licensing */
+  .lic-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; padding: 32px; background: var(--bg-weak); }
+  .lic-asset {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-base);
+  }
+  .lic-media {
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, var(--brand-700), var(--brand-900));
+    position: relative;
+    overflow: hidden;
+  }
+  .lic-media-meta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: white;
+  }
+  .lic-media-meta .creator { font-size: 13px; font-weight: 500; }
+  .lic-media-meta .caption { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+  .lic-engagement {
+    display: flex;
+    gap: 16px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--border-base);
+    font-size: 12px;
+    color: var(--text-medium);
+    background: var(--bg-weak);
+  }
+  .lic-engagement strong { color: var(--text-base); }
+
+  /* Right panel: pricing tiers */
+  .lic-panel { background: white; border-radius: 16px; padding: 28px; border: 1px solid var(--border-base); }
+  .lic-creator-row { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .lic-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--brand-700), var(--brand-900)); }
+  .lic-creator-info .name { font-weight: 700; }
+  .lic-creator-info .meta { font-size: 11px; color: var(--text-medium); margin-top: 2px; }
+
+  .tier-card {
+    border: 1px solid var(--border-base);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .tier-card:hover { border-color: var(--brand-400); }
+  .tier-card.active {
+    border-color: var(--brand-700);
+    background: var(--brand-100);
+    box-shadow: 0 0 0 3px rgba(174, 148, 249, 0.15);
+  }
+  .tier-card-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .tier-name { font-weight: 700; font-size: 14px; }
+  .tier-price { font-weight: 700; font-size: 16px; color: var(--brand-900); }
+  .tier-desc { font-size: 11px; color: var(--text-medium); margin-top: 6px; }
+
+  /* Stepper layout (alt) */
+  .stepper-canvas {
+    background: white;
+    border-radius: 16px;
+    margin: 32px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  }
+  .stepper-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border-base);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .step-dot {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--brand-700);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-line { flex: 1; height: 2px; background: var(--border-base); }
+  .step-line.done { background: var(--brand-700); }
+  .step-dot.pending { background: var(--bg-subtle); color: var(--text-medium); }
+
+  /* Side rail (creator opt-in desktop) */
+  .opt-shell { display: grid; grid-template-columns: 280px 1fr; min-height: 540px; }
+  .opt-rail { background: var(--neutral-100); padding: 32px 24px; border-right: 1px solid var(--border-base); }
+  .opt-rail .step { padding: 10px 0; display: flex; gap: 12px; align-items: flex-start; }
+  .opt-rail .step.done .num { background: var(--brand-700); color: white; }
+  .opt-rail .step.current .num { background: var(--brand-900); color: white; }
+  .opt-rail .step.pending .num { background: var(--bg-subtle); color: var(--text-medium); }
+  .opt-rail .num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .opt-rail .step-title { font-size: 13px; font-weight: 500; }
+  .opt-rail .step.pending .step-title { color: var(--text-medium); }
+  .opt-rail .step-desc { font-size: 11px; color: var(--text-medium); margin-top: 2px; }
+
+  .opt-body { padding: 48px; }
+  .opt-body h2 { font-size: 28px; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .opt-body p { color: var(--text-medium); margin-bottom: 32px; }
+
+  .rate-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .rate-cell {
+    background: white;
+    border: 1px solid var(--border-base);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .rate-cell-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-medium);
+  }
+  .rate-cell-format { font-weight: 700; font-size: 16px; margin-top: 4px; }
+  .rate-cell-input {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--bg-weak);
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--brand-900);
+    text-align: center;
+  }
+  .rate-cell-slider {
+    margin-top: 8px;
+    accent-color: var(--brand-700);
+    width: 100%;
+  }
+  .rate-comp {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-medium);
+    text-align: center;
+  }
+
+  /* Marketplace grid for asset discovery */
+  .market-grid {
+    padding: 32px;
+    background: var(--bg-weak);
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+  }
+  .market-filters { background: white; border-radius: 12px; padding: 20px; }
+  .market-filter-section { margin-bottom: 20px; }
+  .market-filter-section .filter-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-medium);
+    margin-bottom: 8px;
+  }
+  .market-assets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .market-asset {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-base);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .market-asset:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .market-asset-media {
+    aspect-ratio: 4/5;
+    position: relative;
+  }
+  .market-asset-meta {
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .market-asset-meta .price { font-weight: 700; color: var(--brand-900); }
+  .market-asset-meta .creator { font-size: 11px; color: var(--text-medium); }
+  .badge-mention {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sp-16); margin-top: var(--sp-24); }
+  .swatch { background: white; border: 1px solid var(--border-base); border-radius: var(--radius-md); padding: var(--sp-16); }
+  .swatch-color { height: 60px; border-radius: var(--radius-sm); }
+  .swatch-label { margin-top: var(--sp-8); font-size: var(--body-xs); color: var(--text-medium); font-family: ui-monospace, monospace; }
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · UGC Studio · Design</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back to spec</a>
+        <a class="btn btn-ghost btn-sm" href="../02-brand-portal-sales/design.html">Cluster 02 design →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / <a href="index.html">Cluster 01</a> / Design</div>
+      <h1>UGC Studio · Design Exploration</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">Three surfaces in depth: the brand-side <strong>license transaction</strong>, the brand-side <strong>asset marketplace</strong> (browse-to-license), and the creator-side <strong>rate-setting opt-in</strong>. Each has 2–3 design directions to compare.</p>
+    </div>
+  </section>
+
+  <div class="design-page">
+    <div class="container">
+
+      <h2 style="margin-bottom: var(--sp-12);">Surface 1 · License transaction (brand side)</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">When a brand is viewing a specific creator asset and wants to license it. The 3-click moment that has to feel like Airbnb instant-book, not a procurement process.</p>
+
+      <!-- Option A: Detail page with tier panel -->
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="cluster-badge" style="font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full);">DIRECTION A</span>
+            <strong style="margin-left: 12px;">Detail page · split asset + tier panel</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / soluna / ugc / r_4tk2</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link">Campaigns</span>
+                  <span class="nav-link active">UGC Studio</span>
+                  <span class="nav-link">Insights</span>
+                  <span class="nav-link">Settings</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna · Skin Co.</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div class="lic-layout">
+                <div class="lic-asset">
+                  <div class="lic-media">
+                    <span class="badge-mention">Mentions: Soluna · Glow</span>
+                    <div class="lic-media-meta">
+                      <div class="creator">@hanahbae · Reel · 28s</div>
+                      <div class="caption">"Skin care morning routine — three things that actually changed my routine this spring."</div>
+                    </div>
+                  </div>
+                  <div class="lic-engagement">
+                    <span><strong>2.4k</strong> likes</span>
+                    <span><strong>187</strong> comments</span>
+                    <span><strong>4.2%</strong> engagement</span>
+                    <span style="margin-left:auto;">posted 6d ago</span>
+                  </div>
+                </div>
+
+                <div class="lic-panel">
+                  <div class="lic-creator-row">
+                    <div class="lic-avatar"></div>
+                    <div class="lic-creator-info">
+                      <div class="name">Hanah Bae</div>
+                      <div class="meta">Brooklyn · 28k followers · 12 brand campaigns</div>
+                    </div>
+                  </div>
+
+                  <p style="font-size: 12px; color: var(--text-medium); margin: 16px 0 12px;">License this asset for use in your channels.</p>
+
+                  <div class="tier-card">
+                    <div class="tier-card-head">
+                      <span class="tier-name">Organic · 30 days</span>
+                      <span class="tier-price">$80</span>
+                    </div>
+                    <div class="tier-desc">Repost on your own channels. No paid boosting.</div>
+                  </div>
+
+                  <div class="tier-card active">
+                    <div class="tier-card-head">
+                      <span class="tier-name">Paid · 30 days</span>
+                      <span class="tier-price">$250</span>
+                    </div>
+                    <div class="tier-desc">Paid social, dark posts, partner whitelisting.</div>
+                  </div>
+
+                  <div class="tier-card">
+                    <div class="tier-card-head">
+                      <span class="tier-name">Perpetual</span>
+                      <span class="tier-price">$900</span>
+                    </div>
+                    <div class="tier-desc">Forever use across all owned and paid channels.</div>
+                  </div>
+
+                  <button class="btn btn-primary" style="width: 100%; margin-top: 16px; justify-content: center;">License now · $250</button>
+                  <div style="text-align: center; margin-top: 10px; font-size: 11px; color: var(--text-medium);">15% platform fee · Hanah gets $212.50</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> The asset is hero. Tiers sit beside it, scannable in one glance, active state visible. Creator info is small but present (trust signal). The "Hanah gets X" line is the empathy beat — brands like seeing it; creators feel like the platform is on their side too.
+          <br><br>
+          <strong>The risk:</strong> Three tier cards may feel like a lot to read. Mitigation: track which tier brands actually pick; if 85% pick "Paid 30 days," promote it visually and demote the others.
+        </div>
+      </div>
+
+      <!-- Option B: Compact modal -->
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="cluster-badge" style="font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full);">DIRECTION B</span>
+            <strong style="margin-left: 12px;">In-flow modal · stepper across the top</strong>
+          </div>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / soluna / ugc</div>
+            </div>
+            <div class="desktop-content" style="background: rgba(0,0,0,0.4); padding: 40px;">
+              <div class="stepper-canvas" style="margin: 0; max-width: 720px; margin: 0 auto;">
+                <div class="stepper-header">
+                  <div class="step-dot">1</div>
+                  <span style="font-size: 13px; font-weight: 500;">Asset</span>
+                  <div class="step-line done"></div>
+                  <div class="step-dot">2</div>
+                  <span style="font-size: 13px; font-weight: 500;">Usage</span>
+                  <div class="step-line"></div>
+                  <div class="step-dot pending">3</div>
+                  <span style="font-size: 13px; color: var(--text-medium);">Pay</span>
+                </div>
+                <div style="padding: 32px;">
+                  <h3 style="font-size: 22px; letter-spacing: -0.01em;">How will you use this content?</h3>
+                  <p style="color: var(--text-medium); margin-top: 6px; font-size: 14px;">Pick the usage tier that matches your plan.</p>
+
+                  <div style="margin-top: 24px; display: flex; gap: 16px;">
+                    <div style="flex: 1; border: 1px solid var(--border-base); border-radius: 14px; padding: 18px;">
+                      <div style="display:flex; justify-content: space-between;">
+                        <strong style="font-size: 14px;">Organic</strong>
+                        <strong style="color: var(--brand-900);">$80</strong>
+                      </div>
+                      <div style="font-size: 12px; color: var(--text-medium); margin-top: 8px;">30 days. Repost only.</div>
+                    </div>
+                    <div style="flex: 1; border: 2px solid var(--brand-700); background: var(--brand-100); border-radius: 14px; padding: 18px;">
+                      <div style="display:flex; justify-content: space-between;">
+                        <strong style="font-size: 14px;">Paid</strong>
+                        <strong style="color: var(--brand-900);">$250</strong>
+                      </div>
+                      <div style="font-size: 12px; color: var(--brand-900); margin-top: 8px;">30 days. Boosts + dark posts.</div>
+                      <div style="margin-top: 12px; font-size: 11px; color: var(--brand-900);">Most common</div>
+                    </div>
+                    <div style="flex: 1; border: 1px solid var(--border-base); border-radius: 14px; padding: 18px;">
+                      <div style="display:flex; justify-content: space-between;">
+                        <strong style="font-size: 14px;">Perpetual</strong>
+                        <strong style="color: var(--brand-900);">$900</strong>
+                      </div>
+                      <div style="font-size: 12px; color: var(--text-medium); margin-top: 8px;">Forever, any channel.</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap: 12px; margin-top: 28px;">
+                    <button class="btn btn-ghost btn-sm" style="flex: 1; justify-content: center;">Back</button>
+                    <button class="btn btn-primary" style="flex: 2; justify-content: center;">Continue · $250</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Tiers sit side-by-side with clear "most common" annotation that nudges price discovery. Stepper at top means brands always know where they are. Better for first-time licensors who need to think about usage before clicking.
+          <br><br>
+          <strong>Tradeoff:</strong> One extra click vs. Direction A (because you arrive at this from a list page, not the asset detail). Heavier modal pattern. Better as the second step of a marketplace-style discovery, less good for the "I saw this asset, want it now" entry point.
+        </div>
+      </div>
+
+      <!-- Option C: Inline checkout -->
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="cluster-badge" style="font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full);">DIRECTION C</span>
+            <strong style="margin-left: 12px;">Single-screen express · default to "Paid 30 days"</strong>
+          </div>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / express-license / r_4tk2</div>
+            </div>
+            <div class="desktop-content" style="background: var(--bg-weak); padding: 48px;">
+              <div style="max-width: 540px; margin: 0 auto; background: white; border-radius: 16px; padding: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.06);">
+                <div style="display:flex; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border-base);">
+                  <div style="width: 80px; aspect-ratio: 4/5; background: linear-gradient(135deg, var(--brand-700), var(--brand-900)); border-radius: 8px;"></div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">REEL · 28S</div>
+                    <div style="font-weight: 700; margin: 4px 0;">"Skin care morning routine"</div>
+                    <div style="font-size: 12px; color: var(--text-medium);">by @hanahbae · 28k</div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">USAGE</div>
+                  <select style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-base); border-radius: 10px; background: white; font-size: 14px;">
+                    <option>Paid 30 days · $250</option>
+                  </select>
+                  <div style="font-size: 11px; color: var(--text-medium); margin-top: 6px;">Includes paid social, dark posts, partner whitelisting.</div>
+                </div>
+
+                <div style="margin-top: 24px; padding: 16px; background: var(--bg-weak); border-radius: 10px; display: flex; justify-content: space-between; font-size: 13px;">
+                  <div>
+                    <div>License fee</div>
+                    <div>Platform fee (15%)</div>
+                    <div style="font-weight: 700; margin-top: 4px;">Total</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div>$250.00</div>
+                    <div>$37.50</div>
+                    <div style="font-weight: 700; margin-top: 4px; color: var(--brand-900);">$287.50</div>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; margin-top: 20px; justify-content: center; padding: 16px;">License now · $287.50</button>
+                <div style="text-align: center; margin-top: 8px;">
+                  <a href="#" style="font-size: 12px; color: var(--text-medium);">change usage tier</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Almost Stripe Checkout in feel. Pre-selects the most common tier; advanced users can change. Total + fee breakdown surfaced upfront — no surprise charges. Single tall column scans top-to-bottom.
+          <br><br>
+          <strong>When this wins:</strong> Best for brands who already know what they want — they came from a marketing email or a "license this content" CTA from a creator profile. Worst for browsing.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Surface 2 · Marketplace browse</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Where the brand discovers what's available. Within their campaign pool for v1 (D-01 Option A).</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="cluster-badge" style="font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full);">DIRECTION</span>
+            <strong style="margin-left: 12px;">Pinterest-style grid with filterable rail</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / soluna / ugc</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link">Campaigns</span>
+                  <span class="nav-link active">UGC Studio</span>
+                  <span class="nav-link">Insights</span>
+                  <span class="nav-link">Settings</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna · Skin Co.</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div style="padding: 32px; border-bottom: 1px solid var(--border-base);">
+                <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;">UGC STUDIO</div>
+                <h2 style="font-size: 28px; margin-top: 4px; letter-spacing: -0.02em;">Content available to license</h2>
+                <p style="color: var(--text-medium); margin-top: 6px;">38 assets from 12 creators in your pool · updated 4 hours ago</p>
+              </div>
+
+              <div class="market-grid">
+                <div class="market-filters">
+                  <div class="market-filter-section">
+                    <div class="filter-label">FORMAT</div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" checked style="accent-color: var(--brand-700);"> Reels</label>
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" checked style="accent-color: var(--brand-700);"> Posts</label>
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" style="accent-color: var(--brand-700);"> Stories</label>
+                    </div>
+                  </div>
+                  <div class="market-filter-section">
+                    <div class="filter-label">PRODUCT</div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" checked style="accent-color: var(--brand-700);"> Vitamin C Serum</label>
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" checked style="accent-color: var(--brand-700);"> SPF Glow</label>
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" style="accent-color: var(--brand-700);"> Eye Cream</label>
+                    </div>
+                  </div>
+                  <div class="market-filter-section">
+                    <div class="filter-label">PRICE · PAID 30D</div>
+                    <input type="range" min="50" max="800" value="500" style="width: 100%; accent-color: var(--brand-700);">
+                    <div style="display:flex; justify-content: space-between; font-size: 10px; color: var(--text-medium); margin-top: 4px;">
+                      <span>$50</span><span>≤ $500</span><span>$800</span>
+                    </div>
+                  </div>
+                  <div class="market-filter-section">
+                    <div class="filter-label">ENGAGEMENT</div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" style="accent-color: var(--brand-700);"> &gt; 5% rate</label>
+                      <label style="font-size: 12px; display:flex; gap: 6px; align-items: center;"><input type="checkbox" style="accent-color: var(--brand-700);"> &gt; 1k likes</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="market-assets">
+                  <div class="market-asset">
+                    <div class="market-asset-media" style="background: linear-gradient(135deg, var(--brand-700), var(--brand-900));">
+                      <span class="badge-mention">Reel · 28s</span>
+                    </div>
+                    <div class="market-asset-meta">
+                      <div>
+                        <div class="creator">@hanahbae</div>
+                      </div>
+                      <div class="price">$250</div>
+                    </div>
+                  </div>
+                  <div class="market-asset">
+                    <div class="market-asset-media" style="background: linear-gradient(135deg, var(--green-500), var(--green-700));">
+                      <span class="badge-mention">Post</span>
+                    </div>
+                    <div class="market-asset-meta">
+                      <div>
+                        <div class="creator">@morgan</div>
+                      </div>
+                      <div class="price">$180</div>
+                    </div>
+                  </div>
+                  <div class="market-asset">
+                    <div class="market-asset-media" style="background: linear-gradient(135deg, var(--orange-500), var(--orange-700));">
+                      <span class="badge-mention">Reel · 45s</span>
+                    </div>
+                    <div class="market-asset-meta">
+                      <div>
+                        <div class="creator">@kelseyalpine</div>
+                      </div>
+                      <div class="price">$320</div>
+                    </div>
+                  </div>
+                  <div class="market-asset">
+                    <div class="market-asset-media" style="background: linear-gradient(135deg, var(--red-500), var(--red-700));">
+                      <span class="badge-mention">Post · carousel</span>
+                    </div>
+                    <div class="market-asset-meta">
+                      <div>
+                        <div class="creator">@sophiasalem</div>
+                      </div>
+                      <div class="price">$200</div>
+                    </div>
+                  </div>
+                  <div class="market-asset">
+                    <div class="market-asset-media" style="background: linear-gradient(135deg, var(--blue-500), var(--blue-700));">
+                      <span class="badge-mention">Reel · 19s</span>
+                    </div>
+                    <div class="market-asset-meta">
+                      <div>
+                        <div class="creator">@charissereid</div>
+                      </div>
+                      <div class="price">$160</div>
+                    </div>
+                  </div>
+                  <div class="market-asset">
+                    <div class="market-asset-media" style="background: linear-gradient(135deg, var(--brand-300), var(--brand-700));">
+                      <span class="badge-mention">Reel · 62s</span>
+                    </div>
+                    <div class="market-asset-meta">
+                      <div>
+                        <div class="creator">@kellymeng</div>
+                      </div>
+                      <div class="price">$400</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Pinterest-grid scales — visual scanning over reading. Filter rail handles power-user discovery. Each tile shows the price for "Paid 30 days" so brands can budget at-a-glance. Clicking a tile drops them into Direction A above.
+          <br><br>
+          <strong>Important:</strong> The filter rail's default state matters. Recommend: pre-select brand's primary products, "most common usage tier" pricing, and a price ceiling tied to their typical campaign budget. Defaults convert; empty filters intimidate.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Surface 3 · Creator opt-in (rate setting)</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">The other side of the loop. Creator sets rates once, never has to negotiate. This is the surface that converts an interested creator into a seller.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="cluster-badge" style="font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full);">DIRECTION A</span>
+            <strong style="margin-left: 12px;">Single-screen grid · three formats, sliders + comps</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">benable.com / creator / ugc-studio / setup</div>
+            </div>
+            <div class="desktop-content">
+              <div class="opt-shell">
+                <div class="opt-rail">
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 24px;">UGC STUDIO SETUP</div>
+                  <div class="step done">
+                    <div class="num">✓</div>
+                    <div>
+                      <div class="step-title">Eligibility</div>
+                      <div class="step-desc">You're in.</div>
+                    </div>
+                  </div>
+                  <div class="step current">
+                    <div class="num">2</div>
+                    <div>
+                      <div class="step-title">Set your rates</div>
+                      <div class="step-desc">Per format.</div>
+                    </div>
+                  </div>
+                  <div class="step pending">
+                    <div class="num">3</div>
+                    <div>
+                      <div class="step-title">Sign standard contract</div>
+                      <div class="step-desc">Once. Per usage tier.</div>
+                    </div>
+                  </div>
+                  <div class="step pending">
+                    <div class="num">4</div>
+                    <div>
+                      <div class="step-title">Payout details</div>
+                      <div class="step-desc">Existing rails.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="opt-body">
+                  <h2>Set your rates once.</h2>
+                  <p>These are your <strong>30-day paid usage</strong> prices. We'll auto-calculate organic (0.4×) and perpetual (1.6×) from these. Brands you've worked with can license your content at these prices without DMing.</p>
+
+                  <div class="rate-grid">
+                    <div class="rate-cell">
+                      <div class="rate-cell-label">STORY</div>
+                      <div class="rate-cell-format">24-30 seconds</div>
+                      <div class="rate-cell-input">$50</div>
+                      <input type="range" min="20" max="200" value="50" class="rate-cell-slider">
+                      <div class="rate-comp">Comps · 28k: <strong>$40-80</strong></div>
+                    </div>
+                    <div class="rate-cell">
+                      <div class="rate-cell-label">POST</div>
+                      <div class="rate-cell-format">Static / carousel</div>
+                      <div class="rate-cell-input">$180</div>
+                      <input type="range" min="80" max="600" value="180" class="rate-cell-slider">
+                      <div class="rate-comp">Comps · 28k: <strong>$150-280</strong></div>
+                    </div>
+                    <div class="rate-cell">
+                      <div class="rate-cell-label">REEL</div>
+                      <div class="rate-cell-format">Video</div>
+                      <div class="rate-cell-input">$350</div>
+                      <input type="range" min="100" max="1500" value="350" class="rate-cell-slider">
+                      <div class="rate-comp">Comps · 28k: <strong>$280-450</strong></div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 24px; padding: 16px 20px; background: var(--brand-100); border-radius: 12px; border-left: 3px solid var(--brand-700);">
+                    <div style="font-size: 13px; color: var(--brand-900); font-weight: 500;">If a brand licenses one Reel at perpetual rate, you'll earn $476 (after our 15% fee).</div>
+                    <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">Live preview · updates as you change your prices.</div>
+                  </div>
+
+                  <div style="display:flex; gap: 12px; margin-top: 32px;">
+                    <button class="btn btn-ghost btn-sm">Skip for now</button>
+                    <button class="btn btn-primary" style="margin-left:auto;">Continue to contract</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Three sliders, comp-data inline (huge for "what should I charge"), live earnings preview at the bottom. The whole setup fits on one screen. Side rail shows progress without being a wizard. Critical: the comps panel — most creators have no idea what to charge.
+          <br><br>
+          <strong>If we get this right:</strong> opt-in conversion should be &gt; 60% of creators who land on this screen. The comps + live preview do the persuasion.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-16);">Design tokens used</h2>
+      <p class="t-muted" style="margin-bottom: var(--sp-24);">All colors and spacing pulled directly from the Benable design system.</p>
+
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-700);"></div>
+          <div class="swatch-label">brand-700 (action)</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-100);"></div>
+          <div class="swatch-label">brand-100 (light bg)</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--brand-900);"></div>
+          <div class="swatch-label">brand-900 (text-on-light)</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--neutral-800);"></div>
+          <div class="swatch-label">text-base</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--bg-weak);"></div>
+          <div class="swatch-label">bg-weak</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background: var(--green-500);"></div>
+          <div class="swatch-label">success</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Cluster 01 spec</a>
+        <a class="btn btn-primary btn-sm" href="../02-brand-portal-sales/design.html">Cluster 02 design →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Campaign Builder v2 · Design Exploration</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+<style>
+  .design-page { background: var(--bg-weak); padding: var(--sp-48) 0 var(--sp-96); }
+  .design-canvas { background: var(--bg-body); border: 1px solid var(--border-base); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: var(--sp-32); }
+  .design-canvas-header { padding: var(--sp-20) var(--sp-32); border-bottom: 1px solid var(--border-base); background: var(--bg-weak); display: flex; justify-content: space-between; align-items: center; }
+  .design-canvas-body { padding: var(--sp-48); background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
+  .design-annotation { margin-top: var(--sp-16); padding: var(--sp-16) var(--sp-24); background: var(--bg-weak); border-top: 1px solid var(--border-base); font-size: var(--body-sm); color: var(--text-medium); }
+  .design-annotation strong { color: var(--text-base); }
+  .direction-badge { font-family: ui-monospace, monospace; font-size: 11px; color: var(--brand-900); background: var(--brand-300); padding: 4px 10px; border-radius: var(--radius-full); }
+
+  .desktop { width: 880px; margin: 0 auto; background: white; border-radius: var(--radius-md); box-shadow: 0 20px 50px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06); overflow: hidden; }
+  .desktop-chrome { background: var(--neutral-100); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-base); }
+  .desktop-chrome .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .desktop-chrome .url { flex: 1; background: white; border-radius: 14px; padding: 6px 14px; font-size: 11px; color: var(--text-medium); text-align: center; margin-left: 24px; }
+  .desktop-content { background: white; min-height: 500px; }
+
+  .bp-nav { background: white; border-bottom: 1px solid var(--border-base); padding: 14px 24px; display: flex; align-items: center; gap: 32px; }
+  .bp-nav .logo { font-weight: 700; color: var(--brand-900); letter-spacing: -0.01em; }
+  .bp-nav .nav-links { display: flex; gap: 24px; font-size: 13px; }
+  .bp-nav .nav-link { color: var(--text-medium); cursor: pointer; }
+  .bp-nav .nav-link.active { color: var(--brand-900); font-weight: 500; }
+  .bp-nav .nav-actions { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+
+  /* Campaign builder layout */
+  .cb-shell { display: grid; grid-template-columns: 200px 1fr 280px; min-height: 600px; }
+  .cb-rail { background: var(--neutral-100); border-right: 1px solid var(--border-base); padding: 24px 16px; }
+  .cb-rail-title { font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; padding: 0 8px; margin-bottom: 12px; }
+  .cb-rail-section {
+    padding: 8px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 4px;
+  }
+  .cb-rail-section.active { background: white; box-shadow: 0 1px 2px rgba(0,0,0,0.06); font-weight: 500; }
+  .cb-rail-section.done { color: var(--text-medium); }
+  .cb-rail-section .check { color: var(--green-500); font-size: 11px; }
+  .cb-main { padding: 32px 40px; }
+  .cb-aside { background: var(--bg-weak); border-left: 1px solid var(--border-base); padding: 24px; }
+  .cb-aside h4 { font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; font-weight: 500; }
+  .cb-aside-section { margin-bottom: 20px; }
+  .cb-aside-value { font-weight: 700; font-size: 14px; color: var(--brand-900); }
+  .cb-aside-sub { font-size: 11px; color: var(--text-medium); margin-top: 2px; }
+
+  .cb-section { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border-base); }
+  .cb-section:last-of-type { border-bottom: none; }
+  .cb-section h3 { font-size: 18px; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .cb-section .lede { font-size: 13px; color: var(--text-medium); margin-bottom: 16px; }
+  .cb-fieldset { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--border-base); }
+  .cb-fieldset:last-child { border-bottom: none; }
+  .cb-label { font-size: 13px; font-weight: 500; }
+  .cb-help { font-size: 11px; color: var(--text-medium); margin-top: 4px; line-height: 1.4; }
+
+  .seg-toggle { display: inline-flex; background: var(--bg-weak); border-radius: 8px; padding: 3px; }
+  .seg-btn { padding: 6px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; color: var(--text-medium); }
+  .seg-btn.active { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); color: var(--brand-900); font-weight: 500; }
+
+  .chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill-toggle { display: inline-flex; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: var(--bg-weak); color: var(--text-medium); cursor: pointer; border: 1px solid transparent; }
+  .pill-toggle.on { background: var(--brand-100); color: var(--brand-900); border-color: var(--brand-700); font-weight: 500; }
+
+  .num-input { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border-base); border-radius: 8px; padding: 4px; }
+  .num-input button { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-weak); border: none; cursor: pointer; font-size: 14px; color: var(--brand-900); }
+  .num-input .val { padding: 0 8px; font-weight: 600; min-width: 30px; text-align: center; }
+
+  /* Mobile selection cap */
+  .phone { width: 280px; margin: 0 auto; border-radius: 36px; background: var(--neutral-900); padding: 12px; box-shadow: var(--shadow-lg); }
+  .phone-screen { border-radius: 28px; background: var(--bg-body); overflow: hidden; height: 600px; position: relative; }
+  .phone-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-24); justify-items: center; }
+
+  .product-card {
+    display: flex; gap: 14px; padding: 14px; border-radius: 14px; border: 1px solid var(--border-base);
+  }
+  .product-card.selected { border-color: var(--brand-700); background: var(--brand-100); }
+  .product-card.disabled { opacity: 0.45; border-style: dashed; }
+  .product-img { width: 56px; aspect-ratio: 1; border-radius: 10px; }
+  .product-meta { flex: 1; }
+  .product-name { font-weight: 700; font-size: 13px; }
+  .product-sub { font-size: 11px; color: var(--text-medium); margin-top: 2px; }
+  .product-check { color: var(--brand-700); }
+
+</style>
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Campaign Builder · Design</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Back to spec</a>
+        <a class="btn btn-ghost btn-sm" href="../04-creator-onboarding/design.html">Cluster 04 design →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / <a href="index.html">Cluster 03</a> / Design</div>
+      <h1>Campaign Builder v2 · Design Exploration</h1>
+      <p style="margin-top: var(--sp-16); color: var(--text-medium); max-width: 760px; line-height: 1.6;">Two surfaces. The brand-side <strong>campaign builder</strong> with new configurable axes (D-07), and the mobile creator-side <strong>product selection</strong> when caps are flexed (D-08 — the May 8 Slack thread fix).</p>
+    </div>
+  </section>
+
+  <div class="design-page">
+    <div class="container">
+
+      <h2 style="margin-bottom: var(--sp-12);">Surface 1 · Campaign builder (brand side)</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">Two directions for the builder itself: a <strong>form with progressive disclosure</strong> (defaults handle most cases) vs. a <strong>4-step wizard</strong> (more guidance, more friction). D-07.</p>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION A</span>
+            <strong style="margin-left: 12px;">Form with progressive disclosure · scrollable single page</strong>
+          </div>
+          <span class="rec rec-build">Recommended</span>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / campaigns / new</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link">Home</span>
+                  <span class="nav-link active">Campaigns</span>
+                  <span class="nav-link">UGC Studio</span>
+                  <span class="nav-link">Settings</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div style="padding: 24px 32px; border-bottom: 1px solid var(--border-base); background: var(--bg-weak); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">DRAFT · UNSAVED</div>
+                  <h2 style="font-size: 22px; letter-spacing: -0.02em; margin-top: 2px;">Spring Skin Reset · v2</h2>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-ghost btn-sm">Save draft</button>
+                  <button class="btn btn-primary btn-sm">Review &amp; launch</button>
+                </div>
+              </div>
+
+              <div class="cb-shell">
+                <div class="cb-rail">
+                  <div class="cb-rail-title">SECTIONS</div>
+                  <div class="cb-rail-section done">Basics <span class="check">✓</span></div>
+                  <div class="cb-rail-section active">Content rules</div>
+                  <div class="cb-rail-section">Commerce</div>
+                  <div class="cb-rail-section">Pool &amp; matching</div>
+                  <div class="cb-rail-section">Brief &amp; rights</div>
+                  <div class="cb-rail-section">Review</div>
+                  <div style="margin-top: 24px; padding: 12px; background: white; border-radius: 8px;">
+                    <div style="font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">TEMPLATES</div>
+                    <a href="#" style="font-size: 12px; color: var(--brand-700); display: block; margin-top: 6px;">Start from template →</a>
+                  </div>
+                </div>
+
+                <div class="cb-main">
+                  <div class="cb-section">
+                    <h3>Content rules</h3>
+                    <p class="lede">What creators deliver. Brands can mix formats per campaign now.</p>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Content types</div>
+                        <div class="cb-help">Each creator delivers one of the selected formats. We assign or let them pick.</div>
+                      </div>
+                      <div>
+                        <div class="chip-row">
+                          <span class="pill-toggle on">Reel</span>
+                          <span class="pill-toggle on">Story</span>
+                          <span class="pill-toggle">Post (static)</span>
+                          <span class="pill-toggle">Post (carousel)</span>
+                          <span class="pill-toggle">UGC for licensing</span>
+                        </div>
+                        <div style="margin-top: 12px; display: flex; gap: 8px; align-items: center;">
+                          <span style="font-size: 11px; color: var(--text-medium);">Format assignment:</span>
+                          <div class="seg-toggle">
+                            <span class="seg-btn active">Benable picks</span>
+                            <span class="seg-btn">Creator picks</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Timeline per format</div>
+                        <div class="cb-help">Days from package arrival.</div>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                          <span style="font-size: 12px; width: 70px;">Reel</span>
+                          <div class="num-input">
+                            <button>−</button><span class="val">7</span><button>+</button>
+                          </div>
+                          <span style="font-size: 11px; color: var(--text-medium);">days</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                          <span style="font-size: 12px; width: 70px;">Story</span>
+                          <div class="num-input">
+                            <button>−</button><span class="val">2</span><button>+</button>
+                          </div>
+                          <span style="font-size: 11px; color: var(--text-medium);">days</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Required hashtag</div>
+                        <div class="cb-help">Soft prompt before publish. <a href="#" style="color: var(--brand-700);">Make required →</a></div>
+                      </div>
+                      <div>
+                        <input type="text" value="#solunaskin" style="padding: 10px 14px; border: 1px solid var(--border-base); border-radius: 10px; font-size: 13px; width: 200px;">
+                      </div>
+                    </div>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Revision policy</div>
+                        <div class="cb-help">Shown to creator on accept.</div>
+                      </div>
+                      <div>
+                        <div class="seg-toggle">
+                          <span class="seg-btn active">One round of feedback</span>
+                          <span class="seg-btn">Unlimited</span>
+                          <span class="seg-btn">None</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="cb-section">
+                    <h3>Commerce</h3>
+                    <p class="lede">Product selection caps, commission, fulfillment.</p>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Product selection cap</div>
+                        <div class="cb-help">How many products each creator picks from your offering.</div>
+                      </div>
+                      <div style="display: flex; gap: 10px; align-items: center;">
+                        <div class="num-input">
+                          <button>−</button><span class="val">3</span><button>+</button>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-medium);">products · was 2 by default</span>
+                      </div>
+                    </div>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Commission rate</div>
+                        <div class="cb-help">Default rate. Override per creator in next step.</div>
+                      </div>
+                      <div style="display: flex; gap: 10px; align-items: center;">
+                        <div class="num-input">
+                          <button>−</button><span class="val">15</span><button>+</button>
+                        </div>
+                        <span style="font-size: 11px; color: var(--text-medium);">%</span>
+                        <a href="#" style="font-size: 11px; color: var(--brand-700); margin-left: 8px;">Per-creator rates →</a>
+                      </div>
+                    </div>
+
+                    <div class="cb-fieldset">
+                      <div>
+                        <div class="cb-label">Fulfillment</div>
+                        <div class="cb-help">How creators receive product.</div>
+                      </div>
+                      <div>
+                        <div class="seg-toggle">
+                          <span class="seg-btn active">Ship product</span>
+                          <span class="seg-btn">Gift card</span>
+                          <span class="seg-btn">No fulfillment (UGC-only)</span>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 11px; color: var(--text-medium);">Auto-fulfilled via Shopify · Soluna store</div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="cb-aside">
+                  <h4>WHO SEES THIS CAMPAIGN</h4>
+                  <div style="background: white; padding: 14px; border-radius: 10px; border: 1px solid var(--border-base);">
+                    <div class="cb-aside-value">42 creators in pool</div>
+                    <div class="cb-aside-sub">From "Skincare creators" + your pre-invited list</div>
+                  </div>
+
+                  <h4 style="margin-top: 20px;">ESTIMATED OUTCOMES</h4>
+                  <div class="cb-aside-section">
+                    <div class="cb-aside-value">~12 acceptances</div>
+                    <div class="cb-aside-sub">Based on pool response rate (28%)</div>
+                  </div>
+                  <div class="cb-aside-section">
+                    <div class="cb-aside-value">~2.1M reach</div>
+                    <div class="cb-aside-sub">Combined creator audience</div>
+                  </div>
+                  <div class="cb-aside-section">
+                    <div class="cb-aside-value">$4,200 product cost</div>
+                    <div class="cb-aside-sub">3 products × $48 avg × 30 creators (incl. buffer)</div>
+                  </div>
+
+                  <div style="margin-top: 20px; padding: 12px; background: var(--brand-100); border-radius: 10px; border-left: 3px solid var(--brand-700);">
+                    <div style="font-size: 11px; color: var(--brand-900); font-weight: 500;">Compared to your last campaign:</div>
+                    <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">→ 1.5× larger pool<br>→ Same fulfillment cost</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> Form-on-a-page with section rail. New axes (cap, commission, fulfillment, content mix, timeline) live inside familiar containers. Right rail does live computation — creators in pool, estimated outcomes — which is the "trust this design" moment for brands.
+          <br><br>
+          <strong>Critical decision visible:</strong> "Product selection cap = 3 · was 2 by default" surfaces D-08 directly — brands see they're flexing the default and can move it back. Solves Earth Science's case.
+        </div>
+      </div>
+
+      <div class="design-canvas">
+        <div class="design-canvas-header">
+          <div>
+            <span class="direction-badge">DIRECTION B</span>
+            <strong style="margin-left: 12px;">Stepper wizard · 5 named steps</strong>
+          </div>
+        </div>
+        <div class="design-canvas-body">
+          <div class="desktop">
+            <div class="desktop-chrome">
+              <div class="dot" style="background:#ff5f57;"></div>
+              <div class="dot" style="background:#ffbd2e;"></div>
+              <div class="dot" style="background:#28c940;"></div>
+              <div class="url">brands.benable.com / campaigns / new</div>
+            </div>
+            <div class="desktop-content">
+              <div class="bp-nav">
+                <div class="logo">Benable Brands</div>
+                <div class="nav-links">
+                  <span class="nav-link">Home</span>
+                  <span class="nav-link active">Campaigns</span>
+                  <span class="nav-link">UGC Studio</span>
+                  <span class="nav-link">Settings</span>
+                </div>
+                <div class="nav-actions">
+                  <span style="font-size: 12px; color: var(--text-medium);">Soluna</span>
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                </div>
+              </div>
+
+              <div style="padding: 32px;">
+                <div style="display: flex; gap: 4px; align-items: center; max-width: 760px; margin: 0 auto;">
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand-700); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">✓</div>
+                    <div style="font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">BASICS</div>
+                  </div>
+                  <div style="height: 2px; flex: 0.3; background: var(--brand-700); margin-top: -16px;"></div>
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand-900); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">2</div>
+                    <div style="font-size: 10px; color: var(--brand-900); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700;">CONTENT</div>
+                  </div>
+                  <div style="height: 2px; flex: 0.3; background: var(--bg-subtle); margin-top: -16px;"></div>
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--bg-subtle); color: var(--text-medium); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">3</div>
+                    <div style="font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">COMMERCE</div>
+                  </div>
+                  <div style="height: 2px; flex: 0.3; background: var(--bg-subtle); margin-top: -16px;"></div>
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--bg-subtle); color: var(--text-medium); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">4</div>
+                    <div style="font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">POOL</div>
+                  </div>
+                  <div style="height: 2px; flex: 0.3; background: var(--bg-subtle); margin-top: -16px;"></div>
+                  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--bg-subtle); color: var(--text-medium); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">5</div>
+                    <div style="font-size: 10px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em;">REVIEW</div>
+                  </div>
+                </div>
+
+                <div style="max-width: 600px; margin: 40px auto 0;">
+                  <h2 style="font-size: 28px; letter-spacing: -0.02em;">What kind of content?</h2>
+                  <p style="color: var(--text-medium); margin-top: 6px;">Pick any combination of formats. We'll assign or let creators pick from what you allow.</p>
+
+                  <div style="margin-top: 32px;">
+                    <div class="cb-label" style="margin-bottom: 12px;">Content types</div>
+                    <div class="chip-row">
+                      <span class="pill-toggle on">Reel</span>
+                      <span class="pill-toggle on">Story</span>
+                      <span class="pill-toggle">Post (static)</span>
+                      <span class="pill-toggle">Post (carousel)</span>
+                      <span class="pill-toggle">UGC for licensing</span>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 28px;">
+                    <div class="cb-label" style="margin-bottom: 12px;">Timeline (days from package arrival)</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                      <div style="display: flex; gap: 12px; align-items: center;">
+                        <span style="font-size: 13px; width: 80px;">Reel</span>
+                        <input type="range" min="2" max="14" value="7" style="flex: 1; accent-color: var(--brand-700);">
+                        <span style="font-size: 13px; width: 50px; text-align: right;"><strong>7</strong> days</span>
+                      </div>
+                      <div style="display: flex; gap: 12px; align-items: center;">
+                        <span style="font-size: 13px; width: 80px;">Story</span>
+                        <input type="range" min="1" max="7" value="2" style="flex: 1; accent-color: var(--brand-700);">
+                        <span style="font-size: 13px; width: 50px; text-align: right;"><strong>2</strong> days</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 10px; margin-top: 48px;">
+                    <button class="btn btn-ghost btn-sm">← Back</button>
+                    <button class="btn btn-primary" style="margin-left: auto;">Next: Commerce →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="design-annotation">
+          <strong>Why this works:</strong> One decision at a time. Lower cognitive load for first-time campaign creators. Clear progress; can't skip ahead.
+          <br><br>
+          <strong>The cost:</strong> Five separate screen loads to do what's one scroll in Direction A. Power brands (who run weekly campaigns) hate this. Best as the "Brand new to Benable" flow only — could even fork: existing brands get A, first-timers get B.
+        </div>
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-12);">Surface 2 · Selection-cap UX (D-08, the May 8 Slack thread)</h2>
+      <p class="t-muted" style="max-width: 760px; margin-bottom: var(--sp-32);">When a creator hits the picker on mobile and the brand has set cap = 2. Three behaviors to choose between.</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">A · Soft state from the start</span>
+            <span class="rec rec-build">Recommended</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px;">
+                  <div style="font-size: 11px; color: var(--text-medium);">Step 1 of 3 · Soluna · Spring Skin Reset</div>
+                  <h3 style="font-size: 20px; letter-spacing: -0.01em; margin-top: 4px;">Pick up to 2 products</h3>
+                  <p style="font-size: 12px; color: var(--text-medium); margin-top: 2px;">Earth Science · 3 available</p>
+
+                  <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+                    <div class="product-card selected">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                      <div class="product-meta">
+                        <div class="product-name">Vitamin C Serum</div>
+                        <div class="product-sub">$48 · selected</div>
+                      </div>
+                      <div class="product-check">✓</div>
+                    </div>
+                    <div class="product-card selected">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--orange-500), var(--orange-700));"></div>
+                      <div class="product-meta">
+                        <div class="product-name">SPF Glow</div>
+                        <div class="product-sub">$32 · selected</div>
+                      </div>
+                      <div class="product-check">✓</div>
+                    </div>
+                    <div class="product-card disabled">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--blue-500), var(--blue-700));"></div>
+                      <div class="product-meta">
+                        <div class="product-name">Eye Cream</div>
+                        <div class="product-sub">$56 · swap one to add</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; background: white; border-top: 1px solid var(--border-base);">
+                  <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 10px;">
+                    <span style="color: var(--text-medium);">2 of 2 picked</span>
+                    <span style="color: var(--brand-900); font-weight: 500;">$80 total · ship to me</span>
+                  </div>
+                  <button class="btn btn-primary" style="width: 100%; justify-content: center;">Continue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Limit communicated in the title. Disabled card says "swap one to add" — invitation, not error. Selected count visible always at footer. Most ergonomic.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">B · Allow tap, prompt to swap</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px;">
+                  <h3 style="font-size: 20px; letter-spacing: -0.01em;">Pick 2 products</h3>
+                  <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <div class="product-card selected">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                      <div class="product-meta"><div class="product-name">Vitamin C Serum</div></div>
+                      <div class="product-check">✓</div>
+                    </div>
+                    <div class="product-card selected">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--orange-500), var(--orange-700));"></div>
+                      <div class="product-meta"><div class="product-name">SPF Glow</div></div>
+                      <div class="product-check">✓</div>
+                    </div>
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; background: white; box-shadow: 0 -10px 30px rgba(0,0,0,0.12); border-radius: 16px 16px 0 0; padding: 20px;">
+                  <div style="font-weight: 700; font-size: 14px;">You picked Eye Cream — swap?</div>
+                  <p style="font-size: 12px; color: var(--text-medium); margin-top: 6px;">You can only ship 2. Pick which one to drop.</p>
+                  <div style="display: flex; gap: 8px; margin-top: 12px;">
+                    <button class="btn btn-ghost btn-sm" style="flex: 1; justify-content: center;">Drop Vit C</button>
+                    <button class="btn btn-ghost btn-sm" style="flex: 1; justify-content: center;">Drop SPF</button>
+                  </div>
+                  <button style="background: none; border: none; color: var(--text-medium); font-size: 12px; margin-top: 10px; width: 100%; cursor: pointer;">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Honors the tap. Forces the user to think about which to drop. Best when creators are decisive but cap feels arbitrary. More modal state.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">C · Toast (status quo)</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px;">
+                  <h3 style="font-size: 20px;">Pick 2 products</h3>
+                  <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <div class="product-card selected">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--green-500), var(--green-700));"></div>
+                      <div class="product-meta"><div class="product-name">Vitamin C Serum</div></div>
+                    </div>
+                    <div class="product-card selected">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--orange-500), var(--orange-700));"></div>
+                      <div class="product-meta"><div class="product-name">SPF Glow</div></div>
+                    </div>
+                    <div class="product-card disabled">
+                      <div class="product-img" style="background: linear-gradient(135deg, var(--blue-500), var(--blue-700));"></div>
+                      <div class="product-meta"><div class="product-name">Eye Cream</div></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="position: absolute; bottom: 24px; left: 16px; right: 16px; background: #1A1A1A; color: white; padding: 12px 16px; border-radius: 8px; display: flex; gap: 10px; align-items: center; font-size: 12px;">
+                  <span style="color: var(--orange-500);">⚠</span>
+                  <span>You can only pick 2 products</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Status quo. Toast disappears in 3 seconds. Creator may not know why their tap didn't take. Felt error-y in May 8 Slack review.
+          </div>
+        </div>
+
+      </div>
+
+      <h2 style="margin: var(--sp-72) 0 var(--sp-16);">Recommendation</h2>
+      <div class="card">
+        <p style="font-size: var(--body-md); line-height: 1.6;">
+          <strong>Direction A</strong> for the builder. <strong>Selection-cap A (soft state)</strong> for the mobile picker. Together they fix the Earth Science campaign and unblock cluster 03's "Campaign Config v2" bundle.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="index.html">← Cluster 03 spec</a>
+        <a class="btn btn-primary btn-sm" href="../04-creator-onboarding/design.html">Cluster 04 design →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

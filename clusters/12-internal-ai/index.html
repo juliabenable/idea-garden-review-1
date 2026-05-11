@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Internal AI Tools &amp; Workflow · Cluster 12</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Cluster 12</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="../11-local-matching/index.html">← Cluster 11</a>
+        <a class="btn btn-ghost btn-sm" href="../13-mobile-investigation/index.html">Cluster 13 →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / Cluster 12</div>
+      <h1>Internal AI Tools &amp; Workflow</h1>
+
+      <div class="cluster-summary">
+        <div class="why">
+          <p><strong>Why this is cluster 12.</strong> Tooling that makes the team faster — prototype review, AI feedback agents, design-system constraints, Benny reliability, Logan's tool integration. Not consumer-facing. <em>Not roadmap-blocking</em>, but they multiply the team's output if they work.</p>
+          <p style="margin-top: var(--sp-12);">Several here are already partly-built: prototype review tool is at 85%, spec gap detector exists as a skill, Benny is in production. The cluster is mostly "finish what's started, decide what's next."</p>
+        </div>
+        <dl class="meta">
+          <dt>Cluster recommendation</dt>
+          <dd><span class="rec rec-spec">Spec</span> the next 2; <span class="rec rec-park">park</span> the speculative ones.</dd>
+          <dt>Ideas covered</dt>
+          <dd>10 (IDs 52, 71 ref, 132 ref, 134, 135, 136 ref, 137, 138, 139, 140, 133)</dd>
+          <dt>Validation</dt>
+          <dd>Mostly internal team need. Less external evidence.</dd>
+          <dt>Effort</dt>
+          <dd>Per item: small. As a portfolio: this is where AI engineering hours go.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Ideas in this cluster</h2>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">A. Already in flight (finish them)</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">134</span>
+          <div class="idea-body">
+            <h4>Prototype Review Tool</h4>
+            <div class="idea-blurb">Screen-by-screen feedback with real-time updates. Global design changes across all screens. Integrate with event generation. Julia built at 85%.</div>
+            <div class="idea-source">Granola: Build-with-AI Post-Mortem Apr 21, AI Build-A-Thon Apr 20</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">52</span>
+          <div class="idea-body">
+            <h4>Spec Gap Detector for Eng Handoffs</h4>
+            <div class="idea-blurb">AI agent reviewing specs/PRDs/prototypes for gaps before reaching engineering. Now built as a skill.</div>
+            <div class="idea-source">Julia (Apr 20 build-a-thon)</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">138</span>
+          <div class="idea-body">
+            <h4>Figma to Dev Event Tracking Automation</h4>
+            <div class="idea-blurb">Julia's prototype generates funnel events for entire user flows automatically. Exports developer specs. AI Build-A-Thon project.</div>
+            <div class="idea-source">Granola: AI Build-A-Thon Apr 20</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">137</span>
+          <div class="idea-body">
+            <h4>Figma to Mobile Codebase Integration</h4>
+            <div class="idea-blurb">Tool to compile React Native screens directly into Figma. Solve design-dev gap. Nathan + Brian investigating.</div>
+            <div class="idea-source">Granola: Creator Portal Redesign Apr 15</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-research">Research</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">B. Benny / agent reliability</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">135</span>
+          <div class="idea-body">
+            <h4>Benny Reliability Improvements</h4>
+            <div class="idea-blurb">Forgets things, changes wrong items. Better context retention needed. Workflow with Brian + Nisarg needs improvement.</div>
+            <div class="idea-source">Granola: Build-with-AI Post-Mortem Apr 21</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">131</span>
+          <div class="idea-body">
+            <h4>Benny Security Architecture</h4>
+            <div class="idea-blurb">No direct prod deploy. No DB write access for Benny. Separate agent (Jenny) for admin tasks without web/email access.</div>
+            <div class="idea-source">Granola: Build-with-AI Post-Mortem Apr 21</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">133</span>
+          <div class="idea-body">
+            <h4>Design System Constraints</h4>
+            <div class="idea-blurb">Prevent new prototypes from creating divergent UI components. Nathan building all-new components vs reusing. Fragmentation problem.</div>
+            <div class="idea-source">Granola: Build-with-AI Post-Mortem Apr 21</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">C. New AI agents (specuative)</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">139</span>
+          <div class="idea-body">
+            <h4>AI Feedback Agent (Tony's Voice)</h4>
+            <div class="idea-blurb">Agent trained on Tony's communication patterns for async feedback. Identified at AI Town Hall as high-value automation.</div>
+            <div class="idea-source">Granola: AI Town Hall Apr 14</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-decide">Decide</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">136</span>
+          <div class="idea-body">
+            <h4>Auto-Generate Brand Call Materials (also Cluster 02)</h4>
+            <div class="idea-blurb">When brands schedule calls, auto-generate deck/brief with brand data.</div>
+            <div class="idea-source">Granola: AI Town Hall Apr 14</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">132</span>
+          <div class="idea-body">
+            <h4>AI-Generated Creator Cards (also Cluster 04)</h4>
+            <div class="idea-blurb">Des to test for next 10-20 new invites. Accept/deny workflow.</div>
+            <div class="idea-source">Granola: People-Management Apr 24</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">D. Data plumbing</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">71</span>
+          <div class="idea-body">
+            <h4>Logan's Tool / Admin Integration (also Cluster 02)</h4>
+            <div class="idea-blurb">Status badges in Logan's tool showing portal/campaign state. Real-time sync. ETL across platforms.</div>
+            <div class="idea-source">Granola: Creator Process Apr 21</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">140</span>
+          <div class="idea-body">
+            <h4>Metabase / CSV Creator Data Dashboard</h4>
+            <div class="idea-blurb">V1: collect onboarding + campaign data, surface via Metabase or CSV for Katie. V1.5: admin interface for editing.</div>
+            <div class="idea-source">Granola: Creator Onboarding Data Model Apr 24</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Recommendation framing</h2>
+      <p class="section-lead">This cluster shouldn't crowd consumer/brand product work. Three filters for what's worth doing:</p>
+
+      <div class="spec stack-24">
+        <div>
+          <h4>1. Finish prototype review tool (ID 134)</h4>
+          <p>85% built. The remaining 15% probably converts more eng-team value than starting any new internal tool. Single highest-ROI in this cluster.</p>
+        </div>
+        <div>
+          <h4>2. Design system constraints (ID 133)</h4>
+          <p>Direct cause of divergent components Tony flagged. Prevents future technical debt at the rate-limiting point — prototypes shipping with new UI. Prerequisite to scaling AI-built prototypes.</p>
+        </div>
+        <div>
+          <h4>3. AI creator cards rollout (ID 132)</h4>
+          <p>Already in test with Des. Concrete loop: AI generates → human accept/deny → reduces 50% rejection rate from Cluster 04. Connects to product, not internal-only.</p>
+        </div>
+
+        <div>
+          <h4>What to park</h4>
+          <p>AI Feedback Agent in Tony's voice (ID 139), Figma → mobile codebase (ID 137), and similar speculative agents. They're "would be cool" rather than "would unblock something." Add to the parking lot, revisit if internal-tools capacity opens.</p>
+        </div>
+
+        <div>
+          <h4>Open product decisions</h4>
+          <div class="decision">
+            <div class="decision-q">D-23 · Should "internal AI tools" have its own owner / track, or stay opportunistic?</div>
+            <div class="options">
+              <div class="option option-recommended">
+                <div class="opt-label">Option A · Opportunistic — when a Build-a-thon surfaces something concrete, build it</div>
+                <div class="opt-tradeoff">Avoids creating a function nobody asked for. Lets internal tools follow real pain. Recommended.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option B · Dedicate one part-time eng to "internal tools team"</div>
+                <div class="opt-tradeoff">Faster delivery on multiple internal tools. Costs eng capacity that could go to consumer/brand. Reasonable in 6 months once the team grows.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option C · Outsource to AI / contractors</div>
+                <div class="opt-tradeoff">Lowest direct cost. Highest quality risk for Benny-style tools that touch prod data.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="../11-local-matching/index.html">← Cluster 11</a>
+        <a class="btn btn-primary btn-sm" href="../13-mobile-investigation/index.html">Cluster 13 · Mobile →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

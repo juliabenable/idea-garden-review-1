@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Affiliate Link Management &amp; Distribution · Cluster 06</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Cluster 06</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="../05-creator-portal-qol/index.html">← Cluster 05</a>
+        <a class="btn btn-ghost btn-sm" href="../07-discovery-rethink/index.html">Cluster 07 →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / Cluster 06</div>
+      <h1>Affiliate Link Management &amp; Distribution</h1>
+
+      <div class="cluster-summary">
+        <div class="why">
+          <p><strong>Why this is cluster 06.</strong> The biggest gap creators name when comparing Benable to ShopMy. <em>"I want to search past links, organize them, reuse them, share them where I already am."</em> Morgan called this <em>Benable's biggest product gap</em>. Three pieces: (1) a real link library on the creator's side, (2) distribution surfaces (keyboard, native share, Instagram carousel, ManyChat), (3) click-level analytics so creators see what's working.</p>
+          <p style="margin-top: var(--sp-12);">Critical: the keyboard (ID 25) and link gen (Nisarg, Apr 13) are deployed but the surrounding library and analytics are uneven. We're 60% of the way there.</p>
+        </div>
+        <dl class="meta">
+          <dt>Cluster recommendation</dt>
+          <dd><span class="rec rec-design">Design</span> the library + analytics surface; <span class="rec rec-build">build</span> distribution wins individually.</dd>
+          <dt>Ideas covered</dt>
+          <dd>10 (IDs 25, 26, 27, 39, 46, 51, 81, 84, 105, 107)</dd>
+          <dt>Validation</dt>
+          <dd>Strong from Morgan, Sydny, Hanah, Kelly. Direct ShopMy-comparison asks.</dd>
+          <dt>Effort</dt>
+          <dd>Library: ~1 sprint. Analytics: ~1 sprint. Distribution: each ~1 week.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Ideas in this cluster</h2>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">A. The link library (creator-side)</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">39</span>
+          <div class="idea-body">
+            <h4>Link Management System (ShopMy Parity)</h4>
+            <div class="idea-blurb">Search past affiliate links, organize into buckets, reuse without relinking. Morgan: Benable's biggest product gap vs ShopMy. Critical for power users.</div>
+            <div class="idea-source">Morgan call (Apr 2), competitive analysis</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">81</span>
+          <div class="idea-body">
+            <h4>Affiliate Link Page: Swipeable Product Tiles</h4>
+            <div class="idea-blurb">Multiple products, tap-to-copy affiliate links. Small product tile cards. Organize past links searchably.</div>
+            <div class="idea-source">Granola: Creator Portal Redesign Apr 15, Morgan Mar 31</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">26</span>
+          <div class="idea-body">
+            <h4>Link Click Analytics for Creators</h4>
+            <div class="idea-blurb">Show creators which links are getting clicks, like ShopMy. Sydny: "If people are clicking, maybe they need another reminder."</div>
+            <div class="idea-source">Sydny Short Apr 7</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: var(--sp-32); margin-bottom: var(--sp-12);">B. Distribution surfaces (where creators use links)</h4>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">25</span>
+          <div class="idea-body">
+            <h4>Benable Custom Keyboard Extension</h4>
+            <div class="idea-blurb">iOS/Android keyboard converts URLs to affiliate links from any text field. Core conversion feature deployed; TestFlight targeted.</div>
+            <div class="idea-source">Tony vision Apr 1, Nisarg deployed link gen Apr 13</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">84</span>
+          <div class="idea-body">
+            <h4>Keyboard Extension for Affiliate Links</h4>
+            <div class="idea-blurb">Generate links without leaving Instagram. Access existing link library from keyboard. Kelly interested; Nathan built Swift UI keyboard.</div>
+            <div class="idea-source">Kelly Meng Apr 14, Creator Portal Apr 15</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">51</span>
+          <div class="idea-body">
+            <h4>Share-Moment Capture via Native Share Flow</h4>
+            <div class="idea-blurb">Insert Benable into native share — when a user shares from Amazon/Target, intercept and offer "share via Benable" to convert to affiliate link.</div>
+            <div class="idea-source">Growth experiment Mar 3, Des growth idea</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">46</span>
+          <div class="idea-body">
+            <h4>ManyChat / Comment-Link Integration</h4>
+            <div class="idea-blurb">Build or guide creators through "comment link" automation where followers comment a keyword and get auto-DM'd the affiliate link. Hanah: this is how ShopMy links actually get traction on IG.</div>
+            <div class="idea-source">Hanah Bae Mar 25</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">27</span>
+          <div class="idea-body">
+            <h4>Instagram Carousel Export from Lists</h4>
+            <div class="idea-blurb">Let creators export lists as photo carousels for IG posts (not just stories). IG now supports affiliate links in posts.</div>
+            <div class="idea-source">Sydny Short Apr 7, IG affiliate link announcement</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">105</span>
+          <div class="idea-body">
+            <h4>Benable List to Instagram Carousel Export</h4>
+            <div class="idea-blurb">Auto-generate collage with affiliate links for IG posts. Sydny: "I want to share my lists as a post, not just a story."</div>
+            <div class="idea-source">Granola: Sydny Short Apr 6</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">107</span>
+          <div class="idea-body">
+            <h4>List Sharing to Instagram Posts</h4>
+            <div class="idea-blurb">Currently stories only. Sharing to feed posts is a meaningful unlock for list discovery.</div>
+            <div class="idea-source">Granola: Sydny Short Apr 6</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">19</span>
+          <div class="idea-body">
+            <h4>Affiliate Network Integrations (also Cluster 03)</h4>
+            <div class="idea-blurb">Impact / CJ / Rakuten. Hawke says vital. Currently only AWIN + SkimLinks.</div>
+            <div class="idea-source">Hawke Media Feb 25</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Product doc · Link Library v1</h2>
+      <p class="section-lead">Bundle IDs 39, 81, 26 into the surface power creators use most. Sets up everything else (analytics, distribution) to plug in.</p>
+
+      <div class="spec stack-24">
+        <div>
+          <h3>The opportunity</h3>
+          <p>Benable already generates affiliate links. What's missing is the place creators go to <em>find</em> a link they made last week, <em>see</em> what's getting clicks, and <em>send</em> it where they need it. ShopMy figured this out years ago. Closing the gap is table-stakes for retention of power creators.</p>
+        </div>
+
+        <div>
+          <h4>v1 scope</h4>
+          <ul>
+            <li><strong>Library view:</strong> all generated links, searchable by product name / brand / category. Default sort by recency, secondary by clicks.</li>
+            <li><strong>Buckets:</strong> creator-defined folders (Spring '26, Skincare, Brand pitches) with drag-to-add.</li>
+            <li><strong>Per-link analytics:</strong> clicks, click-through rate (if we know impressions), revenue (if affiliate network reports), trend sparkline.</li>
+            <li><strong>Quick actions:</strong> tap-to-copy, share to Stories / Posts (uses cluster B distribution), pin to top.</li>
+            <li><strong>Backed-by-keyboard:</strong> the iOS keyboard (ID 25) reads from this same library, so the keyboard "Recent" tab matches the web view.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Out of scope</h4>
+          <ul>
+            <li>Cross-creator analytics (showing creators what other creators link to). Defer.</li>
+            <li>Auto-categorization. Manual buckets first; auto in v1.5.</li>
+            <li>Per-link UTM tag editing. Power-user feature.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Open product decisions</h4>
+          <div class="decision">
+            <div class="decision-q">D-12 · Should the link library be the home of the creator portal?</div>
+            <div class="options">
+              <div class="option">
+                <div class="opt-label">Option A · Yes — library IS the creator-portal home</div>
+                <div class="opt-tradeoff">Power creators live here. Aligns with the "creator-portal as monetization hub" thesis. Costs: pushes campaigns and lists to second-class navigation.</div>
+              </div>
+              <div class="option option-recommended">
+                <div class="opt-label">Option B · No — second tab next to "Campaigns" and "Lists"</div>
+                <div class="opt-tradeoff">Adds without disturbing existing IA. Lower disruption for non-power users. Recommended.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option C · Built into each list page (no separate library)</div>
+                <div class="opt-tradeoff">Cleaner conceptually but doesn't match how creators think — they remember "the X link" more than "which list it's in."</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="decision">
+            <div class="decision-q">D-13 · Where does revenue data come from for v1?</div>
+            <div class="options">
+              <div class="option option-recommended">
+                <div class="opt-label">Option A · Show clicks only in v1; revenue in v1.5 once affiliate network integrations stabilize</div>
+                <div class="opt-tradeoff">Shippable now. Analytics is most-asked-for but revenue is hardest. Clicks alone is enough to start. Recommended.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option B · Show revenue from AWIN + SkimLinks only; "—" elsewhere</div>
+                <div class="opt-tradeoff">More complete but inconsistent. Creators distrust holes.</div>
+              </div>
+              <div class="option">
+                <div class="opt-label">Option C · Wait for Impact/CJ/Rakuten before launching analytics</div>
+                <div class="opt-tradeoff">Most complete. Slowest. Creators have been asking for ages.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>UI exploration · link library</h2>
+      <p class="section-lead">Two ways to lay out the creator's link library. Same data, different mental model.</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option A · Searchable feed with click stats</span>
+            <span class="rec rec-build">Recommended</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px 16px 0;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="font-size: 20px;">Links</h3>
+                    <span class="pill pill-brand" style="font-size: 10px;">128 total</span>
+                  </div>
+                  <input type="text" placeholder="Search links..." style="width:100%; margin-top: 12px; padding: 10px 12px; background: var(--bg-weak); border: 1px solid var(--border-base); border-radius: 24px; font-size: 12px;">
+
+                  <div style="display:flex; gap: 6px; margin-top: 10px; overflow-x: auto;">
+                    <span class="pill pill-brand" style="font-size: 10px;">Recent</span>
+                    <span class="pill pill-outline" style="font-size: 10px;">Most clicks</span>
+                    <span class="pill pill-outline" style="font-size: 10px;">Spring '26</span>
+                    <span class="pill pill-outline" style="font-size: 10px;">Skincare</span>
+                  </div>
+                </div>
+
+                <div style="padding: 12px 16px; display:flex; flex-direction:column; gap: 8px;">
+
+                  <div style="display:flex; gap: 10px; padding: 12px; border: 1px solid var(--border-base); border-radius: 12px; align-items:center;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--green-300), var(--green-500)); border-radius: 8px;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 12px;">Soluna Vitamin C Serum</div>
+                      <div style="font-size: 10px; color: var(--text-medium);">$48 · added 2d ago</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-weight: 700; font-size: 13px; color: var(--green-700);">142</div>
+                      <div style="font-size: 9px; color: var(--text-medium);">CLICKS</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap: 10px; padding: 12px; border: 1px solid var(--border-base); border-radius: 12px; align-items:center;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--brand-300), var(--brand-700)); border-radius: 8px;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 12px;">Glow SPF</div>
+                      <div style="font-size: 10px; color: var(--text-medium);">$32 · 5d ago</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-weight: 700; font-size: 13px;">88</div>
+                      <div style="font-size: 9px; color: var(--text-medium);">CLICKS</div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap: 10px; padding: 12px; border: 1px solid var(--border-base); border-radius: 12px; align-items:center;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--orange-300), var(--orange-500)); border-radius: 8px;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 12px;">Earth Eye Cream</div>
+                      <div style="font-size: 10px; color: var(--text-medium);">$56 · 1w ago</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div style="font-weight: 700; font-size: 13px;">21</div>
+                      <div style="font-size: 9px; color: var(--text-medium);">CLICKS</div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Search-first feed. Click stats inline. Tap any row → quick share / copy. Mirrors how creators recall: "what was that thing I posted last week?"
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option B · Tile grid by bucket</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 16px;">
+                  <h3 style="font-size: 20px;">Links</h3>
+                  <p style="font-size: 12px; color: var(--text-medium); margin-top: 4px;">128 links · 4 buckets</p>
+
+                  <div style="margin-top: 16px;">
+                    <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">SPRING '26 · 32 LINKS</div>
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                      <div style="aspect-ratio: 1; background: linear-gradient(135deg, var(--green-300), var(--green-500)); border-radius: 8px; position: relative;">
+                        <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; color: white; font-size: 9px; font-weight: 700;">142</div>
+                      </div>
+                      <div style="aspect-ratio: 1; background: linear-gradient(135deg, var(--brand-300), var(--brand-700)); border-radius: 8px; position: relative;">
+                        <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; color: white; font-size: 9px; font-weight: 700;">88</div>
+                      </div>
+                      <div style="aspect-ratio: 1; background: linear-gradient(135deg, var(--orange-300), var(--orange-500)); border-radius: 8px; position: relative;">
+                        <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; color: white; font-size: 9px; font-weight: 700;">21</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 16px;">
+                    <div style="font-size: 11px; color: var(--text-medium); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px;">SKINCARE · 18 LINKS</div>
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                      <div style="aspect-ratio: 1; background: linear-gradient(135deg, var(--blue-300), var(--blue-500)); border-radius: 8px;"></div>
+                      <div style="aspect-ratio: 1; background: linear-gradient(135deg, var(--red-300), var(--red-500)); border-radius: 8px;"></div>
+                      <div style="aspect-ratio: 1; background: var(--bg-weak); border-radius: 8px; display:flex; align-items:center; justify-content:center; color: var(--text-medium); font-size: 14px;">+15</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Visually scannable. Better when creators have many links and remember by image. Costs: harder to scan analytics; bucket overhead before you have many links.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>UI exploration · share-moment intercept (ID 51)</h2>
+      <p class="section-lead">When the creator hits iOS Share on Amazon. The trick is fitting into the share sheet without being annoying.</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option A · Share extension with one-tap action</span>
+            <span class="rec rec-build">Recommended</span>
+          </div>
+          <div class="ui-canvas">
+            <div style="background: var(--neutral-200); border-radius: 16px; padding: 12px;">
+              <div style="background: white; border-radius: 12px; padding: 12px;">
+                <div style="font-size: 11px; color: var(--text-medium); margin-bottom: 8px;">Share to...</div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+                  <div style="text-align:center;">
+                    <div style="width: 100%; aspect-ratio: 1; background: linear-gradient(135deg, var(--brand-700), var(--brand-900)); border-radius: 12px; display:flex; align-items:center; justify-content:center; color: white; font-weight: 700;">B</div>
+                    <div style="font-size: 8px; margin-top: 4px;">Benable</div>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="width: 100%; aspect-ratio: 1; background: var(--bg-subtle); border-radius: 12px;"></div>
+                    <div style="font-size: 8px; margin-top: 4px;">Messages</div>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="width: 100%; aspect-ratio: 1; background: var(--bg-subtle); border-radius: 12px;"></div>
+                    <div style="font-size: 8px; margin-top: 4px;">Mail</div>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="width: 100%; aspect-ratio: 1; background: var(--bg-subtle); border-radius: 12px;"></div>
+                    <div style="font-size: 8px; margin-top: 4px;">More</div>
+                  </div>
+                </div>
+                <div style="background: var(--brand-100); border: 1px solid var(--brand-300); padding: 12px; border-radius: 8px; margin-top: 12px;">
+                  <div style="font-size: 11px; font-weight: 700; color: var(--brand-900);">Make this a Benable link?</div>
+                  <div style="font-size: 10px; color: var(--text-medium); margin-top: 4px;">Earn from clicks, save to Skincare bucket</div>
+                  <div style="display:flex; gap: 6px; margin-top: 8px;">
+                    <button class="btn btn-primary btn-sm" style="flex:1; font-size: 10px; padding: 6px;">Yes — generate</button>
+                    <button class="btn btn-ghost btn-sm" style="font-size: 10px; padding: 6px;">No</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Native iOS share sheet integration. Surfaces only when creator opens share — no interruption. The mid-sheet prompt is the win.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Option B · Pasteboard-detection in-app banner</span>
+          </div>
+          <div class="ui-canvas">
+            <div class="phone">
+              <div class="phone-screen">
+                <div style="padding: 12px;">
+                  <div style="background: var(--brand-100); border: 1px solid var(--brand-300); padding: 10px 12px; border-radius: 8px; display:flex; align-items:center; gap: 8px;">
+                    <div style="width: 24px; height: 24px; background: var(--brand-700); border-radius: 6px; flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                      <div style="font-weight: 700; font-size: 11px;">Make that Amazon link a Benable link?</div>
+                      <div style="font-size: 10px; color: var(--text-medium);">Vit C Serum · $48</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" style="font-size: 10px; padding: 4px 10px;">Yes</button>
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-medium); margin-top: 16px; text-align:center;">(home screen)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Catches the moment <em>after</em> sharing if creator opens Benable. Lower coverage than share extension, but easier to ship — no Apple review.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="../05-creator-portal-qol/index.html">← Cluster 05</a>
+        <a class="btn btn-primary btn-sm" href="../07-discovery-rethink/index.html">Cluster 07 · Discovery Rethink →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

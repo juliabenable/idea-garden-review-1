@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Idea Garden Self-Improvement · Cluster 14</title>
+<link rel="stylesheet" href="../../shared/benable.css" />
+<link rel="stylesheet" href="../../shared/review.css" />
+</head>
+<body>
+<div class="review-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-mark">
+        <div class="brand-dot"></div>
+        <span><a href="../../index.html" style="color: inherit;">Idea Garden Review</a> · Cluster 14</span>
+      </div>
+      <div class="row-tight">
+        <a class="btn btn-ghost btn-sm" href="../13-mobile-investigation/index.html">← Cluster 13</a>
+        <a class="btn btn-ghost btn-sm" href="../../decisions/open-questions.html">Decisions →</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="cluster-header">
+    <div class="container">
+      <div class="breadcrumbs"><a href="../../index.html">Clusters</a> / Cluster 14</div>
+      <h1>Idea Garden Self-Improvement</h1>
+
+      <div class="cluster-summary">
+        <div class="why">
+          <p><strong>Why this is cluster 14.</strong> Meta-cluster: ideas about the tool that holds these ideas. Right now Idea Garden is a queue of 145 items. Without a maturation step, the queue grows without converging. Three small features make it converge: a scorecard, a signal board for recurring patterns, and a "weird experiments" parking lot so promising-but-not-ready ideas don't get killed.</p>
+          <p style="margin-top: var(--sp-12);">This is the cluster you're most able to iterate on yourself — small surface, you're the only user. Treat it as a personal-leverage tool, not a feature shipped to the team.</p>
+        </div>
+        <dl class="meta">
+          <dt>Cluster recommendation</dt>
+          <dd><span class="rec rec-design">Design</span> the maturation scorecard; ship the signal board incrementally.</dd>
+          <dt>Ideas covered</dt>
+          <dd>4 (IDs 3, 4, 5, 6)</dd>
+          <dt>Validation</dt>
+          <dd>Self-validating: the act of doing this Monday-prep exercise just exposed the gap.</dd>
+          <dt>Effort</dt>
+          <dd>Tiny. 1–2 days each.</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Ideas in this cluster</h2>
+      <div class="idea-list">
+        <div class="idea-item">
+          <span class="idea-id">6</span>
+          <div class="idea-body">
+            <h4>Idea maturation scorecard</h4>
+            <div class="idea-blurb">Show when an idea has enough evidence, notes, and supporters to earn scoping time.</div>
+            <div class="idea-source">team retro</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-design">Design</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">4</span>
+          <div class="idea-body">
+            <h4>Signal board for creator request patterns</h4>
+            <div class="idea-blurb">Surface recurring asks from creators so product can spot new workflow opportunities.</div>
+            <div class="idea-source">support thread</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">3</span>
+          <div class="idea-body">
+            <h4>AI-assisted wishlists for seasonal trends</h4>
+            <div class="idea-blurb">Let merchandisers collect early gift and trend themes, then turn them into creator prompts.</div>
+            <div class="idea-source">planning chat</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-spec">Spec</span></div>
+        </div>
+        <div class="idea-item">
+          <span class="idea-id">5</span>
+          <div class="idea-body">
+            <h4>Quiet parking lot for weird experiments</h4>
+            <div class="idea-blurb">A lightweight holding zone for playful product bets that aren't ready for roadmap scrutiny.</div>
+            <div class="idea-source">shower thought</div>
+          </div>
+          <div class="idea-rec"><span class="rec rec-build">Build</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Product doc · Idea maturation scorecard (ID 6)</h2>
+      <p class="section-lead">A signal-strength meter on each idea. Forces the question: "Is this ready to scope, or do we need more evidence first?"</p>
+
+      <div class="spec stack-24">
+        <div>
+          <h3>The problem this exercise just exposed</h3>
+          <p>Going through 146 ideas to write Monday prep, the highest-friction question wasn't "is this a good idea?" It was "is there enough evidence behind this to commit a sprint?" The handoff doc has Granola sources, but no shape for "validation strength" or "blocker count." A scorecard is the missing layer.</p>
+        </div>
+
+        <div>
+          <h4>Scorecard dimensions</h4>
+          <ul>
+            <li><strong>Validation strength (0–3):</strong> 0 = idea-only · 1 = one data point or one interview · 2 = multiple sources or strong single signal · 3 = repeated independent confirmations</li>
+            <li><strong>Effort estimate (XS / S / M / L / XL):</strong> rough; updated when scoped.</li>
+            <li><strong>Dependency count (0–N):</strong> how many other ideas/projects have to ship first.</li>
+            <li><strong>Open-decision count:</strong> how many product Qs are still open.</li>
+            <li><strong>Last-touched age:</strong> green &lt;30d, yellow 30–90, red 90+.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Maturation thresholds</h4>
+          <ul>
+            <li><strong>Spark → Exploring:</strong> validation ≥1 OR explicit "let's poke at this."</li>
+            <li><strong>Exploring → Has Legs:</strong> validation ≥2 AND open-decisions ≤3.</li>
+            <li><strong>Has Legs → Ready to Scope:</strong> validation ≥2 AND open-decisions =0 AND effort estimated.</li>
+          </ul>
+          <p style="margin-top: var(--sp-8);">Thresholds are rules-of-thumb, not gates — you can always override. Their value is making "why aren't we shipping this?" answerable in one glance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>UI exploration · Idea Garden enhancements</h2>
+      <p class="section-lead">Two tweaks to the existing kanban: scorecard chip on each card, and a signal board view.</p>
+
+      <div class="ui-frame-group">
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Idea card with scorecard chip</span>
+            <span class="rec rec-build">Recommended</span>
+          </div>
+          <div class="ui-canvas">
+            <div style="background: var(--bg-weak); padding: 16px; border-radius: 12px;">
+              <div style="background: white; border: 1px solid var(--border-base); border-radius: 12px; padding: 16px;">
+                <div style="display:flex; gap: 8px; margin-bottom: 8px;">
+                  <span class="pill pill-brand" style="font-size: 10px;">UGC Studio</span>
+                  <span class="pill pill-outline" style="font-size: 10px;">creator portal</span>
+                </div>
+                <h4 style="font-size: 14px; margin-bottom: 6px;">Instant Content Rights Purchase</h4>
+                <p style="font-size: 12px; color: var(--text-medium); margin-bottom: 12px;">Creators set rates in advance. Brands buy in 3 clicks.</p>
+
+                <div style="display:flex; gap: 6px; flex-wrap: wrap; padding-top: 10px; border-top: 1px dashed var(--border-base);">
+                  <div style="display:flex; align-items:center; gap: 4px; font-size: 10px; color: var(--text-medium);">
+                    <strong style="color: var(--green-700);">●●●</strong>
+                    <span>validation</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap: 4px; font-size: 10px; color: var(--text-medium);">
+                    <strong>L</strong>
+                    <span>effort</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap: 4px; font-size: 10px; color: var(--text-medium);">
+                    <strong style="color: var(--orange-700);">3</strong>
+                    <span>open Qs</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: white; border: 1px solid var(--border-base); border-radius: 12px; padding: 16px; margin-top: 8px;">
+                <div style="display:flex; gap: 8px; margin-bottom: 8px;">
+                  <span class="pill pill-outline" style="font-size: 10px;">brand portal</span>
+                </div>
+                <h4 style="font-size: 14px; margin-bottom: 6px;">Founder-to-Founder Outreach</h4>
+                <p style="font-size: 12px; color: var(--text-medium); margin-bottom: 12px;">Brands like Vacation need founder pitch.</p>
+                <div style="display:flex; gap: 6px; flex-wrap: wrap; padding-top: 10px; border-top: 1px dashed var(--border-base);">
+                  <div style="display:flex; align-items:center; gap: 4px; font-size: 10px; color: var(--text-medium);">
+                    <strong style="color: var(--orange-700);">●○○</strong>
+                    <span>validation</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap: 4px; font-size: 10px; color: var(--text-medium);">
+                    <strong>S</strong>
+                    <span>effort</span>
+                  </div>
+                  <div style="display:flex; align-items:center; gap: 4px; font-size: 10px; color: var(--text-medium);">
+                    <strong>0</strong>
+                    <span>open Qs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Scan three numbers per card to triage 146 ideas in 10 minutes instead of an afternoon. Validation dots are the most important signal.
+          </div>
+        </div>
+
+        <div class="ui-frame">
+          <div class="ui-label">
+            <span class="opt-name">Signal board view</span>
+          </div>
+          <div class="ui-canvas">
+            <div style="background: var(--bg-weak); padding: 16px; border-radius: 12px;">
+              <h4 style="font-size: 14px; margin-bottom: 12px;">Recurring signals · last 30 days</h4>
+              <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <strong style="font-size: 13px;">"I want a real link library"</strong>
+                  <span class="pill pill-brand" style="font-size: 10px;">5 mentions</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">Morgan, Sydny, Hanah, Kelly, Sophia</div>
+                <div style="font-size: 11px; color: var(--brand-900); margin-top: 4px;">→ ID 39 (Has Legs)</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <strong style="font-size: 13px;">"Brand feels sketchy / unknown"</strong>
+                  <span class="pill pill-brand" style="font-size: 10px;">4 mentions</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">Veronica, Sienna, Kelly, Sophia</div>
+                <div style="font-size: 11px; color: var(--brand-900); margin-top: 4px;">→ ID 22, 66, 68 (Spec)</div>
+              </div>
+              <div style="background: white; border-radius: 8px; padding: 12px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline;">
+                  <strong style="font-size: 13px;">"Where do I share my list as a post?"</strong>
+                  <span class="pill pill-brand" style="font-size: 10px;">3 mentions</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-medium); margin-top: 4px;">Sydny, Sydny, Hanah</div>
+                <div style="font-size: 11px; color: var(--brand-900); margin-top: 4px;">→ IDs 27, 105, 107 (Build)</div>
+              </div>
+            </div>
+          </div>
+          <div class="ui-tradeoff">
+            <strong>Why this:</strong> Aggregates creator quotes by theme. Auto-clusters across ideas. Shows the cross-cutting pattern faster than reading each idea.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="row-spread">
+        <a class="btn btn-ghost btn-sm" href="../13-mobile-investigation/index.html">← Cluster 13</a>
+        <a class="btn btn-primary btn-sm" href="../../decisions/open-questions.html">Open decisions →</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
